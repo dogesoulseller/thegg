@@ -1,4 +1,4 @@
-package pl.dogesoulseller.thegg;
+package pl.dogesoulseller.thegg.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,17 +34,17 @@ public class RootController {
 	@GetMapping("/root")
 	public String greeting(@RequestParam(name="name", required=false, defaultValue="World") String name, Model model) {
 		model.addAttribute("name", name);
-		var users = listLoggedInUsers();
+		// var users = listLoggedInUsers();
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
 		var princ = (UserDetails) principal;
 
 		if (princ.getUsername() == "admin") {
 			System.err.println("logged in as admin");
+			return "/root";
 		} else {
 			System.err.println("not admin");
+			return "forward:/";
 		}
-
-		return "/root";
 	}
 }

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+	  xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+	<head>
+		<title>TheGG - Registration</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	</head>
+	<body>
+		<p id="response"></p>
+		<form action="/" method="post" enctype="application/x-www-form-urlencoded" id="regform">
+			<div><label> Email: <input type="email" name="email"/> </label></div>
+			<div><label> Username: <input type="username" name="username"/> </label></div>
+			<div><label> Password: <input type="password" name="password"/> </label></div>
+			<div><label> Confirm Password: <input type="password" name="passwordConfirm"/> </label></div>
+			<div><a href="#" onclick="register()">submit</a></div>
+		</form>
+		<a th:href="@{/login}">Log in</a>
+	</body>
+	<script type="text/javascript">
+		var serverContext = window.location.protocol + "//" + window.location.host;
+
+		// TODO: Separate out as a common component
+		function formToJSON($form) {
+			var output = {};
+			$.map($form.serializeArray(), function(n, i){
+				output[n["name"]] = n["value"];
+			});
+
+			output.email = output.email.toLowerCase();
+
+			return JSON.stringify(output);
+		}
+
+		function register() {
+			var response = document.getElementById("response");
+			response.innerHTML = "";
+
+			// TODO: Client-side validation
+			$.ajax({
+				type: "POST",
+				url: serverContext + "/api/user",
+				data: formToJSON($(document.getElementById("regform"))),
+				contentType: "application/json",
+				success: function(resData){
+					// TODO: Spinner
+				},
+			})
+			.fail(function(resdata) {
+
+				// TODO: Better error messages
+				if (resdata.responseJSON.message == "InvalidUsername") {
+					response.innerHTML = "Invalid username";
+				}
+
+				if (resdata.responseJSON.message == "InvalidEmail") {
+					response.innerHTML = "Invalid email";
+				}
+
+				if (resdata.responseJSON.message == "PasswordShort") {
+					response.innerHTML = "Password is too short";
+				}
+
+				if (resdata.responseJSON.message == "PasswordMismatch") {
+					response.innerHTML = "Passwords do not match";
+				}
+
+				if (resdata.responseJSON.message == "Duplicate") {
+					response.innerHTML = "A user with that email already exists";
+				}
+			}).done(function(resdata) {
+				response.innerHTML = "Success";
+			});
+		}
+	</script>
+</html>

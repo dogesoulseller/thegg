@@ -1,4 +1,4 @@
-package pl.dogesoulseller.thegg;
+package pl.dogesoulseller.thegg.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
