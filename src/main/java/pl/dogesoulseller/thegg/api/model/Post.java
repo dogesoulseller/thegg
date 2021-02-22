@@ -16,7 +16,7 @@ import pl.dogesoulseller.thegg.user.User;
 @Document(collection = "posts")
 public class Post {
 	@Id
-	private String Id;
+	private String id;
 
 	@Indexed
 	@DBRef
@@ -65,10 +65,10 @@ public class Post {
 	private String deletionReason;
 
 	@PersistenceConstructor
-	public Post(String Id, Post parent, User poster, String sourceUrl, String filename, String rating,
+	public Post(String id, Post parent, User poster, String sourceUrl, String filename, String rating,
 			Instant creationDate, Instant modificationDate, long filesize, String mime, int width, int height,
 			String authorComment, String posterComment, List<String> tags, Boolean deleted, String deletionReason) {
-		this.Id = Id;
+		this.id = id;
 		this.parent = parent;
 		this.poster = poster;
 		this.sourceUrl = sourceUrl;
@@ -167,7 +167,7 @@ public class Post {
 	}
 
 	public String getId() {
-		return Id;
+		return id;
 	}
 
 	public void setAuthorComment(String authorComment) {
