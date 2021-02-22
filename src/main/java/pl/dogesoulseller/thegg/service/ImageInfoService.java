@@ -1,5 +1,7 @@
 package pl.dogesoulseller.thegg.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,8 @@ import javax.imageio.ImageIO;
 
 @Service
 public class ImageInfoService {
+	private static final Logger log = LoggerFactory.getLogger(ImageInfoService.class);
+
 	private final HashMap<String, String> MIME_MAP = new HashMap<>(5);
 
 	@Autowired
@@ -26,6 +30,8 @@ public class ImageInfoService {
 		MIME_MAP.put("image/jpg", ".jpg");
 		MIME_MAP.put("image/jpeg", ".jpg");
 		MIME_MAP.put("image/gif", ".gif");
+
+		log.info("Image info service initialized");
 	}
 
 	public String getUniqueImageHash(BufferedImage image) {

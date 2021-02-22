@@ -13,6 +13,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,8 @@ import pl.dogesoulseller.thegg.property.StorageProperties;
 
 @Service
 public class StorageService {
+	private static final Logger log = LoggerFactory.getLogger(StorageService.class);
+
 	private Path tempStoragePath;
 	private Path storagePath;
 
@@ -32,11 +36,15 @@ public class StorageService {
 
 		Files.createDirectories(tempStoragePath);
 		Files.createDirectories(storagePath);
+
+		log.info("Storage service initialized");
 	}
 
 	public String storeFile(MultipartFile file) throws IOException {
 		Path output = tempStoragePath.resolve(UUID.randomUUID().toString());
 		Files.copy(file.getInputStream(), output, StandardCopyOption.REPLACE_EXISTING);
+
+		log.debug("Stored temp file of size %d as %s", file.getSize(), output.toString());
 
 		return output.toString();
 	}
@@ -44,6 +52,8 @@ public class StorageService {
 	public String storeFileToPermanentStorage(File file, String newName) throws IOException {
 		Path output = storagePath.resolve(newName);
 		Files.move(Paths.get(file.getAbsolutePath()), output, StandardCopyOption.REPLACE_EXISTING);
+
+		log.debug("Stored permanent file of size %d as %s", file.length(), output.toString());
 
 		return output.toString();
 	}
@@ -59,7 +69,7 @@ public class StorageService {
 	// TODO: Run every 10 minutes
 	@Scheduled(fixedDelay = 600000)
 	public void cleanOldTempFiles() {
-		System.out.println("Deleting files...");
+		log.info("Deleting files...");
 		try {
 			Files.walkFileTree(tempStoragePath, new SimpleFileVisitor<Path>() {
 				@Override
@@ -86,6 +96,6 @@ public class StorageService {
 			e.printStackTrace();
 		}
 
-		System.out.println("Files deleted");
+		log.info("Files deleted");
 	}
 }

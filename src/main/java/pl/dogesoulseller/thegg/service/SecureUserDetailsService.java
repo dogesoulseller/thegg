@@ -1,5 +1,7 @@
 package pl.dogesoulseller.thegg.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,6 +13,7 @@ import pl.dogesoulseller.thegg.user.User;
 
 @Service
 public class SecureUserDetailsService implements UserDetailsService {
+	private static final Logger log = LoggerFactory.getLogger(SecureUserDetailsService.class);
 
 	@Autowired
 	private MongoUserRepository userRepository;
@@ -20,8 +23,10 @@ public class SecureUserDetailsService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		User user = userRepository.findByEmail(email);
 
+		log.trace("Getting user details for %s", email);
+
 		if (user == null) {
-			throw new UsernameNotFoundException("User not found");
+			throw new UsernameNotFoundException("User not found: " + email);
 		}
 
 		return user;

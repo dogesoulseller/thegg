@@ -6,6 +6,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,8 @@ import pl.dogesoulseller.thegg.service.StorageService;
 
 @RestController
 public class SendFileController {
+	private static final Logger log = LoggerFactory.getLogger(SendFileController.class);
+
 	@Autowired
 	StorageService storageService;
 
@@ -34,10 +38,12 @@ public class SendFileController {
 	public ResponseEntity<FilenameResponse> sendFile(@RequestParam("file") MultipartFile file) {
 		imageInfoService.getMimeExtension(file.getContentType());
 		if (imageInfoService == null) {
+			log.error("Trying to receive unsupported MIME type %s", file.getContentType());
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported MIME type " + file.getContentType());
 		}
 
 		if (file.isEmpty()) {
+			log.error("Trying to receive empty file");
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File cannot be empty");
 		}
 
@@ -47,9 +53,11 @@ public class SendFileController {
 			var fullPath = storageService.storeFile(file);
 			filename = Paths.get(fullPath).getFileName().toString();
 		} catch (IOException e) {
+			log.error("Could not store file %s", file.getName());
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "File store failed");
 		}
 
+		log.info("Received file %s", filename);
 		return new ResponseEntity<FilenameResponse>(new FilenameResponse("Received file", filename), HttpStatus.CREATED);
 	}
 }

@@ -11,6 +11,8 @@ import java.net.URLConnection;
 
 import javax.imageio.ImageIO;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +38,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @RestController
 public class PostController {
+	private static final Logger log = LoggerFactory.getLogger(PostController.class);
+
 	@Autowired
 	private MongoPostRepository posts;
 
@@ -52,10 +56,10 @@ public class PostController {
 	@CrossOrigin
 	@ResponseBody
 	public ResponseEntity<Post> getPost(@PathVariable String id) {
-		// TODO:
 		var found = posts.findById(id);
 
 		if (found.isEmpty()) {
+			log.warn("Sent 404 - Failed to find post by id %s", id);
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 		}
 
@@ -75,11 +79,15 @@ public class PostController {
 		BufferedImage image;
 
 		try {
-			mimeType = URLConnection.guessContentTypeFromStream((InputStream) new BufferedInputStream(new FileInputStream(imageTempFile)));
+			mimeType = URLConnection.guessContentTypeFromStream(
+					(InputStream) new BufferedInputStream(new FileInputStream(imageTempFile)));
 			image = ImageIO.read(imageTempFile);
 		} catch (FileNotFoundException e1) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find image file. Make sure it was uploaded first.");
+			log.error("Could not find temp image file %s", imageTempFile.getName());
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+					"Could not find image file. Make sure it was uploaded first.");
 		} catch (IOException e1) {
+			log.error("Failed to open temp image file %s", imageTempFile.getName());
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to open image file.");
 		}
 
@@ -96,12 +104,15 @@ public class PostController {
 			newFilename = imageInfoService.getUniqueImageHash(image) + imageInfoService.getMimeExtension(mimeType);
 			storageService.storeFileToPermanentStorage(imageTempFile, newFilename);
 		} catch (Exception e) {
-			e.printStackTrace();
-			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to store file to permanent storage");
+			log.error("Failed to store file %s to permanent storage", imageTempFile.getName());
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+					"Failed to store file to permanent storage");
 		}
 
 		post.setFilename(newFilename);
 		posts.insert(post);
+
+		log.info("Post inserted with filename %s", newFilename);
 
 		return new ResponseEntity<>(new GenericResponse(""), HttpStatus.CREATED);
 	}
