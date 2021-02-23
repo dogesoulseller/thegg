@@ -7,6 +7,13 @@
 	</head>
 	<body>
 		<div>
+			<table>
+				<tr th:each="post : ${posts}">
+					<td th:text="${{post.id}}">ID</td>
+					<td th:text="${{post.filename}}">ID</td>
+					<td th:text="${{post.tags}}">ID</td>
+				</tr>
+			</table>
 		</div>
 	</body>
 </html>
