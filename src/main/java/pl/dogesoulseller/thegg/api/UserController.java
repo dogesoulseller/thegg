@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -24,6 +26,7 @@ import pl.dogesoulseller.thegg.inputvalidation.UserValidator;
 import pl.dogesoulseller.thegg.repo.MongoRoleRepository;
 import pl.dogesoulseller.thegg.repo.MongoUserRepository;
 import pl.dogesoulseller.thegg.user.User;
+import pl.dogesoulseller.thegg.Utility;
 import pl.dogesoulseller.thegg.api.model.UserRegister;
 
 @RestController
@@ -37,21 +40,27 @@ public class UserController {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
+	@Autowired
+	private PasswordValidator passwordValidator;
+
+	@Autowired
+	private UserValidator userValidator;
+
 	@PostMapping("/api/user")
 	@CrossOrigin
 	@ResponseBody
 	public ResponseEntity<GenericResponse> registerNewUser(@RequestBody UserRegister userdata) {
 		String email = userdata.getEmail().toLowerCase();
 
-		if (!UserValidator.validateEmail(email)) {
+		if (!userValidator.validateEmail(email)) {
 			throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "InvalidEmail");
 		}
 
-		if (!UserValidator.validateUsername(userdata.getUsername())) {
+		if (!userValidator.validateUsername(userdata.getUsername())) {
 			throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "InvalidUsername");
 		}
 
-		if (!PasswordValidator.validateUserPassword(userdata.getPassword())) {
+		if (!passwordValidator.validateUserPassword(userdata.getPassword())) {
 			throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "PasswordShort");
 		}
 
@@ -67,7 +76,10 @@ public class UserController {
 		User newUser = new User(email, userdata.getUsername(), passwordEncoder.encode(userdata.getPassword()),
 				roleRepository.findByName("ROLE_USER"), Instant.now());
 
-		userRepository.save(newUser);
+		User insertedUser = userRepository.save(newUser);
+
+		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+		headers.add("Location", Utility.getServerBaseURL() + "/api/user/" + insertedUser.getId());
 
 		return new ResponseEntity<>(new GenericResponse("Success"), HttpStatus.CREATED);
 	}
