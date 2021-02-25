@@ -3,10 +3,12 @@ package pl.dogesoulseller.thegg.api.response;
 public class FilenameResponse {
 	private final String filename;
 	private final String message;
+	private final String next;
 
-	public FilenameResponse(String message, String filename) {
+	public FilenameResponse(String message, String filename, String next) {
 		this.filename = filename;
 		this.message = message;
+		this.next = next;
 	}
 
 	public String getFilename() {
@@ -15,5 +17,9 @@ public class FilenameResponse {
 
 	public String getMessage() {
 		return message;
+	}
+	
+	public String getNext() {
+		return next;
 	}
 }

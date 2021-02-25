@@ -66,7 +66,6 @@ public class StorageService {
 		return new File(storagePath.resolve(name).toString());
 	}
 
-	// TODO: Run every 10 minutes
 	@Scheduled(fixedDelay = 600000)
 	public void cleanOldTempFiles() {
 		log.info("Deleting files...");

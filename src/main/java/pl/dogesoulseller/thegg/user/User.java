@@ -119,6 +119,10 @@ public class User implements UserDetails {
 		return authorities;
 	}
 
+	public String getId() {
+		return id;
+	}
+
 	@Override
 	public String getPassword() {
 		return this.password;

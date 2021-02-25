@@ -2,6 +2,8 @@ package pl.dogesoulseller.thegg;
 
 import java.nio.charset.StandardCharsets;
 
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 public class Utility {
 
 	// Implementation taken from https://stackoverflow.com/a/9855338
@@ -14,5 +16,9 @@ public class Utility {
 			hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
 		}
 		return new String(hexChars, StandardCharsets.UTF_8);
+	}
+
+	public static String getServerBaseURL() {
+		return ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
 	}
 }
