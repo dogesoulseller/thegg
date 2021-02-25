@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
+import pl.dogesoulseller.thegg.Utility;
 import pl.dogesoulseller.thegg.api.response.FilenameResponse;
 import pl.dogesoulseller.thegg.service.ImageInfoService;
 import pl.dogesoulseller.thegg.service.StorageService;
@@ -36,8 +37,8 @@ public class SendFileController {
 	@CrossOrigin
 	@ResponseBody
 	public ResponseEntity<FilenameResponse> sendFile(@RequestParam("file") MultipartFile file) {
-		imageInfoService.getMimeExtension(file.getContentType());
-		if (imageInfoService == null) {
+		String mimeExtension = imageInfoService.getMimeExtension(file.getContentType());
+		if (mimeExtension == null) {
 			log.error("Trying to receive unsupported MIME type %s", file.getContentType());
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported MIME type " + file.getContentType());
 		}
@@ -58,6 +59,6 @@ public class SendFileController {
 		}
 
 		log.info("Received file %s", filename);
-		return new ResponseEntity<FilenameResponse>(new FilenameResponse("Received file", filename), HttpStatus.CREATED);
+		return new ResponseEntity<FilenameResponse>(new FilenameResponse("Received file", filename, Utility.getServerBaseURL() + "/api/post"), HttpStatus.CREATED);
 	}
 }
