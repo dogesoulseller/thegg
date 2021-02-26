@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
@@ -15,6 +16,9 @@ import pl.dogesoulseller.thegg.user.User;
 
 @Document(collection = "posts")
 public class Post {
+	@Transient
+	private static final String[] VALID_RATINGS = {"safe", "questionable", "explicit", "violent"};
+
 	@Id
 	private String id;
 
@@ -90,16 +94,24 @@ public class Post {
 	public Post() {
 	}
 
-	public Post(PostInfo info) {
+	public Post(PostInfo info) throws RuntimeException {
 		this.authorComment = info.getAuthorComment();
 		this.filename = info.getFilename();
-		this.rating = info.getRating();
+		this.rating = info.getRating().strip().toLowerCase();
 		this.parent = info.getParent();
 		this.posterComment = info.getPosterComment();
 		this.sourceUrl = info.getSourceUrl();
 		this.tags = info.getTags();
-
 		this.creationDate = Instant.now();
+
+		// Validate rating
+		for (var r : VALID_RATINGS) {
+			if (rating.equals(r)) {
+				return;
+			}
+		}
+
+		throw new RuntimeException("Rating invalid");
 	}
 
 	public String getAuthorComment() {

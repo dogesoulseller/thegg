@@ -18,9 +18,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -52,10 +54,10 @@ public class PostController {
 	@Autowired
 	private StorageService storageService;
 
-	@GetMapping("/api/post/{id}")
+	@GetMapping("/api/post")
 	@CrossOrigin
-	@ResponseBody
-	public ResponseEntity<Post> getPost(@PathVariable String id) {
+	public ResponseEntity<Post> getPost(@RequestParam String id) {
+		id = id.strip();
 		var found = posts.findById(id);
 
 		if (found.isEmpty()) {
@@ -66,12 +68,17 @@ public class PostController {
 		return new ResponseEntity<Post>(found.get(), HttpStatus.OK);
 	}
 
+	@DeleteMapping("/api/post")
+	public ResponseEntity<GenericResponse> deletePost(@RequestParam String id) {
+		id = id.strip();
+		// TODO: Validate API key
+		throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+	}
+
 	@PostMapping("/api/post")
 	public ResponseEntity<GenericResponse> makePost(@RequestBody PostInfo postInfo) {
 		String email = SecurityContextHolder.getContext().getAuthentication().getName().toLowerCase();
 		User poster = users.findByEmail(email);
-
-		// FIXME: Validate rating
 
 		File imageTempFile = storageService.getFromTempStorage(postInfo.getFilename());
 
@@ -85,18 +92,24 @@ public class PostController {
 		} catch (FileNotFoundException e1) {
 			log.error("Could not find temp image file %s", imageTempFile.getName());
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-					"Could not find image file. Make sure it was uploaded first.");
+					"Could not find image file. Make sure it was uploaded first");
 		} catch (IOException e1) {
 			log.error("Failed to open temp image file %s", imageTempFile.getName());
-			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to open image file.");
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to open image file");
 		}
 
-		Post post = new Post(postInfo);
-		post.setPoster(poster);
-		post.setMime(mimeType);
-		post.setWidth(image.getWidth());
-		post.setHeight(image.getHeight());
-		post.setFilesize(imageTempFile.length());
+		Post post;
+
+		try {
+			post = new Post(postInfo);
+			post.setPoster(poster);
+			post.setMime(mimeType);
+			post.setWidth(image.getWidth());
+			post.setHeight(image.getHeight());
+			post.setFilesize(imageTempFile.length());
+		} catch (RuntimeException e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Rating invalid");
+		}
 
 		String newFilename;
 
@@ -116,5 +129,4 @@ public class PostController {
 
 		return new ResponseEntity<>(new GenericResponse(""), HttpStatus.CREATED);
 	}
-
 }
