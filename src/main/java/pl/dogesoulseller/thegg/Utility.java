@@ -6,6 +6,24 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 public class Utility {
 
+	public static class Pair<T, U> {
+		T first;
+		U second;
+
+		public Pair(T first, U second) {
+			this.first = first;
+			this.second = second;
+		}
+
+		public T getFirst() {
+			return first;
+		}
+
+		public U getSecond() {
+			return second;
+		}
+	}
+
 	// Implementation taken from https://stackoverflow.com/a/9855338
 	private static final byte[] HEX_ARRAY = "0123456789ABCDEF".getBytes(StandardCharsets.US_ASCII);
 	public static String bytesToHexString(byte[] bytes) {

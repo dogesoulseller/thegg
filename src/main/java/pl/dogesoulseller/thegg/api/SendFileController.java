@@ -14,11 +14,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import pl.dogesoulseller.thegg.Utility;
 import pl.dogesoulseller.thegg.api.response.FilenameResponse;
+import pl.dogesoulseller.thegg.service.ApiKeyVerificationService;
 import pl.dogesoulseller.thegg.service.ImageInfoService;
 import pl.dogesoulseller.thegg.service.StorageService;
 
@@ -32,11 +32,18 @@ public class SendFileController {
 	@Autowired
 	ImageInfoService imageInfoService;
 
+	@Autowired
+	private ApiKeyVerificationService keyVerifier;
+
 	// TODO: Rate limiting
 	@PostMapping("/api/send-file")
 	@CrossOrigin
-	@ResponseBody
-	public ResponseEntity<FilenameResponse> sendFile(@RequestParam("file") MultipartFile file) {
+	public ResponseEntity<FilenameResponse> sendFile(@RequestParam String apikey, @RequestParam("file") MultipartFile file) {
+		var user = keyVerifier.getKeyUser(apikey);
+		if (user == null) {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+		}
+
 		String mimeExtension = imageInfoService.getMimeExtension(file.getContentType());
 		if (mimeExtension == null) {
 			log.error("Trying to receive unsupported MIME type %s", file.getContentType());

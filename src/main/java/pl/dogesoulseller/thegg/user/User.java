@@ -13,6 +13,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import pl.dogesoulseller.thegg.api.model.UserSelfInfo;
+
 @Document(collection = "users")
 public class User implements UserDetails {
 	private static final long serialVersionUID = 3692128324948914348L;
@@ -168,5 +170,12 @@ public class User implements UserDetails {
 
 	public Pronouns getPronouns() {
 		return pronouns;
+	}
+
+	public void update(UserSelfInfo updateInfo) {
+		this.bio = updateInfo.getBio() == null ? this.bio : updateInfo.getBio();
+		this.email = updateInfo.getEmail() == null ? this.email : updateInfo.getEmail();
+		this.pronouns = updateInfo.getPronouns() == null ? this.pronouns : updateInfo.getPronouns();
+		this.username = updateInfo.getUsername() == null ? this.username : updateInfo.getUsername();
 	}
 }

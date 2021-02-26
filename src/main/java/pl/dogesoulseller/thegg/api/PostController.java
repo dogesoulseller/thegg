@@ -16,14 +16,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -31,7 +28,7 @@ import pl.dogesoulseller.thegg.api.model.Post;
 import pl.dogesoulseller.thegg.api.model.PostInfo;
 import pl.dogesoulseller.thegg.api.response.GenericResponse;
 import pl.dogesoulseller.thegg.repo.MongoPostRepository;
-import pl.dogesoulseller.thegg.repo.MongoUserRepository;
+import pl.dogesoulseller.thegg.service.ApiKeyVerificationService;
 import pl.dogesoulseller.thegg.service.ImageInfoService;
 import pl.dogesoulseller.thegg.service.StorageService;
 import pl.dogesoulseller.thegg.user.User;
@@ -46,13 +43,13 @@ public class PostController {
 	private MongoPostRepository posts;
 
 	@Autowired
-	private MongoUserRepository users;
-
-	@Autowired
 	private ImageInfoService imageInfoService;
 
 	@Autowired
 	private StorageService storageService;
+
+	@Autowired
+	private ApiKeyVerificationService keyVerifier;
 
 	@GetMapping("/api/post")
 	@CrossOrigin
@@ -69,16 +66,33 @@ public class PostController {
 	}
 
 	@DeleteMapping("/api/post")
-	public ResponseEntity<GenericResponse> deletePost(@RequestParam String id) {
+	public ResponseEntity<GenericResponse> deletePost(@RequestParam String apikey, @RequestParam String id) {
+		var user = keyVerifier.getKeyUser(apikey);
+		if (user == null) {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+		}
+
 		id = id.strip();
-		// TODO: Validate API key
-		throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+		var post = posts.findById(id).orElse(null);
+		if (post == null) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+		}
+
+		if (post.getPoster().getId() != user.getId()) {
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+		}
+
+		posts.deleteById(id);
+
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 	@PostMapping("/api/post")
-	public ResponseEntity<GenericResponse> makePost(@RequestBody PostInfo postInfo) {
-		String email = SecurityContextHolder.getContext().getAuthentication().getName().toLowerCase();
-		User poster = users.findByEmail(email);
+	public ResponseEntity<GenericResponse> makePost(@RequestParam String apikey, @RequestBody PostInfo postInfo) {
+		User user = keyVerifier.getKeyUser(apikey);
+		if (user == null) {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+		}
 
 		File imageTempFile = storageService.getFromTempStorage(postInfo.getFilename());
 
@@ -102,7 +116,7 @@ public class PostController {
 
 		try {
 			post = new Post(postInfo);
-			post.setPoster(poster);
+			post.setPoster(user);
 			post.setMime(mimeType);
 			post.setWidth(image.getWidth());
 			post.setHeight(image.getHeight());

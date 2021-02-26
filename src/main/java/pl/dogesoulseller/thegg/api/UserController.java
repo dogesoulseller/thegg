@@ -5,17 +5,14 @@ import java.time.Instant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -25,6 +22,7 @@ import pl.dogesoulseller.thegg.inputvalidation.PasswordValidator;
 import pl.dogesoulseller.thegg.inputvalidation.UserValidator;
 import pl.dogesoulseller.thegg.repo.MongoRoleRepository;
 import pl.dogesoulseller.thegg.repo.MongoUserRepository;
+import pl.dogesoulseller.thegg.service.ApiKeyVerificationService;
 import pl.dogesoulseller.thegg.user.User;
 import pl.dogesoulseller.thegg.Utility;
 import pl.dogesoulseller.thegg.api.model.UserRegister;
@@ -46,9 +44,10 @@ public class UserController {
 	@Autowired
 	private UserValidator userValidator;
 
+	@Autowired
+	private ApiKeyVerificationService keyVerifier;
+
 	@PostMapping("/api/user")
-	@CrossOrigin
-	@ResponseBody
 	public ResponseEntity<GenericResponse> registerNewUser(@RequestBody UserRegister userdata) {
 		String email = userdata.getEmail().toLowerCase();
 
@@ -85,58 +84,46 @@ public class UserController {
 	}
 
 	@GetMapping("/api/user")
-	@CrossOrigin
-	@ResponseBody
-	public ResponseEntity<UserSelfInfo> getUserInfo() {
-		String email = SecurityContextHolder.getContext().getAuthentication().getName().toLowerCase();
-
-		User user = userRepository.findByEmail(email);
-
-		// Should technically not happen
-		if (user == null) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+	public ResponseEntity<UserSelfInfo> getUserInfo(@RequestParam String apikey, @RequestParam(required = false) String userid) {
+		User requestUser = keyVerifier.getKeyUser(apikey);
+		if (requestUser == null) {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
 		}
 
-		UserSelfInfo userInfo = new UserSelfInfo(user);
+		// Request with no userid returns current user info
+		if (userid == null) {
+			UserSelfInfo selfInfo = new UserSelfInfo(requestUser);
 
-		return new ResponseEntity<>(userInfo, HttpStatus.OK);
-	}
-
-	@GetMapping("/api/user/{userinfo}")
-	@CrossOrigin
-	@ResponseBody
-	public ResponseEntity<UserSelfInfo> getUserInfo(@PathVariable String userid) {
-		User user;
-
-		if (userid.contains("@")) {
-			user = userRepository.findByEmail(userid.toLowerCase());
+			return new ResponseEntity<>(selfInfo, HttpStatus.OK);
 		} else {
-			user = userRepository.findById(userid.toLowerCase()).orElse(null);
+			User user = userRepository.findById(userid.toLowerCase()).orElse(null);
+			if (user == null) {
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+			}
+
+			UserSelfInfo userInfo = new UserSelfInfo(user);
+
+			// Remove email info if API key holder is not also user searched for
+			if (requestUser.getId() != user.getId()) {
+				userInfo.setEmail(null);
+			}
+
+			return new ResponseEntity<>(userInfo, HttpStatus.OK);
 		}
-
-		if (user == null) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-		}
-
-		UserSelfInfo userInfo = new UserSelfInfo(user);
-
-		if (!SecurityContextHolder.getContext().getAuthentication().getName().equals(userid)) {
-			userInfo.setEmail(null);
-		}
-
-		return new ResponseEntity<>(userInfo, HttpStatus.OK);
 	}
 
-	@PatchMapping("/api/user/{email}")
-	@CrossOrigin
-	@ResponseBody
-	public ResponseEntity<GenericResponse> updateUserInfo(@RequestBody UserSelfInfo info, @PathVariable String email) {
-		if (!SecurityContextHolder.getContext().getAuthentication().getName().equals(email)) {
-			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+	@PatchMapping("/api/user")
+	public ResponseEntity<GenericResponse> updateUserInfo(@RequestParam String apikey,
+		@RequestBody UserSelfInfo info) {
+		User requestUser = keyVerifier.getKeyUser(apikey);
+		if (requestUser == null) {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
 		}
 
-		// TODO: Use JSESSIONID cookie value for API access
+		requestUser.update(info);
 
-		return new ResponseEntity<>(new GenericResponse(""), HttpStatus.NOT_IMPLEMENTED);
+		userRepository.save(requestUser);
+
+		return new ResponseEntity<>(new GenericResponse("Updated"), HttpStatus.OK);
 	}
 }

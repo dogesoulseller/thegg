@@ -35,7 +35,7 @@ public class SearchController {
 		throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
 	}
 
-	@GetMapping("/api/search/tags")
+	@GetMapping("/api/search/tag")
 	public ResponseEntity<PagedResults<Post>> searchTags() {
 		throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
 	}

@@ -5,7 +5,6 @@ import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -58,8 +57,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.permitAll();
     }
 
-	// TODO: Switch to API keys later
-	// API permits use of HTTP basic authentication
+	// API rqeuires use of HTTP basic authentication on key management
 	@Configuration
     @Order(1)
     public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
@@ -71,8 +69,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 			// Require basic auth
             http.
 				requestMatchers().
-				regexMatchers("/api/user/.+").
-				regexMatchers(HttpMethod.GET, "/api/user").
+				regexMatchers("/api/apikey").
 				and()
 			.authorizeRequests(authorize -> authorize.anyRequest().authenticated()).httpBasic();
         }
@@ -85,7 +82,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
-		// TODO: Tune
 		return new Argon2PasswordEncoder(16, 32, 1, 1 << 16, 4);
 	}
 }

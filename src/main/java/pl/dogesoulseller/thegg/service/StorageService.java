@@ -77,7 +77,6 @@ public class StorageService {
 					var currentTime = Instant.now();
 
 					// Files are stored for a max of 10 minutes
-					// TODO: Figure out a sane time
 					var timeBetween = Math.abs(Duration.between(fileTime, currentTime).toMinutes());
 					if (timeBetween > 10) {
 						Files.deleteIfExists(file);
