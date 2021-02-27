@@ -4,7 +4,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
@@ -18,6 +20,9 @@ import pl.dogesoulseller.thegg.user.User;
 public class Post {
 	@Transient
 	private static final String[] VALID_RATINGS = {"safe", "questionable", "explicit", "violent"};
+
+	@Transient
+	private static final Pattern TAG_REPLACEMENT = Pattern.compile("\\s+|[!@#$%^&*()_+\\-=~`{}\\[\\]:;'\",.<>\\/?\\\\|]");
 
 	@Id
 	private String id;
@@ -101,8 +106,14 @@ public class Post {
 		this.parent = info.getParent();
 		this.posterComment = info.getPosterComment();
 		this.sourceUrl = info.getSourceUrl();
-		this.tags = info.getTags();
 		this.creationDate = Instant.now();
+
+		// Sanitize tags
+		this.tags = new ArrayList<>(info.getTags().size());
+		for (var tag : info.getTags()) {
+			tag = TAG_REPLACEMENT.matcher(tag.toLowerCase()).replaceAll("_");
+			this.tags.add(tag);
+		}
 
 		// Validate rating
 		for (var r : VALID_RATINGS) {
