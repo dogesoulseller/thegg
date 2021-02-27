@@ -11,12 +11,16 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import pl.dogesoulseller.thegg.property.PasswordValidationProperties;
 import pl.dogesoulseller.thegg.property.StorageProperties;
+import pl.dogesoulseller.thegg.property.UserValidationProperties;
 
 @SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
 @EnableScheduling
 @EnableConfigurationProperties({
-	StorageProperties.class
+	StorageProperties.class,
+	UserValidationProperties.class,
+	PasswordValidationProperties.class
 })
 public class TheggApplication {
 
