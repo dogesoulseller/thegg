@@ -23,7 +23,7 @@ public class SecureUserDetailsService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		User user = userRepository.findByEmail(email);
 
-		log.trace("Getting user details for %s", email);
+		log.trace("Getting user details for {}", email);
 
 		if (user == null) {
 			throw new UsernameNotFoundException("User not found: " + email);

@@ -44,7 +44,7 @@ public class StorageService {
 		Path output = tempStoragePath.resolve(UUID.randomUUID().toString());
 		Files.copy(file.getInputStream(), output, StandardCopyOption.REPLACE_EXISTING);
 
-		log.debug("Stored temp file of size %d as %s", file.getSize(), output.toString());
+		log.debug("Stored temp file of size {} as {}", file.getSize(), output.toString());
 
 		return output.toString();
 	}
@@ -53,7 +53,7 @@ public class StorageService {
 		Path output = storagePath.resolve(newName);
 		Files.move(Paths.get(file.getAbsolutePath()), output, StandardCopyOption.REPLACE_EXISTING);
 
-		log.debug("Stored permanent file of size %d as %s", file.length(), output.toString());
+		log.debug("Stored permanent file of size {} as {}", file.length(), output.toString());
 
 		return output.toString();
 	}

@@ -46,7 +46,7 @@ public class SendFileController {
 
 		String mimeExtension = imageInfoService.getMimeExtension(file.getContentType());
 		if (mimeExtension == null) {
-			log.error("Trying to receive unsupported MIME type %s", file.getContentType());
+			log.error("Trying to receive unsupported MIME type {}", file.getContentType());
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported MIME type " + file.getContentType());
 		}
 
@@ -61,11 +61,11 @@ public class SendFileController {
 			var fullPath = storageService.storeFile(file);
 			filename = Paths.get(fullPath).getFileName().toString();
 		} catch (IOException e) {
-			log.error("Could not store file %s", file.getName());
+			log.error("Could not store file {}", file.getName());
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "File store failed");
 		}
 
-		log.info("Received file %s", filename);
+		log.info("Received file {}", filename);
 		return new ResponseEntity<FilenameResponse>(new FilenameResponse("Received file", filename, Utility.getServerBaseURL() + "/api/post"), HttpStatus.CREATED);
 	}
 }

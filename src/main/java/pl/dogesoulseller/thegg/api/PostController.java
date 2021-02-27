@@ -62,7 +62,7 @@ public class PostController {
 		var found = posts.findById(id);
 
 		if (found.isEmpty()) {
-			log.warn("Sent 404 - Failed to find post by id %s", id);
+			log.warn("Sent 404 - Failed to find post by id {}", id);
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 		}
 
@@ -108,11 +108,11 @@ public class PostController {
 					(InputStream) new BufferedInputStream(new FileInputStream(imageTempFile)));
 			image = ImageIO.read(imageTempFile);
 		} catch (FileNotFoundException e1) {
-			log.error("Could not find temp image file %s", imageTempFile.getName());
+			log.error("Could not find temp image file {}", imageTempFile.getName());
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND,
 					"Could not find image file. Make sure it was uploaded first");
 		} catch (IOException e1) {
-			log.error("Failed to open temp image file %s", imageTempFile.getName());
+			log.error("Failed to open temp image file {}", imageTempFile.getName());
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to open image file");
 		}
 
@@ -135,7 +135,7 @@ public class PostController {
 			newFilename = imageInfoService.getUniqueImageHash(image) + imageInfoService.getMimeExtension(mimeType);
 			storageService.storeFileToPermanentStorage(imageTempFile, newFilename);
 		} catch (Exception e) {
-			log.error("Failed to store file %s to permanent storage", imageTempFile.getName());
+			log.error("Failed to store file {} to permanent storage", imageTempFile.getName());
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
 					"Failed to store file to permanent storage");
 		}
@@ -145,7 +145,7 @@ public class PostController {
 		post.setFilename(newFilename);
 		posts.insert(post);
 
-		log.info("Post inserted with filename %s", newFilename);
+		log.info("Post inserted with filename {}", newFilename);
 
 		return new ResponseEntity<>(new GenericResponse(""), HttpStatus.CREATED);
 	}
