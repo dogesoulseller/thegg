@@ -35,11 +35,6 @@ public class SearchController {
 		return new ResponseEntity<>(pagedPosts, HttpStatus.OK);
 	}
 
-	@GetMapping("/api/search/user")
-	public ResponseEntity<PagedResults<Post>> searchUsers() {
-		throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
-	}
-
 	@GetMapping("/api/search/tag")
 	public ResponseEntity<PagedResults<Post>> searchTags() {
 		throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);

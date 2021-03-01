@@ -17,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 import pl.dogesoulseller.thegg.PostQueryParser;
 import pl.dogesoulseller.thegg.api.model.Post;
 import pl.dogesoulseller.thegg.repo.MongoPostRepository;
+import pl.dogesoulseller.thegg.repo.MongoTagRepository;
 
 @Service
 public class SearchService {
@@ -24,6 +25,9 @@ public class SearchService {
 
 	@Autowired
 	private MongoPostRepository posts;
+
+	@Autowired
+	private MongoTagRepository tags;
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
@@ -51,11 +55,7 @@ public class SearchService {
 
 		return foundPosts;
 	}
-
-	public Page<Post> findUserFromQuery(String query, Integer page, Integer perPage) {
-		throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
-	}
-
+	
 	public Page<Post> findTagFromQuery(String query, Integer page, Integer perPage) {
 		throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
 	}

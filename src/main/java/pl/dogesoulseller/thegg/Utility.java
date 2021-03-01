@@ -24,6 +24,30 @@ public class Utility {
 		}
 	}
 
+	public static class Triple<T, U, V> {
+		T first;
+		U second;
+		V third;
+
+		public Triple(T first, U second, V third) {
+			this.first = first;
+			this.second = second;
+			this.third = third;
+		}
+
+		public T getFirst() {
+			return first;
+		}
+
+		public U getSecond() {
+			return second;
+		}
+
+		public V getThird() {
+			return third;
+		}
+	}
+
 	// Implementation taken from https://stackoverflow.com/a/9855338
 	private static final byte[] HEX_ARRAY = "0123456789ABCDEF".getBytes(StandardCharsets.US_ASCII);
 	public static String bytesToHexString(byte[] bytes) {
