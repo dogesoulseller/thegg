@@ -9,9 +9,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
-import pl.dogesoulseller.thegg.QueryParser;
+import pl.dogesoulseller.thegg.PostQueryParser;
 import pl.dogesoulseller.thegg.api.model.Post;
 import pl.dogesoulseller.thegg.repo.MongoPostRepository;
 
@@ -22,6 +25,9 @@ public class SearchService {
 	@Autowired
 	private MongoPostRepository posts;
 
+	@Autowired
+	private MongoTemplate mongoTemplate;
+
 	public Page<Post> findPostsFromQuery(String query, Integer page, Integer perPage) {
 		Pageable pageN = PageRequest.of(page == null ? 0 : page, perPage == null ? 30 : perPage, Sort.by("creation_date").descending());
 		Page<Post> foundPosts;
@@ -29,10 +35,10 @@ public class SearchService {
 		if (query == null || query.isBlank()) {
 			foundPosts = posts.findAll(pageN);
 		} else {
-			QueryParser parser = new QueryParser(query).parse();
+			PostQueryParser parser = new PostQueryParser(query).parse();
 
-			List<String> includedTags = parser.getIncludedTags();
-			List<String> excludedTags = parser.getExcludedTags();
+			List<String> includedTags = parser.getInclusions();
+			List<String> excludedTags = parser.getExclusions();
 
 			if (excludedTags.isEmpty()) { // Filter by included
 				foundPosts = posts.filterByTagQuery(includedTags, pageN);
@@ -46,6 +52,11 @@ public class SearchService {
 		return foundPosts;
 	}
 
-	// TODO: User search
-	// TODO: Tag search
+	public Page<Post> findUserFromQuery(String query, Integer page, Integer perPage) {
+		throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+	}
+
+	public Page<Post> findTagFromQuery(String query, Integer page, Integer perPage) {
+		throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+	}
 }

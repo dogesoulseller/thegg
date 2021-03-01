@@ -25,6 +25,11 @@ public class SearchController {
 			@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer perPage) {
 
 		var foundPosts = searchService.findPostsFromQuery(query, page, perPage);
+
+		if (foundPosts == null || foundPosts.isEmpty()) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+		}
+
 		var pagedPosts = new PagedResults<>(foundPosts, page);
 
 		return new ResponseEntity<>(pagedPosts, HttpStatus.OK);
