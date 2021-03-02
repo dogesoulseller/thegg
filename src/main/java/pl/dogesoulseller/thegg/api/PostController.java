@@ -82,7 +82,7 @@ public class PostController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 		}
 
-		if (post.getPoster().getId() != user.getId()) {
+		if (post.getPoster() != user.getId()) {
 			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
 		}
 
@@ -120,7 +120,7 @@ public class PostController {
 
 		try {
 			post = new Post(postInfo);
-			post.setPoster(user);
+			post.setPoster(user.getId());
 			post.setMime(mimeType);
 			post.setWidth(image.getWidth());
 			post.setHeight(image.getHeight());

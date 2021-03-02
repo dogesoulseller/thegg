@@ -14,8 +14,6 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
-import pl.dogesoulseller.thegg.user.User;
-
 @Document(collection = "posts")
 public class Post {
 	@Transient
@@ -32,8 +30,7 @@ public class Post {
 	private Post parent;
 
 	@Indexed
-	@DBRef
-	private User poster;
+	private String poster;
 
 	@Field("source_url")
 	private String sourceUrl;
@@ -74,7 +71,7 @@ public class Post {
 	private String deletionReason;
 
 	@PersistenceConstructor
-	public Post(String id, Post parent, User poster, String sourceUrl, String filename, String rating,
+	public Post(String id, Post parent, String poster, String sourceUrl, String filename, String rating,
 			Instant creationDate, Instant modificationDate, long filesize, String mime, int width, int height,
 			String authorComment, String posterComment, List<String> tags, Boolean deleted, String deletionReason) {
 		this.id = id;
@@ -173,7 +170,7 @@ public class Post {
 		return parent;
 	}
 
-	public User getPoster() {
+	public String getPoster() {
 		return poster;
 	}
 
@@ -241,7 +238,7 @@ public class Post {
 		this.parent = parent;
 	}
 
-	public void setPoster(User poster) {
+	public void setPoster(String poster) {
 		this.poster = poster;
 	}
 
