@@ -7,13 +7,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 
-import pl.dogesoulseller.thegg.Utility.Pair;
-import pl.dogesoulseller.thegg.Utility.Triple;
-
 public class PostQueryParser implements QueryParser {
 	private List<String> includedTags;
 	private List<String> excludedTags;
-	private List<Triple<String, String, String>> specialFiltering;
+	private List<PostQuerySpecialFilter> specialFiltering;
 	private Sort sorting;
 
 	private String query;
@@ -22,6 +19,8 @@ public class PostQueryParser implements QueryParser {
 		includedTags = new LinkedList<>();
 		excludedTags = new LinkedList<>();
 		this.query = query;
+
+		specialFiltering = new LinkedList<>();
 	}
 
 	@Override
@@ -37,6 +36,72 @@ public class PostQueryParser implements QueryParser {
 		this.query = query;
 	}
 
+	private PostQuerySpecialFilter parseSpecialTag(String tag) {
+		Character sort;
+		String field;
+		String value;
+
+		if (tag.contains("sort:")) {
+			tag = tag.substring(5).strip();
+			int separatorIdx = tag.indexOf(':', 0);
+
+			Direction direction;
+			try {
+				if (separatorIdx == -1) {
+					direction = Direction.DESC;
+				} else {
+					String directionString = tag.substring(separatorIdx).strip().toLowerCase();
+					direction = directionString.contains("asc") ? Direction.ASC : Direction.DESC;
+				}
+			} catch (IndexOutOfBoundsException e) {
+				direction = Direction.DESC;
+			}
+
+			sorting = Sort.by(new Order(direction, tag));
+			return null;
+		} else if (tag.contains("rating:")) {
+			tag = tag.substring(7).strip();
+
+			sort = null;
+			field = "rating";
+			value = tag.substring(1).strip();
+		} else if (tag.contains("size:")) {
+			tag = tag.substring(6).strip();
+
+			sort = tag.charAt(0);
+			field = "filesize";
+			value = tag.substring(1).strip();
+		} else if (tag.contains("mime:") || tag.contains("type:")) {
+			tag = tag.substring(5).strip();
+
+			sort = null;
+			field = "mime";
+			value = tag;
+		} else if (tag.contains("width:")) {
+			tag = tag.substring(7).strip();
+
+			sort = tag.charAt(0);
+			field = "width";
+			value = tag.substring(1).strip();
+		} else if (tag.contains("height:")) {
+			tag = tag.substring(8).strip();
+
+			sort = tag.charAt(0);
+			field = "height";
+			value = tag.substring(1).strip();
+		} else if (tag.contains("date:")) {
+			tag = tag.substring(6).strip();
+
+			sort = tag.charAt(0);
+			field = "creation_date";
+			value = tag.substring(1).strip();
+		} else {
+			return null;
+		}
+
+		return new PostQuerySpecialFilter(sort, field, value);
+	}
+
 	@Override
 	public PostQueryParser parse() {
 		sorting = Sort.by(new Order(Direction.DESC, "id"));
@@ -45,36 +110,15 @@ public class PostQueryParser implements QueryParser {
 		String[] tokens = query.replaceAll("\\s+", " ").split(" ");
 		for (var tag : tokens) {
 			tag = tag.toLowerCase();
-			// TODO: Use mongotemplate instead of repo method for this (implement query builder)
 
 			if (tag.startsWith("-")) { // Exclusion
 				excludedTags.add(tag.substring(1));
 			} else if (tag.startsWith("~")) { // Special parameters
-				// FIXME: Move to separate method
-				if (tag.contains("sort:")) {
-					tag = tag.substring(6).strip();
-					sorting = Sort.by(new Order(Direction.DESC, tag));
-				} else if (tag.contains("rating:")) {
-					tag = tag.substring(9).strip();
-					// TODO: Select only specified rating
-				} else if (tag.contains("size:")) {
-					tag = tag.substring(6).strip();
-					// TODO: filter by filesize > < =
-				} else if (tag.contains("mime:") || tag.contains("type:")) {
-					tag = tag.substring(6).strip();
-					// TODO: filter by mime or filetype
-				} else if (tag.contains("width:")) {
-					tag = tag.substring(7).strip();
-					// TODO: filter by width > < =
-				} else if (tag.contains("height:")) {
-					tag = tag.substring(8).strip();
-					// TODO: filter by height > < =
-				} else if (tag.contains("date:")) {
-					tag = tag.substring(6).strip();
-					// TODO: filter by creation date > < =
-				} else {
-					continue;
+				var specialTag = parseSpecialTag(tag);
+				if (specialTag != null) {
+					specialFiltering.add(specialTag);
 				}
+
 			} else { // Inclusion
 				includedTags.add(tag);
 			}
@@ -96,5 +140,9 @@ public class PostQueryParser implements QueryParser {
 	@Override
 	public Sort getSorting() {
 		return sorting;
+	}
+
+	public List<PostQuerySpecialFilter> getSpecialFiltering() {
+		return specialFiltering;
 	}
 }

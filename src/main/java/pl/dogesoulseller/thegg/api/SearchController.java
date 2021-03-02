@@ -30,7 +30,7 @@ public class SearchController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 		}
 
-		var pagedPosts = new PagedResults<>(foundPosts, page);
+		var pagedPosts = new PagedResults<>(foundPosts, page == null ? 0 : page);
 
 		return new ResponseEntity<>(pagedPosts, HttpStatus.OK);
 	}
