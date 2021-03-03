@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 
 import pl.dogesoulseller.thegg.property.UserValidationProperties;
 
+/**
+ * Configurable user data validation
+ */
 @Component
 public class UserValidator {
 	private static final Logger log = LoggerFactory.getLogger(UserValidator.class);

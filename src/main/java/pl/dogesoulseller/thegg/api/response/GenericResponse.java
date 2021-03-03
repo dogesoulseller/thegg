@@ -1,5 +1,8 @@
 package pl.dogesoulseller.thegg.api.response;
 
+/**
+ * Generic response containing a single message
+ */
 public class GenericResponse {
 	private final String message;
 

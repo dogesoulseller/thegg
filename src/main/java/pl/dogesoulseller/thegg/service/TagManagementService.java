@@ -9,11 +9,18 @@ import org.springframework.stereotype.Service;
 import pl.dogesoulseller.thegg.api.model.Tag;
 import pl.dogesoulseller.thegg.repo.MongoTagRepository;
 
+/**
+ * Service handling adding new tags from posts
+ */
 @Service
 public class TagManagementService {
 	@Autowired
 	MongoTagRepository tagRepo;
 
+	/**
+	 * Insert all tags, separating out the ones which are already present in the database
+	 * @param tags post tags
+	 */
 	public void insertTags(List<String> tags) {
 		List<Tag> toInsert = new ArrayList<>(tags.size());
 

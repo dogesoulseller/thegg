@@ -5,6 +5,9 @@ import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+/**
+ * Information about an API key
+ */
 @Document(collection = "apikeys")
 public class ApiKey {
 	@Id

@@ -1,5 +1,8 @@
 package pl.dogesoulseller.thegg.api.response;
 
+/**
+ * Response with filename and URL of next endpoint
+ */
 public class FilenameResponse {
 	private final String filename;
 	private final String message;

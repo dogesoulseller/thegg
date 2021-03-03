@@ -11,13 +11,29 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+/**
+ * MongoDB query builder for data obtained from {@link PostQueryParser}
+ */
 public class PostQueryBuilder {
+	/**
+	 * Output query
+	 */
 	Query query;
 
+	/**
+	 * Tags that must be present in the results
+	 */
 	List<String> includedTags;
+
+	/**
+	 * Tags that must not be present in the results
+	 */
 	List<String> excludedTags;
 
-	// K: Field; V: Field constraint
+	/**
+	 * Collection of per-field criteria. Each key represents a single field which can have multiple constraints applied to it.
+	 * This is required due to limitations of com.mongodb.BasicDocument
+	 */
 	MultiValueMap<String, PostQuerySpecialFilter> criteria;
 
 	public PostQueryBuilder() {
@@ -26,35 +42,62 @@ public class PostQueryBuilder {
 	}
 
 	// Triple<ComparisonOperator, Field, ValueCompared>
-	public PostQueryBuilder append(PostQuerySpecialFilter tag) {
+	/**
+	 * Append a filter to the query
+	 * @param filter filter to append
+	 * @return this
+	 */
+	public PostQueryBuilder append(PostQuerySpecialFilter filter) {
 		// Criteria are added to a multimap as multiple queries on a single field have to be
 		// grouped together because of com.mongodb.BasicDocument limitations
-		criteria.add(tag.getField(), tag);
+		criteria.add(filter.getField(), filter);
 		return this;
 	}
 
+	/**
+	 * Set tags to be forced to be included (present)
+	 * @param tags included tags
+	 * @return this
+	 */
 	public PostQueryBuilder includedTags(List<String> tags) {
 		this.includedTags = tags;
-
 		return this;
 	}
 
+	/**
+	 * Set tags to be forced to be excluded (not present)
+	 * @param tags excluded tags
+	 * @return this
+	 */
 	public PostQueryBuilder excludedTags(List<String> tags) {
 		this.excludedTags = tags;
-
 		return this;
 	}
 
+	/**
+	 * Set sorting method to use in query
+	 * @param sort sorting method
+	 * @return this
+	 */
 	public PostQueryBuilder sort(Sort sort) {
 		query.with(sort);
 		return this;
 	}
 
+	/**
+	 * Set the paging strategy to use
+	 * @param page paging strategy
+	 * @return this
+	 */
 	public PostQueryBuilder page(Pageable page) {
 		query.with(page);
 		return this;
 	}
 
+	/**
+	 * Finish processing and assemble the final query
+	 * @return ready-to-execute query
+	 */
 	public Query finish() {
 		// Handle tags
 		if ((includedTags == null && excludedTags == null) || (includedTags.isEmpty() && excludedTags.isEmpty())) {

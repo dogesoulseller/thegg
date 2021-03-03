@@ -5,6 +5,9 @@ import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+/**
+ * Represents a tag's information
+ */
 @Document(collection = "tags")
 public class Tag {
 	@Id
@@ -22,6 +25,10 @@ public class Tag {
 		this.description = description;
 	}
 
+	/**
+	 * Construct new tag with empty description
+	 * @param tag tag name
+	 */
 	public Tag(String tag) {
 		this.tag = tag;
 	}

@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 import pl.dogesoulseller.thegg.repo.MongoUserRepository;
 import pl.dogesoulseller.thegg.user.User;
 
+/**
+ * Service handling the retrieval of user details
+ */
 @Service
 public class SecureUserDetailsService implements UserDetailsService {
 	private static final Logger log = LoggerFactory.getLogger(SecureUserDetailsService.class);

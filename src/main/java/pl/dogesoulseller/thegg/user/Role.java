@@ -9,6 +9,9 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 
+/**
+ * User role
+ */
 @Document(collection = "user_roles")
 public class Role implements GrantedAuthority {
 	private static final long serialVersionUID = -590309416029050628L;

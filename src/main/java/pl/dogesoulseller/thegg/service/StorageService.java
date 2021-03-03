@@ -22,6 +22,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import pl.dogesoulseller.thegg.property.StorageProperties;
 
+/**
+ * Service handling permanent and temporary storage access
+ */
 @Service
 public class StorageService {
 	private static final Logger log = LoggerFactory.getLogger(StorageService.class);
@@ -40,6 +43,13 @@ public class StorageService {
 		log.info("Storage service initialized");
 	}
 
+	/**
+	 * Store file as a temporary file
+	 *
+	 * @param file received file
+	 * @return new filename
+	 * @throws IOException
+	 */
 	public String storeFile(MultipartFile file) throws IOException {
 		Path output = tempStoragePath.resolve(UUID.randomUUID().toString());
 		Files.copy(file.getInputStream(), output, StandardCopyOption.REPLACE_EXISTING);
@@ -49,6 +59,14 @@ public class StorageService {
 		return output.toString();
 	}
 
+	/**
+	 * Store an existing file into the permanent storage location
+	 *
+	 * @param file    file to move
+	 * @param newName new name to give the file
+	 * @return new filename
+	 * @throws IOException
+	 */
 	public String storeFileToPermanentStorage(File file, String newName) throws IOException {
 		Path output = storagePath.resolve(newName);
 		Files.move(Paths.get(file.getAbsolutePath()), output, StandardCopyOption.REPLACE_EXISTING);
@@ -58,14 +76,30 @@ public class StorageService {
 		return output.toString();
 	}
 
+	/**
+	 * Get handle to file with specified name from temporary storage
+	 *
+	 * @param name filename
+	 * @return file handle
+	 */
 	public File getFromTempStorage(String name) {
 		return new File(tempStoragePath.resolve(name).toString());
 	}
 
+	/**
+	 * Get handle to file with specified name from permanent storage
+	 *
+	 * @param name filename
+	 * @return file handle
+	 */
 	public File getFromPermanentStorage(String name) {
 		return new File(storagePath.resolve(name).toString());
 	}
 
+	/**
+	 * Method running on a 10 minute timer since last finished, cleaning up files in
+	 * temp storage that are older than 10 minutes
+	 */
 	@Scheduled(fixedDelay = 600000)
 	public void cleanOldTempFiles() {
 		log.info("Deleting files...");

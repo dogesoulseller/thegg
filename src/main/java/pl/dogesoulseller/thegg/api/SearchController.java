@@ -8,10 +8,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import pl.dogesoulseller.thegg.api.model.Post;
 import pl.dogesoulseller.thegg.api.response.PagedResults;
 import pl.dogesoulseller.thegg.service.SearchService;
 
+@Api(tags = {"Search"})
 @RestController
 public class SearchController {
 	// private static final Logger log =
@@ -20,6 +23,8 @@ public class SearchController {
 	@Autowired
 	private SearchService searchService;
 
+	// TODO: Query documentation
+	@ApiOperation(value = "Search posts")
 	@GetMapping("/api/search/post")
 	public ResponseEntity<PagedResults<Post>> searchPosts(@RequestParam(required = false) String query,
 			@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer perPage) {
@@ -35,6 +40,7 @@ public class SearchController {
 		return new ResponseEntity<>(pagedPosts, HttpStatus.OK);
 	}
 
+	@ApiOperation(value = "Search tags")
 	@GetMapping("/api/search/tag")
 	public ResponseEntity<PagedResults<Post>> searchTags() {
 		throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);

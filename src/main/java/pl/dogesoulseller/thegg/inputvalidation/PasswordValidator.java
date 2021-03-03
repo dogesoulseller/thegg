@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 
 import pl.dogesoulseller.thegg.property.PasswordValidationProperties;
 
+/**
+ * Configurable password validation
+ */
 @Component
 public class PasswordValidator {
 	private static final Logger log = LoggerFactory.getLogger(PasswordValidator.class);

@@ -22,6 +22,9 @@ import pl.dogesoulseller.thegg.api.model.Post;
 import pl.dogesoulseller.thegg.repo.MongoPostRepository;
 import pl.dogesoulseller.thegg.repo.MongoTagRepository;
 
+/**
+ * Service handling database searches with user queries
+ */
 @Service
 public class SearchService {
 	private static final Logger log = LoggerFactory.getLogger(SearchService.class);
@@ -35,6 +38,13 @@ public class SearchService {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
+	/**
+	 * Find paged posts using specified query and parameters
+	 * @param query query
+	 * @param page page to retrieve
+	 * @param perPage elements per page
+	 * @return page contents along with paging info
+	 */
 	public Page<Post> findPostsFromQuery(String query, Integer page, Integer perPage) {
 		Pageable pageN = PageRequest.of(page == null ? 0 : page, perPage == null ? 30 : perPage, Sort.unsorted());
 		Page<Post> foundPosts;

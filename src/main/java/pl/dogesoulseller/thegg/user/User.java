@@ -15,6 +15,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import pl.dogesoulseller.thegg.api.model.UserSelfInfo;
 
+/**
+ * Internal information about a user. The class contains information that is not
+ * meant for public use, like the password and email of the user
+ */
 @Document(collection = "users")
 public class User implements UserDetails {
 	private static final long serialVersionUID = 3692128324948914348L;

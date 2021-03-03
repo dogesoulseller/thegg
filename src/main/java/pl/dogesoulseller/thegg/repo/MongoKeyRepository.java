@@ -4,6 +4,9 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import pl.dogesoulseller.thegg.user.ApiKey;
 
+/**
+ * MongoDB repository containing API keys
+ */
 public interface MongoKeyRepository extends MongoRepository<ApiKey, String> {
 	public ApiKey findByNameAndUserid(String name, String userid);
 	public boolean existsByNameAndUserid(String name, String userid);

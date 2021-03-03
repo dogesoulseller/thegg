@@ -7,10 +7,30 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 
+/**
+ * Base parser for the post query syntax
+ */
 public class PostQueryParser implements QueryParser {
+
+	/**
+	 * Tags that must be present in the post
+	 */
 	private List<String> includedTags;
+
+	/**
+	 * Tags that must not be present in the post
+	 */
 	private List<String> excludedTags;
+
+	/**
+	 * Special filtering rules
+	 * @see PostQuerySpecialFilter
+	 */
 	private List<PostQuerySpecialFilter> specialFiltering;
+
+	/**
+	 * Sorting rules
+	 */
 	private Sort sorting;
 
 	private String query;
@@ -36,6 +56,11 @@ public class PostQueryParser implements QueryParser {
 		this.query = query;
 	}
 
+	/**
+	 * Parse a single special tag
+	 * @param tag tag
+	 * @return filter criteria
+	 */
 	private PostQuerySpecialFilter parseSpecialTag(String tag) {
 		Character sort;
 		String field;
@@ -102,6 +127,9 @@ public class PostQueryParser implements QueryParser {
 		return new PostQuerySpecialFilter(sort, field, value);
 	}
 
+	/**
+	 * Parse the contained query
+	 */
 	@Override
 	public PostQueryParser parse() {
 		sorting = Sort.by(new Order(Direction.DESC, "id"));

@@ -1,8 +1,5 @@
 package pl.dogesoulseller.thegg.api.model;
 
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
-
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +10,12 @@ import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
+/**
+ * Data about a single gallery post
+ */
 @Document(collection = "posts")
 public class Post {
 	@Transient
@@ -93,9 +95,11 @@ public class Post {
 		this.deletionReason = deletionReason;
 	}
 
-	public Post() {
-	}
-
+	/**
+	 * Constructor building a post from received {@link PostInfo}
+	 * @param info info received from API request
+	 * @throws RuntimeException on invalid rating
+	 */
 	public Post(PostInfo info) throws RuntimeException {
 		this.authorComment = info.getAuthorComment();
 		this.filename = info.getFilename();

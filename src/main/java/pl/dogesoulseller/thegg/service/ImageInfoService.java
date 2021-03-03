@@ -16,6 +16,9 @@ import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
+/**
+ * Service handling the detection and hashing of images
+ */
 @Service
 public class ImageInfoService {
 	private static final Logger log = LoggerFactory.getLogger(ImageInfoService.class);
@@ -34,6 +37,11 @@ public class ImageInfoService {
 		log.info("Image info service initialized");
 	}
 
+	/**
+	 * Get hexadecimal string, representing the SHA-1 hash of the image
+	 * @param image image to process
+	 * @return hexadecimal string of SHA-1 hash
+	 */
 	public String getUniqueImageHash(BufferedImage image) {
 		// SHA1 is good enough for non-cryptographic uses
 		MessageDigest digest;
@@ -57,6 +65,11 @@ public class ImageInfoService {
 		return Utility.bytesToHexString(hash).toLowerCase();
 	}
 
+	/**
+	 * Get file extension for the specified mime type
+	 * @param mime mime type
+	 * @return string with file extension (including .) or null
+	 */
 	public String getMimeExtension(String mime) {
 		return MIME_MAP.get(mime);
 	}

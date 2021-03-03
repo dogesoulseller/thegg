@@ -30,8 +30,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
 	implementation 'org.springframework.session:spring-session-core'
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+	implementation "io.springfox:springfox-boot-starter:3.0.0"
+	implementation "io.springfox:springfox-swagger-ui:3.0.0"
+	implementation "io.springfox:springfox-data-rest:3.0.0"
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	compile "org.bouncycastle:bcprov-jdk15to18:1.68"
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'

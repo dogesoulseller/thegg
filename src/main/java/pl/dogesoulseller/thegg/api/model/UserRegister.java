@@ -4,6 +4,9 @@ import java.lang.reflect.Field;
 
 import org.springframework.core.style.ToStringCreator;
 
+/**
+ * Contains a new user's info received during registration
+ */
 public class UserRegister {
 	private String email;
 	private String username;

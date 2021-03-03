@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import pl.dogesoulseller.thegg.Utility;
+import pl.dogesoulseller.thegg.api.model.UserRegister;
 import pl.dogesoulseller.thegg.api.model.UserSelfInfo;
 import pl.dogesoulseller.thegg.api.response.GenericResponse;
 import pl.dogesoulseller.thegg.inputvalidation.PasswordValidator;
@@ -24,9 +28,8 @@ import pl.dogesoulseller.thegg.repo.MongoRoleRepository;
 import pl.dogesoulseller.thegg.repo.MongoUserRepository;
 import pl.dogesoulseller.thegg.service.ApiKeyVerificationService;
 import pl.dogesoulseller.thegg.user.User;
-import pl.dogesoulseller.thegg.Utility;
-import pl.dogesoulseller.thegg.api.model.UserRegister;
 
+@Api(tags = {"User"})
 @RestController
 public class UserController {
 	@Autowired
@@ -47,6 +50,7 @@ public class UserController {
 	@Autowired
 	private ApiKeyVerificationService keyVerifier;
 
+	@ApiOperation(value = "Register user", notes = "Register a new user")
 	@PostMapping("/api/user")
 	public ResponseEntity<GenericResponse> registerNewUser(@RequestBody UserRegister userdata) {
 		String email = userdata.getEmail().toLowerCase();
@@ -83,6 +87,7 @@ public class UserController {
 		return new ResponseEntity<>(new GenericResponse("Success"), HttpStatus.CREATED);
 	}
 
+	@ApiOperation(value = "Get user info", notes = "Gets user info that is stripped of all private data<br><br>If userid is not specified, the API key's owner's data is returned")
 	@GetMapping("/api/user")
 	public ResponseEntity<UserSelfInfo> getUserInfo(@RequestParam String apikey, @RequestParam(required = false) String userid) {
 		User requestUser = keyVerifier.getKeyUser(apikey);
@@ -103,15 +108,16 @@ public class UserController {
 
 			UserSelfInfo userInfo = new UserSelfInfo(user);
 
-			// Remove email info if API key holder is not also user searched for
-			if (requestUser.getId() != user.getId()) {
-				userInfo.setEmail(null);
+			// Set email info only if API key holder is also user searched for
+			if (requestUser.getId() == user.getId()) {
+				userInfo.setEmail(requestUser.getUsername());
 			}
 
 			return new ResponseEntity<>(userInfo, HttpStatus.OK);
 		}
 	}
 
+	@ApiOperation(value = "Update user", notes = "Update API key holder's user profile with provided info")
 	@PatchMapping("/api/user")
 	public ResponseEntity<GenericResponse> updateUserInfo(@RequestParam String apikey,
 		@RequestBody UserSelfInfo info) {

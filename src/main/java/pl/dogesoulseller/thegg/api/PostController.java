@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.server.ResponseStatusException;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import pl.dogesoulseller.thegg.api.model.Post;
 import pl.dogesoulseller.thegg.api.model.PostInfo;
 import pl.dogesoulseller.thegg.api.response.GenericResponse;
@@ -35,7 +37,7 @@ import pl.dogesoulseller.thegg.service.StorageService;
 import pl.dogesoulseller.thegg.service.TagManagementService;
 import pl.dogesoulseller.thegg.user.User;
 
-
+@Api(tags = { "Posts" })
 @RestController
 public class PostController {
 	private static final Logger log = LoggerFactory.getLogger(PostController.class);
@@ -56,6 +58,7 @@ public class PostController {
 	private TagManagementService tagService;
 
 	@GetMapping("/api/post")
+	@ApiOperation(value = "Get post", notes = "Gets information about a post by its database ID.<br><br>This method requires no authentication.")
 	@CrossOrigin
 	public ResponseEntity<Post> getPost(@RequestParam String id) {
 		id = id.strip();
@@ -69,6 +72,7 @@ public class PostController {
 		return new ResponseEntity<Post>(found.get(), HttpStatus.OK);
 	}
 
+	@ApiOperation(value = "Delete post", notes = "Deletes a post. This method is meant for usage by individual clients.<br><br>Requires the supplied apikey to belong to the same user as the one making the post.")
 	@DeleteMapping("/api/post")
 	public ResponseEntity<GenericResponse> deletePost(@RequestParam String apikey, @RequestParam String id) {
 		var user = keyVerifier.getKeyUser(apikey);
@@ -91,8 +95,9 @@ public class PostController {
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
+	@ApiOperation(value = "Create new post", notes = "Creates a new post using the supplied post info. Creating a new post requires a file to be first sent to the server via the /api/send-file endpoint")
 	@PostMapping("/api/post")
-	public ResponseEntity<GenericResponse> makePost(@RequestParam String apikey, @RequestBody PostInfo postInfo) {
+	public ResponseEntity<GenericResponse> newPost(@RequestParam String apikey, @RequestBody PostInfo postInfo) {
 		User user = keyVerifier.getKeyUser(apikey);
 		if (user == null) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);

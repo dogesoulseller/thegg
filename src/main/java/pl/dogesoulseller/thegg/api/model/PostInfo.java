@@ -4,6 +4,9 @@ import java.util.List;
 
 import org.springframework.data.annotation.PersistenceConstructor;
 
+/**
+ * Represents user input containing new information about a post
+ */
 public class PostInfo {
 	private String filename;
 	private String rating;
@@ -22,10 +25,6 @@ public class PostInfo {
 		this.authorComment = authorComment;
 		this.posterComment = posterComment;
 		this.tags = tags;
-	}
-
-	public PostInfo() {
-
 	}
 
 	public String getAuthorComment() {
