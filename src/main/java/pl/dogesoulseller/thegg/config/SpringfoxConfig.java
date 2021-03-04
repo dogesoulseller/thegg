@@ -17,7 +17,8 @@ public class SpringfoxConfig {
         return new Docket(DocumentationType.SWAGGER_2)
           .select()
           .apis(RequestHandlerSelectors.basePackage("pl.dogesoulseller.thegg.api"))
-          .paths(PathSelectors.regex("/api/(?!admin).*"))
+          .paths(PathSelectors.regex("/api/.*"))
+          .paths(PathSelectors.any())
           .build()
           .apiInfo(getApiInfo());
     }
@@ -26,7 +27,7 @@ public class SpringfoxConfig {
         return new ApiInfoBuilder()
         .title("TheGG API")
         .version("1.0")
-        .description("Test")
+        .description("The Great Gallery API")
         .build();
     }
 }
