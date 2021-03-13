@@ -12,13 +12,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import pl.dogesoulseller.thegg.PostQueryBuilder;
 import pl.dogesoulseller.thegg.PostQueryParser;
 import pl.dogesoulseller.thegg.api.model.Post;
+import pl.dogesoulseller.thegg.api.model.Tag;
 import pl.dogesoulseller.thegg.repo.MongoPostRepository;
 import pl.dogesoulseller.thegg.repo.MongoTagRepository;
 
@@ -77,7 +76,18 @@ public class SearchService {
 		return foundPosts;
 	}
 
-	public Page<Post> findTagFromQuery(String query, Integer page, Integer perPage) {
-		throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+	public Page<Tag> findTagFromQuery(String query, Integer page, Integer perPage) {
+		Pageable pageN = PageRequest.of(page == null ? 0 : page, perPage == null ? 30 : perPage, Sort.by("tag"));
+		Page<Tag> foundTags;
+
+		if (query == null || query.isBlank()) {
+			foundTags = tags.findAll(pageN);
+		} else {
+			String tagmatch = query.strip().split(" ")[0];
+			log.trace("Executing search for tag containing: {}", tagmatch);
+			foundTags = tags.findByTagContaining(tagmatch, pageN);
+		}
+
+		return foundTags;
 	}
 }

@@ -11,6 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import pl.dogesoulseller.thegg.api.model.Post;
+import pl.dogesoulseller.thegg.api.model.Tag;
 import pl.dogesoulseller.thegg.api.response.PagedResults;
 import pl.dogesoulseller.thegg.service.SearchService;
 
@@ -42,7 +43,16 @@ public class SearchController {
 
 	@ApiOperation(value = "Search tags")
 	@GetMapping("/api/search/tag")
-	public ResponseEntity<PagedResults<Post>> searchTags() {
-		throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+	public ResponseEntity<PagedResults<Tag>> searchTags(@RequestParam(required = false) String query,
+			@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer perPage) {
+
+		var foundTags = searchService.findTagFromQuery(query, page, perPage);
+		if (foundTags == null || foundTags.isEmpty()) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+		}
+
+		var pagedTags = new PagedResults<>(foundTags, page == null ? 0 : page);
+
+		return new ResponseEntity<>(pagedTags, HttpStatus.OK);
 	}
 }
