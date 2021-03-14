@@ -18,7 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import pl.dogesoulseller.thegg.Utility;
+import static pl.dogesoulseller.thegg.Utility.*;
 import pl.dogesoulseller.thegg.api.model.UserRegister;
 import pl.dogesoulseller.thegg.api.model.UserSelfInfo;
 import pl.dogesoulseller.thegg.api.response.GenericResponse;
@@ -82,7 +82,7 @@ public class UserController {
 		User insertedUser = userRepository.save(newUser);
 
 		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-		headers.add("Location", Utility.getServerBaseURL() + "/api/user/" + insertedUser.getId());
+		headers.add("Location", getServerBaseURL() + "/api/user/" + insertedUser.getId());
 
 		return new ResponseEntity<>(new GenericResponse("Success"), HttpStatus.CREATED);
 	}

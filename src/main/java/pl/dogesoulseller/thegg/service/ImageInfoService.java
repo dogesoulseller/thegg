@@ -1,11 +1,10 @@
 package pl.dogesoulseller.thegg.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import pl.dogesoulseller.thegg.Utility;
+import lombok.extern.slf4j.Slf4j;
+import static pl.dogesoulseller.thegg.Utility.*;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -20,9 +19,8 @@ import javax.imageio.ImageIO;
  * Service handling the detection and hashing of images
  */
 @Service
+@Slf4j
 public class ImageInfoService {
-	private static final Logger log = LoggerFactory.getLogger(ImageInfoService.class);
-
 	private final HashMap<String, String> MIME_MAP = new HashMap<>(5);
 
 	@Autowired
@@ -62,7 +60,7 @@ public class ImageInfoService {
 
 		byte[] hash = digest.digest(byteOutputStream.toByteArray());
 
-		return Utility.bytesToHexString(hash).toLowerCase();
+		return bytesToHexString(hash).toLowerCase();
 	}
 
 	/**

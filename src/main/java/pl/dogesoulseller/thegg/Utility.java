@@ -4,9 +4,12 @@ import java.nio.charset.StandardCharsets;
 
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import lombok.experimental.UtilityClass;
+
 /**
  * Miscallaneous utilities
  */
+@UtilityClass
 public class Utility {
 
 	/**
@@ -30,14 +33,14 @@ public class Utility {
 		}
 	}
 
-	private static final byte[] HEX_ARRAY = "0123456789ABCDEF".getBytes(StandardCharsets.US_ASCII);
+	private final byte[] HEX_ARRAY = "0123456789ABCDEF".getBytes(StandardCharsets.US_ASCII);
 
 	/**
 	 * Represent byte array as a hexadecimal string. Implementation taken from https://stackoverflow.com/a/9855338
 	 * @param bytes byte array
 	 * @return string representation of hex digits
 	 */
-	public static String bytesToHexString(byte[] bytes) {
+	public String bytesToHexString(byte[] bytes) {
 		byte[] hexChars = new byte[bytes.length * 2];
 		for (int j = 0; j < bytes.length; j++) {
 			int v = bytes[j] & 0xFF;
@@ -51,7 +54,7 @@ public class Utility {
 	 * Get base URL of current server, for example http://localhost:8080
 	 * @return base URL
 	 */
-	public static String getServerBaseURL() {
+	public String getServerBaseURL() {
 		return ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
 	}
 }

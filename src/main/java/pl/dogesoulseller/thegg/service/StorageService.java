@@ -13,22 +13,20 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import lombok.extern.slf4j.Slf4j;
 import pl.dogesoulseller.thegg.property.StorageProperties;
 
 /**
  * Service handling permanent and temporary storage access
  */
 @Service
+@Slf4j
 public class StorageService {
-	private static final Logger log = LoggerFactory.getLogger(StorageService.class);
-
 	private Path tempStoragePath;
 	private Path storagePath;
 

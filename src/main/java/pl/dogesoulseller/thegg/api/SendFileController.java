@@ -6,8 +6,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Paths;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +16,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import pl.dogesoulseller.thegg.Utility;
+import lombok.extern.slf4j.Slf4j;
+import static pl.dogesoulseller.thegg.Utility.*;
 import pl.dogesoulseller.thegg.api.response.FilenameResponse;
 import pl.dogesoulseller.thegg.service.ApiKeyVerificationService;
 import pl.dogesoulseller.thegg.service.ImageInfoService;
@@ -26,9 +25,8 @@ import pl.dogesoulseller.thegg.service.StorageService;
 
 @Api(tags = { "Posts" })
 @RestController
+@Slf4j
 public class SendFileController {
-	private static final Logger log = LoggerFactory.getLogger(SendFileController.class);
-
 	@Autowired
 	StorageService storageService;
 
@@ -72,7 +70,7 @@ public class SendFileController {
 
 		log.info("Received file {}", filename);
 		return new ResponseEntity<FilenameResponse>(
-				new FilenameResponse("Received file", filename, Utility.getServerBaseURL() + "/api/post"),
+				new FilenameResponse("Received file", filename, getServerBaseURL() + "/api/post"),
 				HttpStatus.CREATED);
 	}
 }

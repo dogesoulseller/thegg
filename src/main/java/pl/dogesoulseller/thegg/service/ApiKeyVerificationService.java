@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
-import pl.dogesoulseller.thegg.Utility.Pair;
+import static pl.dogesoulseller.thegg.Utility.*;
 import pl.dogesoulseller.thegg.repo.MongoKeyRepository;
 import pl.dogesoulseller.thegg.repo.MongoUserRepository;
 import pl.dogesoulseller.thegg.user.ApiKey;

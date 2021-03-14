@@ -2,8 +2,6 @@ package pl.dogesoulseller.thegg.service;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -14,6 +12,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import lombok.extern.slf4j.Slf4j;
 import pl.dogesoulseller.thegg.PostQueryBuilder;
 import pl.dogesoulseller.thegg.PostQueryParser;
 import pl.dogesoulseller.thegg.api.model.Post;
@@ -25,9 +24,8 @@ import pl.dogesoulseller.thegg.repo.MongoTagRepository;
  * Service handling database searches with user queries
  */
 @Service
+@Slf4j
 public class SearchService {
-	private static final Logger log = LoggerFactory.getLogger(SearchService.class);
-
 	@Autowired
 	private MongoPostRepository posts;
 

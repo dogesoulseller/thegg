@@ -18,9 +18,6 @@ import pl.dogesoulseller.thegg.service.SearchService;
 @Api(tags = {"Search"})
 @RestController
 public class SearchController {
-	// private static final Logger log =
-	// LoggerFactory.getLogger(SearchController.class);
-
 	@Autowired
 	private SearchService searchService;
 

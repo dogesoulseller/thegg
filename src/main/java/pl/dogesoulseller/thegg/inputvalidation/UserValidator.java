@@ -2,21 +2,19 @@ package pl.dogesoulseller.thegg.inputvalidation;
 
 import java.util.regex.Pattern;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
+import lombok.extern.slf4j.Slf4j;
 import pl.dogesoulseller.thegg.property.UserValidationProperties;
 
 /**
  * Configurable user data validation
  */
 @Component
+@Slf4j
 public class UserValidator {
-	private static final Logger log = LoggerFactory.getLogger(UserValidator.class);
-
 	private final static int DEFAULT_USERNAME_MIN_LEN = 3;
 	private final static int DEFAULT_USERNAME_MAX_LEN = 30;
 

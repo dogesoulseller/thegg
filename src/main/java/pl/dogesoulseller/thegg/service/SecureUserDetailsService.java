@@ -1,13 +1,12 @@
 package pl.dogesoulseller.thegg.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import lombok.extern.slf4j.Slf4j;
 import pl.dogesoulseller.thegg.repo.MongoUserRepository;
 import pl.dogesoulseller.thegg.user.User;
 
@@ -15,9 +14,8 @@ import pl.dogesoulseller.thegg.user.User;
  * Service handling the retrieval of user details
  */
 @Service
+@Slf4j
 public class SecureUserDetailsService implements UserDetailsService {
-	private static final Logger log = LoggerFactory.getLogger(SecureUserDetailsService.class);
-
 	@Autowired
 	private MongoUserRepository userRepository;
 

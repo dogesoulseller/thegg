@@ -11,8 +11,6 @@ import java.net.URLConnection;
 
 import javax.imageio.ImageIO;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import pl.dogesoulseller.thegg.api.model.Post;
 import pl.dogesoulseller.thegg.api.model.PostInfo;
 import pl.dogesoulseller.thegg.api.response.GenericResponse;
@@ -39,9 +38,8 @@ import pl.dogesoulseller.thegg.user.User;
 
 @Api(tags = { "Posts" })
 @RestController
+@Slf4j
 public class PostController {
-	private static final Logger log = LoggerFactory.getLogger(PostController.class);
-
 	@Autowired
 	private MongoPostRepository posts;
 

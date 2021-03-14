@@ -6,16 +6,21 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import lombok.*;
+
 /**
  * Data about a single gallery post
  */
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Document(collection = "posts")
 public class Post {
 	@Transient
@@ -72,29 +77,6 @@ public class Post {
 
 	private String deletionReason;
 
-	@PersistenceConstructor
-	public Post(String id, Post parent, String poster, String sourceUrl, String filename, String rating,
-			Instant creationDate, Instant modificationDate, long filesize, String mime, int width, int height,
-			String authorComment, String posterComment, List<String> tags, Boolean deleted, String deletionReason) {
-		this.id = id;
-		this.parent = parent;
-		this.poster = poster;
-		this.sourceUrl = sourceUrl;
-		this.filename = filename;
-		this.rating = rating;
-		this.creationDate = creationDate;
-		this.modificationDate = modificationDate;
-		this.filesize = filesize;
-		this.mime = mime;
-		this.width = width;
-		this.height = height;
-		this.authorComment = authorComment;
-		this.posterComment = posterComment;
-		this.tags = tags;
-		this.deleted = deleted;
-		this.deletionReason = deletionReason;
-	}
-
 	/**
 	 * Constructor building a post from received {@link PostInfo}
 	 * @param info info received from API request
@@ -126,135 +108,4 @@ public class Post {
 		throw new RuntimeException("Rating invalid");
 	}
 
-	public String getAuthorComment() {
-		return authorComment;
-	}
-
-	public Instant getCreationDate() {
-		return creationDate;
-	}
-
-	public Boolean getDeleted() {
-		return deleted;
-	}
-
-	public String getDeletionReason() {
-		return deletionReason;
-	}
-
-	public String getFilename() {
-		return filename;
-	}
-
-	public String getRating() {
-		return rating;
-	}
-
-	public Long getFilesize() {
-		return filesize;
-	}
-
-	public Integer getHeight() {
-		return height;
-	}
-
-	public Integer getWidth() {
-		return width;
-	}
-
-	public String getMime() {
-		return mime;
-	}
-
-	public Instant getModificationDate() {
-		return modificationDate;
-	}
-
-	public Post getParent() {
-		return parent;
-	}
-
-	public String getPoster() {
-		return poster;
-	}
-
-	public String getPosterComment() {
-		return posterComment;
-	}
-
-	public String getSourceUrl() {
-		return sourceUrl;
-	}
-
-	public List<String> getTags() {
-		return tags;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setAuthorComment(String authorComment) {
-		this.authorComment = authorComment;
-	}
-
-	public void setCreationDate(Instant creationDate) {
-		this.creationDate = creationDate;
-	}
-
-	public void setDeleted(boolean deleted) {
-		this.deleted = deleted;
-	}
-
-	public void setDeletionReason(String deletionReason) {
-		this.deletionReason = deletionReason;
-	}
-
-	public void setFilename(String filename) {
-		this.filename = filename;
-	}
-
-	public void setRating(String rating) {
-		this.rating = rating;
-	}
-
-	public void setFilesize(long filesize) {
-		this.filesize = filesize;
-	}
-
-	public void setHeight(int height) {
-		this.height = height;
-	}
-
-	public void setWidth(int width) {
-		this.width = width;
-	}
-
-	public void setMime(String mime) {
-		this.mime = mime;
-	}
-
-	public void setModificationDate(Instant modificationDate) {
-		this.modificationDate = modificationDate;
-	}
-
-	public void setParent(Post parent) {
-		this.parent = parent;
-	}
-
-	public void setPoster(String poster) {
-		this.poster = poster;
-	}
-
-	public void setPosterComment(String posterComment) {
-		this.posterComment = posterComment;
-	}
-
-	public void setSourceUrl(String sourceUrl) {
-		this.sourceUrl = sourceUrl;
-	}
-
-	public void setTags(List<String> tags) {
-		this.tags = tags;
-	}
 }
