@@ -1,6 +1,8 @@
 package pl.dogesoulseller.thegg.api;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import pl.dogesoulseller.thegg.api.model.SelfApiKeyInfo;
 import pl.dogesoulseller.thegg.api.response.GenericResponse;
 import pl.dogesoulseller.thegg.repo.MongoKeyRepository;
 import pl.dogesoulseller.thegg.repo.MongoUserRepository;
@@ -33,6 +36,7 @@ public class ApiKeyController {
 
 	/**
 	 * Get user from current session
+	 *
 	 * @return current user
 	 * @throws Exception
 	 */
@@ -87,7 +91,7 @@ public class ApiKeyController {
 		return new ResponseEntity<GenericResponse>(new GenericResponse(generatedKey), HttpStatus.CREATED);
 	}
 
-	@ApiOperation(value = "Revoke API key", notes = "Creates a new API key attached to the user account.<br><br>Note: This method requires an initial login through POST on /login with username=EMAIL and password=PASSWORD. The resulting JSESSIONID cookie must be set on this request.")
+	@ApiOperation(value = "Revoke API key", notes = "Revokes the API key attached to the user account.<br><br>Note: This method requires an initial login through POST on /login with username=EMAIL and password=PASSWORD. The resulting JSESSIONID cookie must be set on this request.")
 	@DeleteMapping("/api/apikey")
 	public ResponseEntity<Object> removeKey(@RequestParam(required = false) String name) {
 		name = name == null ? "default" : name;
@@ -100,6 +104,9 @@ public class ApiKeyController {
 		}
 
 		var key = keyRepo.findByNameAndUserid(name, user.getId());
+		if (key == null) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+		}
 
 		key.setActive(false);
 
@@ -109,8 +116,36 @@ public class ApiKeyController {
 	}
 
 	@GetMapping("/api/apikey")
-	public ResponseEntity<Object> getKey(@RequestParam(required = false) String name) {
-		// TODO: Get information about API key without revealing the key
-		throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+	public ResponseEntity<List<SelfApiKeyInfo>> getKey(@RequestParam(required = false) String name) {
+		User user;
+
+		try {
+			user = getRequestUser();
+		} catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+		}
+
+		// Not specifying a name returns all keys for user
+		if (name == null) {
+			var keys = keyRepo.findByUserid(user.getId());
+			if (keys.isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
+
+			List<SelfApiKeyInfo> infos = keys.stream().map((ApiKey elem) -> {
+				SelfApiKeyInfo info = new SelfApiKeyInfo(elem.getName(), elem.getCreationtime(), elem.getActive());
+				return info;
+			}).collect(Collectors.toList());
+
+			return new ResponseEntity<>(infos, HttpStatus.OK);
+		} else {
+			var key = keyRepo.findByNameAndUserid(name, user.getId());
+			if (key == null) {
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+			}
+
+			var keyInfo = new SelfApiKeyInfo(key.getName(), key.getCreationtime(), key.getActive());
+			return new ResponseEntity<>(List.of(keyInfo), HttpStatus.OK);
+		}
 	}
 }

@@ -1,5 +1,7 @@
 package pl.dogesoulseller.thegg.repo;
 
+import java.util.List;
+
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import pl.dogesoulseller.thegg.user.ApiKey;
@@ -9,6 +11,8 @@ import pl.dogesoulseller.thegg.user.ApiKey;
  */
 public interface MongoKeyRepository extends MongoRepository<ApiKey, String> {
 	public ApiKey findByNameAndUserid(String name, String userid);
+	public List<ApiKey> findByUserid(String userid);
+	public ApiKey findByNameAndUseridAndActive(String name, String userid, boolean active);
 	public boolean existsByNameAndUserid(String name, String userid);
 	public Long countByUseridAndActive(String userid, boolean active);
 	public boolean existsByKeyAndActive(String key, boolean active);
