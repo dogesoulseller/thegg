@@ -1,18 +1,11 @@
 package pl.dogesoulseller.thegg.service;
 
-import java.util.List;
-
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
-
-import lombok.extern.slf4j.Slf4j;
 import pl.dogesoulseller.thegg.PostQueryBuilder;
 import pl.dogesoulseller.thegg.PostQueryParser;
 import pl.dogesoulseller.thegg.api.model.Post;
@@ -20,12 +13,14 @@ import pl.dogesoulseller.thegg.api.model.Tag;
 import pl.dogesoulseller.thegg.repo.MongoPostRepository;
 import pl.dogesoulseller.thegg.repo.MongoTagRepository;
 
+import java.util.List;
+
 /**
  * Service handling database searches with user queries
  */
 @Service
-@Slf4j
 public class SearchService {
+	private static final Logger log = org.slf4j.LoggerFactory.getLogger(SearchService.class);
 	@Autowired
 	private MongoPostRepository posts;
 
@@ -68,7 +63,7 @@ public class SearchService {
 
 			List<Post> results = mongoTemplate.find(dbQuery, Post.class);
 
-			foundPosts = new PageImpl<Post>(results, pageN, mongoTemplate.count(dbQuery, Page.class));
+			foundPosts = new PageImpl<>(results, pageN, mongoTemplate.count(dbQuery, Page.class));
 		}
 
 		return foundPosts;

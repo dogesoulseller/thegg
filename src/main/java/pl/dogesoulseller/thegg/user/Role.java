@@ -19,7 +19,7 @@ public class Role implements GrantedAuthority {
 	@Id
 	private String id;
 
-	@Indexed(unique=true, sparse=true)
+	@Indexed(unique = true, sparse = true)
 	private String name;
 
 	private List<String> privileges;

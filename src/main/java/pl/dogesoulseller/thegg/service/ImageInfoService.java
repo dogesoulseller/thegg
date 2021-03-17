@@ -1,11 +1,10 @@
 package pl.dogesoulseller.thegg.service;
 
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import lombok.extern.slf4j.Slf4j;
-import static pl.dogesoulseller.thegg.Utility.*;
-
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -13,14 +12,14 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
-import javax.imageio.ImageIO;
+import static pl.dogesoulseller.thegg.Utility.bytesToHexString;
 
 /**
  * Service handling the detection and hashing of images
  */
 @Service
-@Slf4j
 public class ImageInfoService {
+	private static final Logger log = org.slf4j.LoggerFactory.getLogger(ImageInfoService.class);
 	private final HashMap<String, String> MIME_MAP = new HashMap<>(5);
 
 	@Autowired
@@ -47,7 +46,7 @@ public class ImageInfoService {
 		try {
 			digest = MessageDigest.getInstance("SHA-1");
 		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException("Failed to initialize SHA-1 encoder");
+			throw new RuntimeException("Failed to initialize SHA-1 encoder", e);
 		}
 
 		// Assume width * height * RGBA
@@ -55,7 +54,7 @@ public class ImageInfoService {
 		try {
 			ImageIO.write(image, "png", byteOutputStream);
 		} catch (IOException e) {
-			throw new RuntimeException("Failed to read image bytes");
+			throw new RuntimeException("Failed to read image bytes", e);
 		}
 
 		byte[] hash = digest.digest(byteOutputStream.toByteArray());

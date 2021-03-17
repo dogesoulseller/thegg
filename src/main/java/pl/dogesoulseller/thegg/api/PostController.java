@@ -1,31 +1,13 @@
 package pl.dogesoulseller.thegg.api;
 
-import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URLConnection;
-
-import javax.imageio.ImageIO;
-
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import lombok.extern.slf4j.Slf4j;
 import pl.dogesoulseller.thegg.api.model.Post;
 import pl.dogesoulseller.thegg.api.model.PostInfo;
 import pl.dogesoulseller.thegg.api.response.GenericResponse;
@@ -36,10 +18,15 @@ import pl.dogesoulseller.thegg.service.StorageService;
 import pl.dogesoulseller.thegg.service.TagManagementService;
 import pl.dogesoulseller.thegg.user.User;
 
-@Api(tags = { "Posts" })
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.net.URLConnection;
+
+@Api(tags = {"Posts"})
 @RestController
-@Slf4j
 public class PostController {
+	private static final Logger log = org.slf4j.LoggerFactory.getLogger(PostController.class);
 	@Autowired
 	private MongoPostRepository posts;
 
@@ -59,15 +46,11 @@ public class PostController {
 	@ApiOperation(value = "Get post", notes = "Gets information about a post by its database ID.<br><br>This method requires no authentication.")
 	@CrossOrigin
 	public ResponseEntity<Post> getPost(@RequestParam String id) {
-		id = id.strip();
-		var found = posts.findById(id);
+		var strippedId = id.strip();
+		var found = posts.findById(strippedId)
+		                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find post with id " + strippedId));
 
-		if (found.isEmpty()) {
-			log.warn("Sent 404 - Failed to find post by id {}", id);
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-		}
-
-		return new ResponseEntity<Post>(found.get(), HttpStatus.OK);
+		return new ResponseEntity<>(found, HttpStatus.OK);
 	}
 
 	@ApiOperation(value = "Delete post", notes = "Deletes a post. This method is meant for usage by individual clients.<br><br>Requires the supplied apikey to belong to the same user as the one making the post.")
@@ -78,17 +61,15 @@ public class PostController {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
 		}
 
-		id = id.strip();
-		var post = posts.findById(id).orElse(null);
-		if (post == null) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-		}
+		var strippedId = id.strip();
+		var post = posts.findById(strippedId)
+		                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find post with id " + strippedId));
 
-		if (post.getPoster() != user.getId()) {
+		if (!post.getPoster().equals(user.getId())) {
 			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
 		}
 
-		posts.deleteById(id);
+		posts.deleteById(strippedId);
 
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
@@ -107,16 +88,14 @@ public class PostController {
 		BufferedImage image;
 
 		try {
-			mimeType = URLConnection.guessContentTypeFromStream(
-					(InputStream) new BufferedInputStream(new FileInputStream(imageTempFile)));
+			mimeType = URLConnection.guessContentTypeFromStream(new BufferedInputStream(new FileInputStream(imageTempFile)));
 			image = ImageIO.read(imageTempFile);
-		} catch (FileNotFoundException e1) {
+		} catch (FileNotFoundException e) {
 			log.error("Could not find temp image file {}", imageTempFile.getName());
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-					"Could not find image file. Make sure it was uploaded first");
-		} catch (IOException e1) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find image file. Make sure it was uploaded first", e);
+		} catch (IOException e) {
 			log.error("Failed to open temp image file {}", imageTempFile.getName());
-			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to open image file");
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to open image file", e);
 		}
 
 		Post post;
@@ -129,7 +108,7 @@ public class PostController {
 			post.setHeight(image.getHeight());
 			post.setFilesize(imageTempFile.length());
 		} catch (RuntimeException e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Rating invalid");
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Rating invalid", e);
 		}
 
 		String newFilename;
@@ -139,8 +118,7 @@ public class PostController {
 			storageService.storeFileToPermanentStorage(imageTempFile, newFilename);
 		} catch (Exception e) {
 			log.error("Failed to store file {} to permanent storage", imageTempFile.getName());
-			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-					"Failed to store file to permanent storage");
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to store file to permanent storage", e);
 		}
 
 		tagService.insertTags(post.getTags());

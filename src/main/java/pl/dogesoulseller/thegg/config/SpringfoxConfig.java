@@ -13,21 +13,21 @@ import springfox.documentation.spring.web.plugins.Docket;
 @Configuration
 public class SpringfoxConfig {
 	@Bean
-    public Docket api() {
-        return new Docket(DocumentationType.SWAGGER_2)
-          .select()
-          .apis(RequestHandlerSelectors.basePackage("pl.dogesoulseller.thegg.api"))
-          .paths(PathSelectors.regex("/api/.*"))
-          .paths(PathSelectors.any())
-          .build()
-          .apiInfo(getApiInfo());
-    }
+	public Docket api() {
+		return new Docket(DocumentationType.SWAGGER_2)
+				       .select()
+				       .apis(RequestHandlerSelectors.basePackage("pl.dogesoulseller.thegg.api"))
+				       .paths(PathSelectors.regex("/api/.*"))
+				       .paths(PathSelectors.any())
+				       .build()
+				       .apiInfo(getApiInfo());
+	}
 
-    private ApiInfo getApiInfo() {
-        return new ApiInfoBuilder()
-        .title("TheGG API")
-        .version("1.0")
-        .description("The Great Gallery API")
-        .build();
-    }
+	private ApiInfo getApiInfo() {
+		return new ApiInfoBuilder()
+				       .title("TheGG API")
+				       .version("1.0")
+				       .description("The Great Gallery API")
+				       .build();
+	}
 }

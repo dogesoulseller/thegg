@@ -1,10 +1,5 @@
 package pl.dogesoulseller.thegg.api.model;
 
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -12,22 +7,21 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import lombok.*;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Data about a single gallery post
  */
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Document(collection = "posts")
 public class Post {
 	@Transient
 	private static final String[] VALID_RATINGS = {"safe", "questionable", "explicit", "violent"};
 
 	@Transient
-	private static final Pattern TAG_REPLACEMENT = Pattern.compile("\\s+|[!@#$%^&*()_+\\-=~`{}\\[\\]:;'\",.<>\\/?\\\\|]");
+	private static final Pattern TAG_REPLACEMENT = Pattern.compile("\\s+|[!@#$%^&*()_+\\-=~`{}\\[\\]:;'\",.<>/?\\\\|]");
 
 	@Id
 	private String id;
@@ -94,8 +88,7 @@ public class Post {
 		// Sanitize tags
 		this.tags = new ArrayList<>(info.getTags().size());
 		for (var tag : info.getTags()) {
-			tag = TAG_REPLACEMENT.matcher(tag.toLowerCase()).replaceAll("_");
-			this.tags.add(tag);
+			this.tags.add(TAG_REPLACEMENT.matcher(tag.toLowerCase()).replaceAll("_"));
 		}
 
 		// Validate rating
@@ -108,4 +101,164 @@ public class Post {
 		throw new RuntimeException("Rating invalid");
 	}
 
+	public Post(String id, Post parent, String poster, String sourceUrl, String filename, String rating,
+	            Instant creationDate, Instant modificationDate, long filesize, String mime, int width, int height, String authorComment,
+	            String posterComment, List<String> tags, boolean deleted, String deletionReason) {
+		this.id = id;
+		this.parent = parent;
+		this.poster = poster;
+		this.sourceUrl = sourceUrl;
+		this.filename = filename;
+		this.rating = rating;
+		this.creationDate = creationDate;
+		this.modificationDate = modificationDate;
+		this.filesize = filesize;
+		this.mime = mime;
+		this.width = width;
+		this.height = height;
+		this.authorComment = authorComment;
+		this.posterComment = posterComment;
+		this.tags = tags;
+		this.deleted = deleted;
+		this.deletionReason = deletionReason;
+	}
+
+	public Post() {
+	}
+
+	public String getId() {
+		return this.id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public Post getParent() {
+		return this.parent;
+	}
+
+	public void setParent(Post parent) {
+		this.parent = parent;
+	}
+
+	public String getPoster() {
+		return this.poster;
+	}
+
+	public void setPoster(String poster) {
+		this.poster = poster;
+	}
+
+	public String getSourceUrl() {
+		return this.sourceUrl;
+	}
+
+	public void setSourceUrl(String sourceUrl) {
+		this.sourceUrl = sourceUrl;
+	}
+
+	public String getFilename() {
+		return this.filename;
+	}
+
+	public void setFilename(String filename) {
+		this.filename = filename;
+	}
+
+	public String getRating() {
+		return this.rating;
+	}
+
+	public void setRating(String rating) {
+		this.rating = rating;
+	}
+
+	public Instant getCreationDate() {
+		return this.creationDate;
+	}
+
+	public void setCreationDate(Instant creationDate) {
+		this.creationDate = creationDate;
+	}
+
+	public Instant getModificationDate() {
+		return this.modificationDate;
+	}
+
+	public void setModificationDate(Instant modificationDate) {
+		this.modificationDate = modificationDate;
+	}
+
+	public long getFilesize() {
+		return this.filesize;
+	}
+
+	public void setFilesize(long filesize) {
+		this.filesize = filesize;
+	}
+
+	public String getMime() {
+		return this.mime;
+	}
+
+	public void setMime(String mime) {
+		this.mime = mime;
+	}
+
+	public int getWidth() {
+		return this.width;
+	}
+
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
+	public int getHeight() {
+		return this.height;
+	}
+
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
+	public String getAuthorComment() {
+		return this.authorComment;
+	}
+
+	public void setAuthorComment(String authorComment) {
+		this.authorComment = authorComment;
+	}
+
+	public String getPosterComment() {
+		return this.posterComment;
+	}
+
+	public void setPosterComment(String posterComment) {
+		this.posterComment = posterComment;
+	}
+
+	public List<String> getTags() {
+		return this.tags;
+	}
+
+	public void setTags(List<String> tags) {
+		this.tags = tags;
+	}
+
+	public boolean isDeleted() {
+		return this.deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
+
+	public String getDeletionReason() {
+		return this.deletionReason;
+	}
+
+	public void setDeletionReason(String deletionReason) {
+		this.deletionReason = deletionReason;
+	}
 }

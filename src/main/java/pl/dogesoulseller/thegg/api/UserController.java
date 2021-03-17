@@ -18,7 +18,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+
 import static pl.dogesoulseller.thegg.Utility.*;
+
 import pl.dogesoulseller.thegg.api.model.UserRegister;
 import pl.dogesoulseller.thegg.api.model.UserSelfInfo;
 import pl.dogesoulseller.thegg.api.response.GenericResponse;
@@ -84,7 +86,7 @@ public class UserController {
 		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
 		headers.add("Location", getServerBaseURL() + "/api/user/" + insertedUser.getId());
 
-		return new ResponseEntity<>(new GenericResponse("Success"), HttpStatus.CREATED);
+		return new ResponseEntity<>(new GenericResponse("Success"), headers, HttpStatus.CREATED);
 	}
 
 	@ApiOperation(value = "Get user info", notes = "Gets user info that is stripped of all private data<br><br>If userid is not specified, the API key's owner's data is returned")
@@ -103,13 +105,13 @@ public class UserController {
 		} else {
 			User user = userRepository.findById(userid.toLowerCase()).orElse(null);
 			if (user == null) {
-				throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find user with id " + userid);
 			}
 
 			UserSelfInfo userInfo = new UserSelfInfo(user);
 
 			// Set email info only if API key holder is also user searched for
-			if (requestUser.getId() == user.getId()) {
+			if (requestUser.getId().equals(user.getId())) {
 				userInfo.setEmail(requestUser.getUsername());
 			}
 
@@ -120,7 +122,7 @@ public class UserController {
 	@ApiOperation(value = "Update user", notes = "Update API key holder's user profile with provided info")
 	@PatchMapping("/api/user")
 	public ResponseEntity<GenericResponse> updateUserInfo(@RequestParam String apikey,
-		@RequestBody UserSelfInfo info) {
+	                                                      @RequestBody UserSelfInfo info) {
 		User requestUser = keyVerifier.getKeyUser(apikey);
 		if (requestUser == null) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);

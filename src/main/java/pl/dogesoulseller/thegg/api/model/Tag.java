@@ -4,15 +4,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import lombok.*;
-
 /**
  * Represents a tag's information
  */
-@Setter
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
 @Document(collection = "tags")
 public class Tag {
 	@Id
@@ -29,5 +23,29 @@ public class Tag {
 	 */
 	public Tag(String tag) {
 		this.tag = tag;
+	}
+
+	public String getId() {
+		return this.id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getTag() {
+		return this.tag;
+	}
+
+	public void setTag(String tag) {
+		this.tag = tag;
+	}
+
+	public String getDescription() {
+		return this.description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 }

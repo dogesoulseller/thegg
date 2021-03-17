@@ -11,6 +11,7 @@ import pl.dogesoulseller.thegg.api.model.Tag;
  */
 public interface MongoTagRepository extends MongoRepository<Tag, String> {
 	Tag findByTag(String tag);
+
 	boolean existsByTag(String tag);
 
 	Page<Tag> findByTagContaining(String tagLike, Pageable pageable);

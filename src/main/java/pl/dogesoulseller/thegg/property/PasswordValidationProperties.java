@@ -11,12 +11,12 @@ public class PasswordValidationProperties {
 		return adminPasswordMinLength;
 	}
 
-	public Integer getUserPasswordMinLength() {
-		return userPasswordMinLength;
-	}
-
 	public void setAdminPasswordMinLength(Integer adminPasswordMinLength) {
 		this.adminPasswordMinLength = adminPasswordMinLength;
+	}
+
+	public Integer getUserPasswordMinLength() {
+		return userPasswordMinLength;
 	}
 
 	public void setUserPasswordMinLength(Integer userPasswordMinLength) {

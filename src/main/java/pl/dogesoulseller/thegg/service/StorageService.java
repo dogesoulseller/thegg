@@ -1,34 +1,28 @@
 package pl.dogesoulseller.thegg.service;
 
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import pl.dogesoulseller.thegg.property.StorageProperties;
+
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import lombok.extern.slf4j.Slf4j;
-import pl.dogesoulseller.thegg.property.StorageProperties;
-
 /**
  * Service handling permanent and temporary storage access
  */
 @Service
-@Slf4j
 public class StorageService {
-	private Path tempStoragePath;
-	private Path storagePath;
+	private static final Logger log = org.slf4j.LoggerFactory.getLogger(StorageService.class);
+	private final Path tempStoragePath;
+	private final Path storagePath;
 
 	@Autowired
 	public StorageService(StorageProperties properties) throws IOException {
@@ -46,7 +40,7 @@ public class StorageService {
 	 *
 	 * @param file received file
 	 * @return new filename
-	 * @throws IOException
+	 * @throws IOException on failure to store file
 	 */
 	public String storeFile(MultipartFile file) throws IOException {
 		Path output = tempStoragePath.resolve(UUID.randomUUID().toString());
@@ -63,7 +57,7 @@ public class StorageService {
 	 * @param file    file to move
 	 * @param newName new name to give the file
 	 * @return new filename
-	 * @throws IOException
+	 * @throws IOException on failure to store file
 	 */
 	public String storeFileToPermanentStorage(File file, String newName) throws IOException {
 		Path output = storagePath.resolve(newName);
@@ -102,30 +96,32 @@ public class StorageService {
 	public void cleanOldTempFiles() {
 		log.info("Deleting files...");
 		try {
-			Files.walkFileTree(tempStoragePath, new SimpleFileVisitor<Path>() {
-				@Override
-				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-					var fileTime = attrs.creationTime().toInstant();
-					var currentTime = Instant.now();
-
-					// Files are stored for a max of 10 minutes
-					var timeBetween = Math.abs(Duration.between(fileTime, currentTime).toMinutes());
-					if (timeBetween > 10) {
-						Files.deleteIfExists(file);
-					}
-
-					return FileVisitResult.CONTINUE;
-				}
-
-				@Override
-				public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
-					return FileVisitResult.CONTINUE;
-				}
-			});
+			Files.walkFileTree(tempStoragePath, new DeletionFileVisitor());
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.warn("Failed to access file: " + e.toString());
 		}
 
 		log.info("Files deleted");
+	}
+
+	private static class DeletionFileVisitor extends SimpleFileVisitor<Path> {
+		@Override
+		public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+			var fileTime = attrs.creationTime().toInstant();
+			var currentTime = Instant.now();
+
+			// Files are stored for a max of 10 minutes
+			var timeBetween = Math.abs(Duration.between(fileTime, currentTime).toMinutes());
+			if (timeBetween > 10) {
+				Files.deleteIfExists(file);
+			}
+
+			return FileVisitResult.CONTINUE;
+		}
+
+		@Override
+		public FileVisitResult visitFileFailed(Path file, IOException exc) {
+			return FileVisitResult.CONTINUE;
+		}
 	}
 }

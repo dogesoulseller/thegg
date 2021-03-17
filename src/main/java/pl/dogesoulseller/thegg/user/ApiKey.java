@@ -28,14 +28,18 @@ public class ApiKey {
 	@Indexed
 	private boolean active;
 
+	@Indexed
+	private boolean adminKey;
+
 	@PersistenceConstructor
-	public ApiKey(String id, String key, String name, String userid, Instant creationtime, boolean active) {
+	public ApiKey(String id, String key, String name, String userid, Instant creationtime, boolean active, boolean adminKey) {
 		this.id = id;
 		this.key = key;
 		this.name = name;
 		this.userid = userid;
 		this.creationtime = creationtime;
 		this.active = active;
+		this.adminKey = adminKey;
 	}
 
 	public ApiKey(String key, String name, String userid) {
@@ -54,6 +58,10 @@ public class ApiKey {
 		return id;
 	}
 
+	public void setId(String id) {
+		this.id = id;
+	}
+
 	public String getKey() {
 		return key;
 	}
@@ -62,23 +70,19 @@ public class ApiKey {
 		return name;
 	}
 
-	public boolean getActive() {
-		return active;
-	}
-
 	public Instant getCreationtime() {
 		return creationtime;
 	}
 
-	public String getUserid() {
-		return userid;
+	public boolean isActive() {
+		return active;
 	}
 
 	public void setActive(boolean active) {
 		this.active = active;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public boolean isAdminKey() {
+		return adminKey;
 	}
 }

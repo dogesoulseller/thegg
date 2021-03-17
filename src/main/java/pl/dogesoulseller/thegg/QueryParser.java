@@ -11,21 +11,23 @@ public interface QueryParser {
 	/**
 	 * Resets the parser to its initial state
 	 */
-	public void reset();
+	void reset();
 
 	/**
 	 * Resets the parser to its initial state, setting the query
-	 * @param query
+	 * @param query query
 	 */
-	public void reset(String query);
+	void reset(String query);
 
 	/**
 	 * Process the query
 	 * @return this
 	 */
-	public QueryParser parse();
+	QueryParser parse();
 
-	public List<String> getInclusions();
-	public List<String> getExclusions();
-	public Sort getSorting();
+	List<String> getInclusions();
+
+	List<String> getExclusions();
+
+	Sort getSorting();
 }

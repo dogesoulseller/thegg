@@ -15,12 +15,12 @@ import pl.dogesoulseller.thegg.property.PasswordValidationProperties;
 import pl.dogesoulseller.thegg.property.StorageProperties;
 import pl.dogesoulseller.thegg.property.UserValidationProperties;
 
-@SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
+@SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
 @EnableScheduling
 @EnableConfigurationProperties({
-	StorageProperties.class,
-	UserValidationProperties.class,
-	PasswordValidationProperties.class
+		StorageProperties.class,
+		UserValidationProperties.class,
+		PasswordValidationProperties.class
 })
 public class TheggApplication {
 

@@ -68,7 +68,7 @@ public class PostQueryParser implements QueryParser {
 
 		if (tag.contains("sort:")) {
 			tag = tag.substring(5).strip();
-			int separatorIdx = tag.indexOf(':', 0);
+			int separatorIdx = tag.indexOf(':');
 
 			Direction direction;
 			try {

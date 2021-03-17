@@ -10,13 +10,21 @@ import pl.dogesoulseller.thegg.user.ApiKey;
  * MongoDB repository containing API keys
  */
 public interface MongoKeyRepository extends MongoRepository<ApiKey, String> {
-	public ApiKey findByNameAndUserid(String name, String userid);
-	public List<ApiKey> findByUserid(String userid);
-	public ApiKey findByNameAndUseridAndActive(String name, String userid, boolean active);
-	public boolean existsByNameAndUserid(String name, String userid);
-	public Long countByUseridAndActive(String userid, boolean active);
-	public boolean existsByKeyAndActive(String key, boolean active);
-	public boolean existsByKey(String key);
-	public ApiKey findByKey(String key);
-	public Long deleteByNameAndUserid(String name, String userid);
+	ApiKey findByNameAndUserid(String name, String userid);
+
+	List<ApiKey> findByUserid(String userid);
+
+	ApiKey findByNameAndUseridAndActive(String name, String userid, boolean active);
+
+	boolean existsByNameAndUserid(String name, String userid);
+
+	Long countByUseridAndActive(String userid, boolean active);
+
+	boolean existsByKeyAndActive(String key, boolean active);
+
+	boolean existsByKey(String key);
+
+	ApiKey findByKey(String key);
+
+	Long deleteByNameAndUserid(String name, String userid);
 }

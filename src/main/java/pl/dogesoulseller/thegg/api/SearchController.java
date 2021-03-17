@@ -25,12 +25,13 @@ public class SearchController {
 	@ApiOperation(value = "Search posts")
 	@GetMapping("/api/search/post")
 	public ResponseEntity<PagedResults<Post>> searchPosts(@RequestParam(required = false) String query,
-			@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer perPage) {
+	                                                      @RequestParam(required = false) Integer page,
+	                                                      @RequestParam(required = false) Integer perPage) {
 
 		var foundPosts = searchService.findPostsFromQuery(query, page, perPage);
 
 		if (foundPosts == null || foundPosts.isEmpty()) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find a matching post");
 		}
 
 		var pagedPosts = new PagedResults<>(foundPosts, page == null ? 0 : page);
@@ -41,11 +42,12 @@ public class SearchController {
 	@ApiOperation(value = "Search tags")
 	@GetMapping("/api/search/tag")
 	public ResponseEntity<PagedResults<Tag>> searchTags(@RequestParam(required = false) String query,
-			@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer perPage) {
+	                                                    @RequestParam(required = false) Integer page,
+	                                                    @RequestParam(required = false) Integer perPage) {
 
 		var foundTags = searchService.findTagFromQuery(query, page, perPage);
 		if (foundTags == null || foundTags.isEmpty()) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find a matching post");
 		}
 
 		var pagedTags = new PagedResults<>(foundTags, page == null ? 0 : page);

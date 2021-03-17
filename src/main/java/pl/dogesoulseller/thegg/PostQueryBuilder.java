@@ -41,7 +41,6 @@ public class PostQueryBuilder {
 		criteria = new LinkedMultiValueMap<>();
 	}
 
-	// Triple<ComparisonOperator, Field, ValueCompared>
 	/**
 	 * Append a filter to the query
 	 * @param filter filter to append
@@ -100,15 +99,16 @@ public class PostQueryBuilder {
 	 */
 	public Query finish() {
 		// Handle tags
-		if ((includedTags == null && excludedTags == null) || (includedTags.isEmpty() && excludedTags.isEmpty())) {
+		if ((includedTags == null || includedTags.isEmpty()) && (excludedTags == null || excludedTags.isEmpty())) {
+
 		} else if (includedTags == null || includedTags.isEmpty()) {
 			query.addCriteria(Criteria.where("tags").not().elemMatch(new Criteria().in(excludedTags)));
 		} else if (excludedTags == null || excludedTags.isEmpty()) {
 			query.addCriteria(Criteria.where("tags").all(includedTags));
 		} else {
 			query.addCriteria(new Criteria().andOperator(
-				Criteria.where("tags").not().elemMatch(new Criteria().in(excludedTags)),
-				Criteria.where("tags").all(includedTags)
+					Criteria.where("tags").not().elemMatch(new Criteria().in(excludedTags)),
+					Criteria.where("tags").all(includedTags)
 			));
 		}
 
@@ -126,7 +126,7 @@ public class PostQueryBuilder {
 			ArrayList<Criteria> fieldMultiCriteria = new ArrayList<>(vals.size());
 
 			// Dates require special handling
-			if (key == "creation_date") {
+			if (key.equals("creation_date")) {
 				for (var val : vals) {
 					switch (val.getComparison()) {
 						case '>':

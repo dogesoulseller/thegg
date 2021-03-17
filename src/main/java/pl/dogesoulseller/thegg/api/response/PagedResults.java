@@ -1,17 +1,12 @@
 package pl.dogesoulseller.thegg.api.response;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import java.util.List;
 
 /**
  * List of objects with associated data about paging
  */
-@Getter
-@AllArgsConstructor
 public class PagedResults<T> {
 	/**
 	 * List of returned objects
@@ -21,21 +16,39 @@ public class PagedResults<T> {
 	/**
 	 * Total page count
 	 */
-	private int pageCount;
+	private long pageCount;
 
 	/**
 	 * Current page number (0-based)
 	 */
-	private int currentPage;
+	private long currentPage;
 
 	/**
 	 * Constructs a new {@link PagedResults} using info from a filled out {@link Page} instance
 	 * @param results {@link Page} containing info about results
 	 * @param currentPage 0-based current page number
 	 */
-	public PagedResults(Page<T> results, int currentPage) {
+	public PagedResults(Page<T> results, long currentPage) {
 		this.results = results.getContent();
 		this.pageCount = results.getTotalPages();
 		this.currentPage = currentPage;
+	}
+
+	public PagedResults(List<T> results, long pageCount, long currentPage) {
+		this.results = results;
+		this.pageCount = pageCount;
+		this.currentPage = currentPage;
+	}
+
+	public List<T> getResults() {
+		return this.results;
+	}
+
+	public long getPageCount() {
+		return this.pageCount;
+	}
+
+	public long getCurrentPage() {
+		return this.currentPage;
 	}
 }

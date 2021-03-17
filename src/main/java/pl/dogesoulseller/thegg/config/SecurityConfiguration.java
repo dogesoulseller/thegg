@@ -23,65 +23,65 @@ import pl.dogesoulseller.thegg.service.SecureUserDetailsService;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Autowired
-    private SecureUserDetailsService userDetailsService;
+	private SecureUserDetailsService userDetailsService;
 
 	@Autowired
 	private PasswordEncoder argonPasswordEncoder;
-
-	@Autowired
-	public void configAuthBuilder(AuthenticationManagerBuilder builder) throws Exception {
-		builder.userDetailsService(userDetailsService).passwordEncoder(argonPasswordEncoder);
-	}
 
 	@Bean
 	public static SessionRegistry sessionRegistry() {
 		return new SessionRegistryImpl();
 	}
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+	@Autowired
+	public void configAuthBuilder(AuthenticationManagerBuilder builder) throws Exception {
+		builder.userDetailsService(userDetailsService).passwordEncoder(argonPasswordEncoder);
+	}
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
 		// CSRF disabled on REST API and login page
 		http.csrf().ignoringAntMatchers("/api/**", "/login");
 		http.sessionManagement().maximumSessions(1).sessionRegistry(sessionRegistry());
 		http
-			.authorizeRequests()
+				.authorizeRequests()
 				.antMatchers("/root").authenticated()
 				.anyRequest().permitAll()
 				.and()
-			.formLogin()
+				.formLogin()
 				.loginPage("/login")
 				.usernameParameter("email")
 				.permitAll()
 				.and()
-			.logout()
+				.logout()
 				.permitAll();
-    }
+	}
+
+	@Bean
+	public ServletListenerRegistrationBean<HttpSessionEventPublisher> httpSessionEventPublisher() {
+		return new ServletListenerRegistrationBean<>(new HttpSessionEventPublisher());
+	}
+
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new Argon2PasswordEncoder(16, 32, 1, 1 << 16, 4);
+	}
 
 	// API rqeuires use of HTTP basic authentication on key management
 	@Configuration
-    @Order(1)
-    public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
-        protected void configure(HttpSecurity http) throws Exception {
+	@Order(1)
+	public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
+		protected void configure(HttpSecurity http) throws Exception {
 			// CSRF disabled on REST API and login page
 			http.csrf().ignoringAntMatchers("/api/**", "/login");
 			http.sessionManagement().maximumSessions(1).sessionRegistry(sessionRegistry());
 
 			// Require basic auth
-            http.
-				requestMatchers().
-				regexMatchers("/api/apikey").
-				and()
-			.authorizeRequests(authorize -> authorize.anyRequest().authenticated()).httpBasic();
-        }
-	}
-
-	@Bean
-    public ServletListenerRegistrationBean<HttpSessionEventPublisher> httpSessionEventPublisher() {
-        return new ServletListenerRegistrationBean<HttpSessionEventPublisher>(new HttpSessionEventPublisher());
-    }
-
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new Argon2PasswordEncoder(16, 32, 1, 1 << 16, 4);
+			http.
+					    requestMatchers().
+							                     regexMatchers("/api/apikey").
+									                                                 and()
+			    .authorizeRequests(authorize -> authorize.anyRequest().authenticated()).httpBasic();
+		}
 	}
 }

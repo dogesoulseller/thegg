@@ -1,111 +1,111 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>TheGG - Query help</title>
-		<link rel="stylesheet" href="querystyle.css">
-    </head>
-    <body>
-        <h3>Post queries</h3>
-		<p>
-			Post queries are a string of ANDed together, space-separated conditions of one or more of the following types:
-		</p>
-		<table>
-			<thead>
-				<tr>
-					<th>Name</th>
-					<th>Description</th>
-					<th>Syntax</th>
-					<th>Example</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td>Include tag</td>
-					<td>Only show posts matching the specified tag</td>
-					<td>tag_name</td>
-					<td>example</td>
-				</tr>
-				<tr>
-					<td>Exclude tag</td>
-					<td>Only show posts without the specified tag</td>
-					<td>-tag_name</td>
-					<td>-example</td>
-				</tr>
-				<tr>
-					<td>Special filter</td>
-					<td>Match a metadata piece directly</td>
-					<td>~field:[op]value</td>
-					<td>~size:&gt;1000</td>
-				</tr>
-			</tbody>
-		</table>
+<head>
+	<title>TheGG - Query help</title>
+	<link rel="stylesheet" href="querystyle.css">
+</head>
+<body>
+<h3>Post queries</h3>
+<p>
+	Post queries are a string of ANDed together, space-separated conditions of one or more of the following types:
+</p>
+<table>
+	<thead>
+	<tr>
+		<th>Name</th>
+		<th>Description</th>
+		<th>Syntax</th>
+		<th>Example</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr>
+		<td>Include tag</td>
+		<td>Only show posts matching the specified tag</td>
+		<td>tag_name</td>
+		<td>example</td>
+	</tr>
+	<tr>
+		<td>Exclude tag</td>
+		<td>Only show posts without the specified tag</td>
+		<td>-tag_name</td>
+		<td>-example</td>
+	</tr>
+	<tr>
+		<td>Special filter</td>
+		<td>Match a metadata piece directly</td>
+		<td>~field:[op]value</td>
+		<td>~size:&gt;1000</td>
+	</tr>
+	</tbody>
+</table>
 
-		<h3>Special filters</h3>
-		<p>Special filter match a piece of metadata against a value or set a parameter. The following filters are supported:</p>
-		<table>
-			<thead>
-				<tr>
-					<th>Filter</th>
-					<th>Description</th>
-					<th>Supported ops</th>
-					<th>Possible values</th>
-					<th>Example</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td>sort</td>
-					<td>Field to sort results by</td>
-					<td>None</td>
-					<td>creation_date, filesize, width, height</td>
-					<td>~sort:width</td>
-				</tr>
-				<tr>
-					<td>rating</td>
-					<td>Rating category</td>
-					<td>None</td>
-					<td>safe, questionable, explicit, violent</td>
-					<td>~rating:safe</td>
-				</tr>
-				<tr>
-					<td>size</td>
-					<td>File size in bytes</td>
-					<td>=, &lt;, &gt;</td>
-					<td>any positive integer</td>
-					<td>~size:>1048576</td>
-				</tr>
-				<tr>
-					<td>mime</td>
-					<td>MIME types</td>
-					<td>None</td>
-					<td>any supported MIME type</td>
-					<td>~mime:image/png</td>
-				</tr>
-				<tr>
-					<td>width</td>
-					<td>Width in pixels</td>
-					<td>=, &lt;, &gt;</td>
-					<td>any positive integer</td>
-					<td>~width:&lt;1280</td>
-				</tr>
-				<tr>
-					<td>height</td>
-					<td>Height in pixels</td>
-					<td>=, &lt;, &gt;</td>
-					<td>any positive integer</td>
-					<td>~width:&lt;720</td>
-				</tr>
-			</tbody>
-		</table>
+<h3>Special filters</h3>
+<p>Special filter match a piece of metadata against a value or set a parameter. The following filters are supported:</p>
+<table>
+	<thead>
+	<tr>
+		<th>Filter</th>
+		<th>Description</th>
+		<th>Supported ops</th>
+		<th>Possible values</th>
+		<th>Example</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr>
+		<td>sort</td>
+		<td>Field to sort results by</td>
+		<td>None</td>
+		<td>creation_date, filesize, width, height</td>
+		<td>~sort:width</td>
+	</tr>
+	<tr>
+		<td>rating</td>
+		<td>Rating category</td>
+		<td>None</td>
+		<td>safe, questionable, explicit, violent</td>
+		<td>~rating:safe</td>
+	</tr>
+	<tr>
+		<td>size</td>
+		<td>File size in bytes</td>
+		<td>=, &lt;, &gt;</td>
+		<td>any positive integer</td>
+		<td>~size:>1048576</td>
+	</tr>
+	<tr>
+		<td>mime</td>
+		<td>MIME types</td>
+		<td>None</td>
+		<td>any supported MIME type</td>
+		<td>~mime:image/png</td>
+	</tr>
+	<tr>
+		<td>width</td>
+		<td>Width in pixels</td>
+		<td>=, &lt;, &gt;</td>
+		<td>any positive integer</td>
+		<td>~width:&lt;1280</td>
+	</tr>
+	<tr>
+		<td>height</td>
+		<td>Height in pixels</td>
+		<td>=, &lt;, &gt;</td>
+		<td>any positive integer</td>
+		<td>~width:&lt;720</td>
+	</tr>
+	</tbody>
+</table>
 
-		<h3>Examples</h3>
-		<p>1920x1080 wallpaper - safe for work, easy on the eyes, and not a screenshot:</p>
-		<code>~rating:safe ~width:=1920 ~height:=1080 wallpaper -bright -screenshot</code>
+<h3>Examples</h3>
+<p>1920x1080 wallpaper - safe for work, easy on the eyes, and not a screenshot:</p>
+<code>~rating:safe ~width:=1920 ~height:=1080 wallpaper -bright -screenshot</code>
 
-		<p>Images of animals, but not birds:</p>
-		<code>animal -avian -bird -human</code>
+<p>Images of animals, but not birds:</p>
+<code>animal -avian -bird -human</code>
 
-		<p>Close-up images of blue-eyed smiling people:</p>
-		<code>face smile blue_eyes -animal</code>
-    </body>
+<p>Close-up images of blue-eyed smiling people:</p>
+<code>face smile blue_eyes -animal</code>
+</body>
 </html>

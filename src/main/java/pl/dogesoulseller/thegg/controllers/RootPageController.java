@@ -15,35 +15,31 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class RootPageController {
 	@Autowired
-    private SessionRegistry sessionRegistry;
+	private SessionRegistry sessionRegistry;
 
 	public List<UserDetails> listLoggedInUsers() {
-        List<Object> allPrincipals = sessionRegistry.getAllPrincipals();
-		List<UserDetails> allDetails = new ArrayList<UserDetails>();
+		List<Object> allPrincipals = sessionRegistry.getAllPrincipals();
+		List<UserDetails> allDetails = new ArrayList<>();
 
-        for (Object principal : allPrincipals) {
+		for (Object principal : allPrincipals) {
 			if (principal instanceof UserDetails) {
-				System.err.println(principal.toString());
-				allDetails.add((UserDetails)principal);
+				allDetails.add((UserDetails) principal);
 			}
-        }
+		}
 
 		return allDetails;
-    }
+	}
 
 	@GetMapping("/root")
-	public String greeting(@RequestParam(name="name", required=false, defaultValue="World") String name, Model model) {
+	public String greeting(@RequestParam(name = "name", required = false, defaultValue = "World") String name, Model model) {
 		model.addAttribute("name", name);
-		// var users = listLoggedInUsers();
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
 		var princ = (UserDetails) principal;
 
-		if (princ.getUsername() == "admin") {
-			System.err.println("logged in as admin");
+		if (princ.getUsername().equals("admin")) {
 			return "/root";
 		} else {
-			System.err.println("not admin");
 			return "forward:/";
 		}
 	}

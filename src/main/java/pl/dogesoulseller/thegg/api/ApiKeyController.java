@@ -25,7 +25,7 @@ import pl.dogesoulseller.thegg.repo.MongoUserRepository;
 import pl.dogesoulseller.thegg.user.ApiKey;
 import pl.dogesoulseller.thegg.user.User;
 
-@Api(tags = { "API Keys" })
+@Api(tags = {"API Keys"})
 @RestController
 public class ApiKeyController {
 	@Autowired
@@ -38,17 +38,18 @@ public class ApiKeyController {
 	 * Get user from current session
 	 *
 	 * @return current user
-	 * @throws Exception
+	 *
+	 * @throws Exception on authentication failed
 	 */
 	private User getRequestUser() throws Exception {
 		var auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth == null) {
-			throw new Exception();
+			throw new Exception("No authentication passed");
 		}
 
 		var userEmail = auth.getName();
 		if (userEmail == null || (!userEmail.contains("@"))) {
-			throw new Exception();
+			throw new Exception("User's username points to a temporary session");
 		}
 
 		return userRepo.findByEmail(auth.getName());
@@ -64,7 +65,7 @@ public class ApiKeyController {
 		try {
 			user = getRequestUser();
 		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authorized", e);
 		}
 
 		// Error if at least 5 keys already exist
@@ -88,7 +89,7 @@ public class ApiKeyController {
 
 		keyRepo.insert(outputKey);
 
-		return new ResponseEntity<GenericResponse>(new GenericResponse(generatedKey), HttpStatus.CREATED);
+		return new ResponseEntity<>(new GenericResponse(generatedKey), HttpStatus.CREATED);
 	}
 
 	@ApiOperation(value = "Revoke API key", notes = "Revokes the API key attached to the user account.<br><br>Note: This method requires an initial login through POST on /login with username=EMAIL and password=PASSWORD. The resulting JSESSIONID cookie must be set on this request.")
@@ -100,12 +101,12 @@ public class ApiKeyController {
 		try {
 			user = getRequestUser();
 		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authorized", e);
 		}
 
 		var key = keyRepo.findByNameAndUserid(name, user.getId());
 		if (key == null) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find key with name " + name);
 		}
 
 		key.setActive(false);
@@ -122,7 +123,7 @@ public class ApiKeyController {
 		try {
 			user = getRequestUser();
 		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authorized", e);
 		}
 
 		// Not specifying a name returns all keys for user
@@ -132,19 +133,18 @@ public class ApiKeyController {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			}
 
-			List<SelfApiKeyInfo> infos = keys.stream().map((ApiKey elem) -> {
-				SelfApiKeyInfo info = new SelfApiKeyInfo(elem.getName(), elem.getCreationtime(), elem.getActive());
-				return info;
-			}).collect(Collectors.toList());
+			List<SelfApiKeyInfo> infos = keys.stream().map((ApiKey elem)
+					                                               -> new SelfApiKeyInfo(elem.getName(), elem.getCreationtime(),
+					elem.isActive())).collect(Collectors.toList());
 
 			return new ResponseEntity<>(infos, HttpStatus.OK);
 		} else {
 			var key = keyRepo.findByNameAndUserid(name, user.getId());
 			if (key == null) {
-				throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find key with name " + name);
 			}
 
-			var keyInfo = new SelfApiKeyInfo(key.getName(), key.getCreationtime(), key.getActive());
+			var keyInfo = new SelfApiKeyInfo(key.getName(), key.getCreationtime(), key.isActive());
 			return new ResponseEntity<>(List.of(keyInfo), HttpStatus.OK);
 		}
 	}

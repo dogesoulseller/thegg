@@ -1,16 +1,12 @@
 package pl.dogesoulseller.thegg.api.model;
 
-import java.lang.reflect.Field;
-
 import org.springframework.core.style.ToStringCreator;
 
-import lombok.*;
+import java.lang.reflect.Field;
 
 /**
  * Contains a new user's info received during registration
  */
-@Getter
-@Setter
 public class UserRegister {
 	private String email;
 	private String username;
@@ -20,7 +16,7 @@ public class UserRegister {
 	public String toString() {
 		var result = new ToStringCreator(this);
 
-		for (Field field: this.getClass().getDeclaredFields()) {
+		for (Field field : this.getClass().getDeclaredFields()) {
 			try {
 				result.append(field.getName(), field.get(this));
 			} catch (IllegalAccessException e) {
@@ -29,5 +25,37 @@ public class UserRegister {
 		}
 
 		return result.toString();
+	}
+
+	public String getEmail() {
+		return this.email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getUsername() {
+		return this.username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return this.password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getPasswordConfirm() {
+		return this.passwordConfirm;
+	}
+
+	public void setPasswordConfirm(String passwordConfirm) {
+		this.passwordConfirm = passwordConfirm;
 	}
 }
