@@ -4,6 +4,7 @@ import java.time.Instant;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.LinkedMultiValueMap;
@@ -53,7 +54,7 @@ public class UserController {
 	private ApiKeyVerificationService keyVerifier;
 
 	@ApiOperation(value = "Register user", notes = "Register a new user")
-	@PostMapping("/api/user")
+	@PostMapping(value = "/api/user", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<GenericResponse> registerNewUser(@RequestBody UserRegister userdata) {
 		String email = userdata.getEmail().toLowerCase();
 
@@ -90,7 +91,7 @@ public class UserController {
 	}
 
 	@ApiOperation(value = "Get user info", notes = "Gets user info that is stripped of all private data<br><br>If userid is not specified, the API key's owner's data is returned")
-	@GetMapping("/api/user")
+	@GetMapping(value = "/api/user", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<UserSelfInfo> getUserInfo(@RequestParam String apikey, @RequestParam(required = false) String userid) {
 		User requestUser = keyVerifier.getKeyUser(apikey);
 		if (requestUser == null) {
@@ -120,9 +121,8 @@ public class UserController {
 	}
 
 	@ApiOperation(value = "Update user", notes = "Update API key holder's user profile with provided info")
-	@PatchMapping("/api/user")
-	public ResponseEntity<GenericResponse> updateUserInfo(@RequestParam String apikey,
-	                                                      @RequestBody UserSelfInfo info) {
+	@PatchMapping(value = "/api/user", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<GenericResponse> updateUserInfo(@RequestParam String apikey, @RequestBody UserSelfInfo info) {
 		User requestUser = keyVerifier.getKeyUser(apikey);
 		if (requestUser == null) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);

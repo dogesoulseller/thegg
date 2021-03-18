@@ -2,6 +2,7 @@ package pl.dogesoulseller.thegg.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,7 +24,7 @@ public class SearchController {
 
 	// TODO: Query documentation
 	@ApiOperation(value = "Search posts")
-	@GetMapping("/api/search/post")
+	@GetMapping(value = "/api/search/post", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<PagedResults<Post>> searchPosts(@RequestParam(required = false) String query,
 	                                                      @RequestParam(required = false) Integer page,
 	                                                      @RequestParam(required = false) Integer perPage) {
@@ -40,7 +41,7 @@ public class SearchController {
 	}
 
 	@ApiOperation(value = "Search tags")
-	@GetMapping("/api/search/tag")
+	@GetMapping(value = "/api/search/tag", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<PagedResults<Tag>> searchTags(@RequestParam(required = false) String query,
 	                                                    @RequestParam(required = false) Integer page,
 	                                                    @RequestParam(required = false) Integer perPage) {

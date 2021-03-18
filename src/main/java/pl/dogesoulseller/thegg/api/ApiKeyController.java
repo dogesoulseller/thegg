@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -56,7 +57,7 @@ public class ApiKeyController {
 	}
 
 	@ApiOperation(value = "Generate new API key", notes = "Creates a new API key attached to the user account.<br><br>Note: This method requires an initial login through POST on /login with username=EMAIL and password=PASSWORD. The resulting JSESSIONID cookie must be set on this request.")
-	@PostMapping("/api/apikey")
+	@PostMapping(value = "/api/apikey", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<GenericResponse> generateNewKey(
 			@ApiParam(value = "Unique name to use for the API key", defaultValue = "default") @RequestParam(required = false) String name) {
 		name = name == null ? "default" : name;
@@ -93,7 +94,7 @@ public class ApiKeyController {
 	}
 
 	@ApiOperation(value = "Revoke API key", notes = "Revokes the API key attached to the user account.<br><br>Note: This method requires an initial login through POST on /login with username=EMAIL and password=PASSWORD. The resulting JSESSIONID cookie must be set on this request.")
-	@DeleteMapping("/api/apikey")
+	@DeleteMapping(value = "/api/apikey", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> removeKey(@RequestParam(required = false) String name) {
 		name = name == null ? "default" : name;
 
@@ -116,7 +117,7 @@ public class ApiKeyController {
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
-	@GetMapping("/api/apikey")
+	@GetMapping(value = "/api/apikey", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<SelfApiKeyInfo>> getKey(@RequestParam(required = false) String name) {
 		User user;
 

@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -42,7 +43,7 @@ public class PostController {
 	@Autowired
 	private TagManagementService tagService;
 
-	@GetMapping("/api/post")
+	@GetMapping(value = "/api/post", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get post", notes = "Gets information about a post by its database ID.<br><br>This method requires no authentication.")
 	@CrossOrigin
 	public ResponseEntity<Post> getPost(@RequestParam String id) {
@@ -54,7 +55,7 @@ public class PostController {
 	}
 
 	@ApiOperation(value = "Delete post", notes = "Deletes a post. This method is meant for usage by individual clients.<br><br>Requires the supplied apikey to belong to the same user as the one making the post.")
-	@DeleteMapping("/api/post")
+	@DeleteMapping(value = "/api/post", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<GenericResponse> deletePost(@RequestParam String apikey, @RequestParam String id) {
 		var user = keyVerifier.getKeyUser(apikey);
 		if (user == null) {
@@ -75,7 +76,7 @@ public class PostController {
 	}
 
 	@ApiOperation(value = "Create new post", notes = "Creates a new post using the supplied post info. Creating a new post requires a file to be first sent to the server via the /api/send-file endpoint")
-	@PostMapping("/api/post")
+	@PostMapping(value = "/api/post", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<GenericResponse> newPost(@RequestParam String apikey, @RequestBody PostInfo postInfo) {
 		User user = keyVerifier.getKeyUser(apikey);
 		if (user == null) {
