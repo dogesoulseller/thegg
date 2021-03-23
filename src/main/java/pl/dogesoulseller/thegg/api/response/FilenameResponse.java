@@ -1,9 +1,12 @@
 package pl.dogesoulseller.thegg.api.response;
 
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Response with filename and URL of next endpoint
  */
+@XmlRootElement
 public class FilenameResponse {
 	private final String filename;
 	private final String message;

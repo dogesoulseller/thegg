@@ -2,11 +2,13 @@ package pl.dogesoulseller.thegg.api.response;
 
 import org.springframework.data.domain.Page;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
 /**
  * List of objects with associated data about paging
  */
+@XmlRootElement
 public class PagedResults<T> {
 	/**
 	 * List of returned objects
