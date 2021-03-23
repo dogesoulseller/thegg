@@ -62,11 +62,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		return new ServletListenerRegistrationBean<>(new HttpSessionEventPublisher());
 	}
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new Argon2PasswordEncoder(16, 32, 1, 1 << 16, 4);
-	}
-
 	// API rqeuires use of HTTP basic authentication on key management
 	@Configuration
 	@Order(1)
