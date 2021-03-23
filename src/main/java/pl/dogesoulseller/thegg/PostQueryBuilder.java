@@ -98,12 +98,15 @@ public class PostQueryBuilder {
 	 * @return ready-to-execute query
 	 */
 	public Query finish() {
-		// Handle tags
-		if ((includedTags == null || includedTags.isEmpty()) && (excludedTags == null || excludedTags.isEmpty())) {
+		boolean hasIncludedTags = includedTags == null || includedTags.isEmpty();
+		boolean hasExcludedTags = excludedTags == null || excludedTags.isEmpty();
 
-		} else if (includedTags == null || includedTags.isEmpty()) {
+		// Handle tags
+		if (hasIncludedTags && hasExcludedTags) {
+
+		} else if (hasIncludedTags) {
 			query.addCriteria(Criteria.where("tags").not().elemMatch(new Criteria().in(excludedTags)));
-		} else if (excludedTags == null || excludedTags.isEmpty()) {
+		} else if (hasExcludedTags) {
 			query.addCriteria(Criteria.where("tags").all(includedTags));
 		} else {
 			query.addCriteria(new Criteria().andOperator(

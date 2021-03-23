@@ -85,4 +85,8 @@ public class ApiKey {
 	public boolean isAdminKey() {
 		return adminKey;
 	}
+
+	public void setAdminKey(boolean adminKey) {
+		this.adminKey = adminKey;
+	}
 }

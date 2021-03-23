@@ -80,7 +80,7 @@ public class UserController {
 
 		// TODO: Email verification
 		User newUser = new User(email, userdata.getUsername(), passwordEncoder.encode(userdata.getPassword()),
-				roleRepository.findByName("ROLE_USER"), Instant.now());
+				roleRepository.findByName("ROLE_USER").orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "User role does not exist")), Instant.now());
 
 		User insertedUser = userRepository.save(newUser);
 

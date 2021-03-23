@@ -29,6 +29,8 @@ public class Role implements GrantedAuthority {
 		this.privileges = new ArrayList<>(privileges);
 	}
 
+	public Role() {}
+
 	public String getId() {
 		return id;
 	}
@@ -58,5 +60,17 @@ public class Role implements GrantedAuthority {
 	@Override
 	public String getAuthority() {
 		return name;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setPrivileges(List<String> privileges) {
+		this.privileges = privileges;
 	}
 }
