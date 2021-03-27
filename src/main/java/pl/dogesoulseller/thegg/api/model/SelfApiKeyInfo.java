@@ -1,5 +1,8 @@
 package pl.dogesoulseller.thegg.api.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.Instant;
 
 public class SelfApiKeyInfo {
@@ -7,7 +10,8 @@ public class SelfApiKeyInfo {
 	private Instant creationtime;
 	private Boolean active;
 
-	public SelfApiKeyInfo(String name, Instant creationtime, Boolean active) {
+	@JsonCreator
+	public SelfApiKeyInfo(@JsonProperty("name") String name, @JsonProperty("creationtime") Instant creationtime, @JsonProperty("active") Boolean active) {
 		this.name = name;
 		this.creationtime = creationtime;
 		this.active = active;

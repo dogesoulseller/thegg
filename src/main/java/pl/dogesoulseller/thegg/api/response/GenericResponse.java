@@ -1,5 +1,8 @@
 package pl.dogesoulseller.thegg.api.response;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -9,7 +12,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class GenericResponse {
 	private final String message;
 
-	public GenericResponse(String message) {
+	@JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+	public GenericResponse(@JsonProperty  String message) {
 		this.message = message;
 	}
 

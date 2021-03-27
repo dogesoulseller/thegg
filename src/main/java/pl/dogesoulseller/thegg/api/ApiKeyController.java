@@ -29,17 +29,19 @@ import pl.dogesoulseller.thegg.user.User;
 @Api(tags = {"API Keys"})
 @RestController
 public class ApiKeyController {
-	@Autowired
-	MongoKeyRepository keyRepo;
+	private final MongoKeyRepository keyRepo;
 
-	@Autowired
-	MongoUserRepository userRepo;
+	private final MongoUserRepository userRepo;
+
+	public ApiKeyController(MongoKeyRepository keyRepo, MongoUserRepository userRepo) {
+		this.keyRepo = keyRepo;
+		this.userRepo = userRepo;
+	}
 
 	/**
 	 * Get user from current session
 	 *
 	 * @return current user
-	 *
 	 * @throws Exception on authentication failed
 	 */
 	private User getRequestUser() throws Exception {
@@ -59,7 +61,7 @@ public class ApiKeyController {
 	@ApiOperation(value = "Generate new API key", notes = "Creates a new API key attached to the user account.<br><br>Note: This method requires an initial login through POST on /login with username=EMAIL and password=PASSWORD. The resulting JSESSIONID cookie must be set on this request.")
 	@PostMapping(value = "/api/apikey", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<GenericResponse> generateNewKey(
-			@ApiParam(value = "Unique name to use for the API key", defaultValue = "default") @RequestParam(required = false) String name) {
+		@ApiParam(value = "Unique name to use for the API key", defaultValue = "default") @RequestParam(required = false) String name) {
 		name = name == null ? "default" : name;
 
 		User user;
@@ -105,7 +107,8 @@ public class ApiKeyController {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authorized", e);
 		}
 
-		var key = keyRepo.findByNameAndUserid(name, user.getId());
+		// Removing an inactive key should return a 404
+		var key = keyRepo.findByNameAndUseridAndActive(name, user.getId(), true);
 		if (key == null) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find key with name " + name);
 		}
@@ -135,8 +138,8 @@ public class ApiKeyController {
 			}
 
 			List<SelfApiKeyInfo> infos = keys.stream().map((ApiKey elem)
-					                                               -> new SelfApiKeyInfo(elem.getName(), elem.getCreationtime(),
-					elem.isActive())).collect(Collectors.toList());
+				-> new SelfApiKeyInfo(elem.getName(), elem.getCreationtime(),
+				elem.isActive())).collect(Collectors.toList());
 
 			return new ResponseEntity<>(infos, HttpStatus.OK);
 		} else {

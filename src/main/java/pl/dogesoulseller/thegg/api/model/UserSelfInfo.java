@@ -23,6 +23,16 @@ public class UserSelfInfo {
 		this.pronouns = user.getPronouns();
 	}
 
+	public UserSelfInfo(String email, String username, String bio, Pronouns pronouns) {
+		this.email = email;
+		this.username = username;
+		this.bio = bio;
+		this.pronouns = pronouns;
+	}
+
+	public UserSelfInfo() {
+	}
+
 	public String getEmail() {
 		return this.email;
 	}

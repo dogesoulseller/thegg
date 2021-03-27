@@ -22,11 +22,14 @@ import pl.dogesoulseller.thegg.service.SecureUserDetailsService;
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-	@Autowired
-	private SecureUserDetailsService userDetailsService;
+	private final SecureUserDetailsService userDetailsService;
 
-	@Autowired
-	private PasswordEncoder argonPasswordEncoder;
+	private final PasswordEncoder argonPasswordEncoder;
+
+	public SecurityConfiguration(SecureUserDetailsService userDetailsService, PasswordEncoder argonPasswordEncoder) {
+		this.userDetailsService = userDetailsService;
+		this.argonPasswordEncoder = argonPasswordEncoder;
+	}
 
 	@Bean
 	public static SessionRegistry sessionRegistry() {

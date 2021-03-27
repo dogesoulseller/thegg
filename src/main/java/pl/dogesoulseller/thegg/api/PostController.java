@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pl.dogesoulseller.thegg.api.model.Post;
@@ -24,24 +26,29 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URLConnection;
 
+import static pl.dogesoulseller.thegg.Utility.getServerBaseURL;
+
 @Api(tags = {"Posts"})
 @RestController
 public class PostController {
 	private static final Logger log = org.slf4j.LoggerFactory.getLogger(PostController.class);
-	@Autowired
-	private MongoPostRepository posts;
+	private final MongoPostRepository posts;
 
-	@Autowired
-	private ImageInfoService imageInfoService;
+	private final ImageInfoService imageInfoService;
 
-	@Autowired
-	private StorageService storageService;
+	private final StorageService storageService;
 
-	@Autowired
-	private ApiKeyVerificationService keyVerifier;
+	private final ApiKeyVerificationService keyVerifier;
 
-	@Autowired
-	private TagManagementService tagService;
+	private final TagManagementService tagService;
+
+	public PostController(MongoPostRepository posts, ImageInfoService imageInfoService, StorageService storageService, ApiKeyVerificationService keyVerifier, TagManagementService tagService) {
+		this.posts = posts;
+		this.imageInfoService = imageInfoService;
+		this.storageService = storageService;
+		this.keyVerifier = keyVerifier;
+		this.tagService = tagService;
+	}
 
 	@GetMapping(value = "/api/post", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get post", notes = "Gets information about a post by its database ID.<br><br>This method requires no authentication.")
@@ -125,10 +132,13 @@ public class PostController {
 		tagService.insertTags(post.getTags());
 
 		post.setFilename(newFilename);
-		posts.insert(post);
+		post = posts.insert(post);
 
 		log.info("Post inserted with filename {}", newFilename);
 
-		return new ResponseEntity<>(new GenericResponse(""), HttpStatus.CREATED);
+		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+		headers.add("Location", getServerBaseURL() + "/api/post?id=" + post.getId());
+
+		return new ResponseEntity<>(new GenericResponse("Post created"), headers, HttpStatus.CREATED);
 	}
 }

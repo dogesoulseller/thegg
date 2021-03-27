@@ -35,23 +35,26 @@ import pl.dogesoulseller.thegg.user.User;
 @Api(tags = {"User"})
 @RestController
 public class UserController {
-	@Autowired
-	private MongoUserRepository userRepository;
+	private final MongoUserRepository userRepository;
 
-	@Autowired
-	private MongoRoleRepository roleRepository;
+	private final MongoRoleRepository roleRepository;
 
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+	private final PasswordEncoder passwordEncoder;
 
-	@Autowired
-	private PasswordValidator passwordValidator;
+	private final PasswordValidator passwordValidator;
 
-	@Autowired
-	private UserValidator userValidator;
+	private final UserValidator userValidator;
 
-	@Autowired
-	private ApiKeyVerificationService keyVerifier;
+	private final ApiKeyVerificationService keyVerifier;
+
+	public UserController(MongoUserRepository userRepository, MongoRoleRepository roleRepository, PasswordEncoder passwordEncoder, PasswordValidator passwordValidator, UserValidator userValidator, ApiKeyVerificationService keyVerifier) {
+		this.userRepository = userRepository;
+		this.roleRepository = roleRepository;
+		this.passwordEncoder = passwordEncoder;
+		this.passwordValidator = passwordValidator;
+		this.userValidator = userValidator;
+		this.keyVerifier = keyVerifier;
+	}
 
 	@ApiOperation(value = "Register user", notes = "Register a new user")
 	@PostMapping(value = "/api/user", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -85,7 +88,7 @@ public class UserController {
 		User insertedUser = userRepository.save(newUser);
 
 		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-		headers.add("Location", getServerBaseURL() + "/api/user/" + insertedUser.getId());
+		headers.add("Location", getServerBaseURL() + "/api/user?userid=" + insertedUser.getId());
 
 		return new ResponseEntity<>(new GenericResponse("Success"), headers, HttpStatus.CREATED);
 	}
@@ -101,6 +104,7 @@ public class UserController {
 		// Request with no userid returns current user info
 		if (userid == null) {
 			UserSelfInfo selfInfo = new UserSelfInfo(requestUser);
+			selfInfo.setEmail(requestUser.getEmail());
 
 			return new ResponseEntity<>(selfInfo, HttpStatus.OK);
 		} else {
@@ -119,6 +123,8 @@ public class UserController {
 			return new ResponseEntity<>(userInfo, HttpStatus.OK);
 		}
 	}
+
+	// TODO: PUT mapping
 
 	@ApiOperation(value = "Update user", notes = "Update API key holder's user profile with provided info")
 	@PatchMapping(value = "/api/user", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)

@@ -27,14 +27,18 @@ import static pl.dogesoulseller.thegg.Utility.getServerBaseURL;
 @RestController
 public class SendFileController {
 	private static final Logger log = org.slf4j.LoggerFactory.getLogger(SendFileController.class);
-	@Autowired
-	StorageService storageService;
 
-	@Autowired
-	ImageInfoService imageInfoService;
+	private final StorageService storageService;
 
-	@Autowired
-	private ApiKeyVerificationService keyVerifier;
+	private final ImageInfoService imageInfoService;
+
+	private final ApiKeyVerificationService keyVerifier;
+
+	public SendFileController(StorageService storageService, ImageInfoService imageInfoService, ApiKeyVerificationService keyVerifier) {
+		this.storageService = storageService;
+		this.imageInfoService = imageInfoService;
+		this.keyVerifier = keyVerifier;
+	}
 
 	// TODO: Rate limiting
 	@ApiOperation(value = "Send file", notes = "Send a file to the server. Files are stored on the server for 30 minutes before being deleted.<br><br>Only allows files of image/* types up to 64 MB in size.")
@@ -47,15 +51,15 @@ public class SendFileController {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
 		}
 
+		if (file.isEmpty()) {
+			log.error("Trying to receive empty file");
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File cannot be empty");
+		}
+
 		String mimeExtension = imageInfoService.getMimeExtension(file.getContentType());
 		if (mimeExtension == null) {
 			log.error("Trying to receive unsupported MIME type {}", file.getContentType());
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported MIME type " + file.getContentType());
-		}
-
-		if (file.isEmpty()) {
-			log.error("Trying to receive empty file");
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File cannot be empty");
 		}
 
 		String filename;
@@ -69,6 +73,6 @@ public class SendFileController {
 		}
 
 		log.info("Received file {}", filename);
-		return new ResponseEntity<>(new FilenameResponse("Received file", filename, getServerBaseURL() + "/api/post"), HttpStatus.CREATED);
+		return new ResponseEntity<>(new FilenameResponse(filename, "Received file", getServerBaseURL() + "/api/post"), HttpStatus.CREATED);
 	}
 }

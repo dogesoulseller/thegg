@@ -13,6 +13,17 @@ public class UserRegister {
 	private String password;
 	private String passwordConfirm;
 
+	public UserRegister(String email, String username, String password, String passwordConfirm) {
+		this.email = email;
+		this.username = username;
+		this.password = password;
+		this.passwordConfirm = passwordConfirm;
+	}
+
+	public UserRegister() {
+
+	}
+
 	public String toString() {
 		var result = new ToStringCreator(this);
 

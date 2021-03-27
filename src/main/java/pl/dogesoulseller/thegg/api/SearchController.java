@@ -19,8 +19,11 @@ import pl.dogesoulseller.thegg.service.SearchService;
 @Api(tags = {"Search"})
 @RestController
 public class SearchController {
-	@Autowired
-	private SearchService searchService;
+	private final SearchService searchService;
+
+	public SearchController(SearchService searchService) {
+		this.searchService = searchService;
+	}
 
 	// TODO: Query documentation
 	@ApiOperation(value = "Search posts")
@@ -48,7 +51,7 @@ public class SearchController {
 
 		var foundTags = searchService.findTagFromQuery(query, page, perPage);
 		if (foundTags == null || foundTags.isEmpty()) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find a matching post");
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Failed to find a matching tag");
 		}
 
 		var pagedTags = new PagedResults<>(foundTags, page == null ? 0 : page);
