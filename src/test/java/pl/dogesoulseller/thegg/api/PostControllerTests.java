@@ -158,4 +158,103 @@ public class PostControllerTests {
 
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
 	}
+
+	@Test
+	public void getPost() {
+		Session session = new Session(restTemplate, serverPort);
+		sessions.add(session);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+
+		String filename = uploadTestFile(session, "testpng.png");
+
+		PostInfo info = new PostInfo(filename, "safe", null, null, "test", "testposter", List.of("testcreate01", "testcreate02"));
+
+		ResponseEntity<GenericResponse> sendResponse = restTemplate.postForEntity(
+			"http://localhost:" + serverPort + "/api/post?apikey=" + session.getCredentialManager().getUserKey().getKey(),
+			new HttpEntity<>(info, headers), GenericResponse.class);
+
+		assertThat(sendResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+		var locationHeader = Objects.requireNonNull(sendResponse.getHeaders().get("Location")).get(0);
+		var postId = locationHeader.split("id=")[1];
+
+		ResponseEntity<Post> response = restTemplate.exchange("http://localhost:" + serverPort + "/api/post?apikey=" + session.getCredentialManager().getUserKey().getKey()
+			+ "&id=" + postId, HttpMethod.GET, new HttpEntity<>(null, headers), Post.class);
+
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(response.getBody()).isNotNull();
+
+		assertThat(response.getBody().getAuthorComment()).isEqualTo("test");
+		assertThat(response.getBody().getPosterComment()).isEqualTo("testposter");
+		assertThat(response.getBody().getTags().size()).isEqualTo(2);
+		assertThat(response.getBody().getTags()).contains("testcreate01", "testcreate02");
+		assertThat(response.getBody().getId()).isEqualTo(postId);
+	}
+
+	@Test
+	public void getPostNonexistent() {
+		Session session = new Session(restTemplate, serverPort);
+		sessions.add(session);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+
+		ResponseEntity<Post> response = restTemplate.exchange("http://localhost:" + serverPort + "/api/post?apikey=" + session.getCredentialManager().getUserKey().getKey()
+			+ "&id=10", HttpMethod.GET, new HttpEntity<>(null, headers), Post.class);
+
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+	}
+
+	@Test
+	public void deletePost() {
+		Session session = new Session(restTemplate, serverPort);
+		sessions.add(session);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+
+		String filename = uploadTestFile(session, "testpng.png");
+
+		PostInfo info = new PostInfo(filename, "safe", null, null, "test", "testposter", List.of("testcreate01", "testcreate02"));
+
+		ResponseEntity<GenericResponse> sendResponse = restTemplate.postForEntity(
+			"http://localhost:" + serverPort + "/api/post?apikey=" + session.getCredentialManager().getUserKey().getKey(),
+			new HttpEntity<>(info, headers), GenericResponse.class);
+
+		assertThat(sendResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+		var locationHeader = Objects.requireNonNull(sendResponse.getHeaders().get("Location")).get(0);
+		var postId = locationHeader.split("id=")[1];
+
+		assertThat(postRepository.existsById(postId)).isTrue();
+
+		ResponseEntity<GenericResponse> response = restTemplate.exchange(
+			"http://localhost:" + serverPort + "/api/post?apikey=" + session.getCredentialManager().getUserKey().getKey() + "&id=" + postId,
+			HttpMethod.DELETE, new HttpEntity<>(null, headers), GenericResponse.class);
+
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
+		assertThat(postRepository.existsById(postId)).isFalse();
+	}
+
+	@Test
+	public void deletePostNonexistent() {
+		Session session = new Session(restTemplate, serverPort);
+		sessions.add(session);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+
+		ResponseEntity<GenericResponse> response = restTemplate.exchange(
+			"http://localhost:" + serverPort + "/api/post?apikey=" + session.getCredentialManager().getUserKey().getKey() + "&id=10",
+			HttpMethod.DELETE, new HttpEntity<>(null, headers), GenericResponse.class);
+
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+	}
 }
