@@ -126,6 +126,58 @@ public class Post {
 	public Post() {
 	}
 
+	public void update(PostInfo info) {
+		this.authorComment = info.getAuthorComment() == null ? this.authorComment : info.getAuthorComment();
+		this.posterComment = info.getPosterComment() == null ? this.posterComment : info.getPosterComment();
+		this.parent = info.getParent() == null ? this.parent : info.getParent();
+		this.tags = info.getTags() == null ? this.tags : info.getTags();
+		this.sourceUrl = info.getSourceUrl() == null ? this.sourceUrl : info.getSourceUrl();
+		this.rating = info.getRating() == null ? this.rating : info.getRating();
+
+		if (info.getTags() != null) {
+			// Sanitize tags
+			this.tags = new ArrayList<>(info.getTags().size());
+			for (var tag : info.getTags()) {
+				this.tags.add(TAG_REPLACEMENT.matcher(tag.toLowerCase()).replaceAll("_"));
+			}
+		}
+
+		// Validate rating
+		for (var r : VALID_RATINGS) {
+			if (rating.equals(r)) {
+				return;
+			}
+		}
+
+		throw new RuntimeException("Rating invalid");
+	}
+
+	public void updateFull(PostInfo info) {
+		this.authorComment = info.getAuthorComment();
+		this.posterComment = info.getPosterComment();
+		this.parent = info.getParent();
+		this.tags = info.getTags();
+		this.sourceUrl = info.getSourceUrl();
+		this.rating = info.getRating();
+
+		if (info.getTags() != null) {
+			// Sanitize tags
+			this.tags = new ArrayList<>(info.getTags().size());
+			for (var tag : info.getTags()) {
+				this.tags.add(TAG_REPLACEMENT.matcher(tag.toLowerCase()).replaceAll("_"));
+			}
+		}
+
+		// Validate rating
+		for (var r : VALID_RATINGS) {
+			if (rating.equals(r)) {
+				return;
+			}
+		}
+
+		throw new RuntimeException("Rating invalid");
+	}
+
 	public String getId() {
 		return this.id;
 	}

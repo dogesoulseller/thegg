@@ -238,7 +238,6 @@ public class PostControllerTests {
 			HttpMethod.DELETE, new HttpEntity<>(null, headers), GenericResponse.class);
 
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-
 		assertThat(postRepository.existsById(postId)).isFalse();
 	}
 
@@ -256,5 +255,81 @@ public class PostControllerTests {
 			HttpMethod.DELETE, new HttpEntity<>(null, headers), GenericResponse.class);
 
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+	}
+
+	@Test
+	public void modifyPost() {
+		Session session = new Session(restTemplate, serverPort);
+		sessions.add(session);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+
+		String filename = uploadTestFile(session, "testpng.png");
+
+		PostInfo info = new PostInfo(filename, "safe", null, null, "test", "testposter", List.of("testcreate01", "testcreate02"));
+
+		ResponseEntity<GenericResponse> sendResponse = restTemplate.postForEntity(
+			"http://localhost:" + serverPort + "/api/post?apikey=" + session.getCredentialManager().getUserKey().getKey(),
+			new HttpEntity<>(info, headers), GenericResponse.class);
+
+		assertThat(sendResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+		var locationHeader = Objects.requireNonNull(sendResponse.getHeaders().get("Location")).get(0);
+		var postId = locationHeader.split("id=")[1];
+
+		PostInfo updateInfo = new PostInfo(null, null, null, null, "newtest", null, null);
+
+		ResponseEntity<GenericResponse> response = restTemplate.exchange(
+			"http://localhost:" + serverPort + "/api/post?apikey=" + session.getCredentialManager().getUserKey().getKey() + "&id=" + postId,
+			HttpMethod.PATCH, new HttpEntity<>(updateInfo, headers), GenericResponse.class);
+
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
+		var newPostOptional = postRepository.findById(postId);
+		assertThat(newPostOptional).isNotEmpty();
+
+		Post post = newPostOptional.get();
+		assertThat(post.getAuthorComment()).isEqualTo("newtest");
+	}
+
+	@Test
+	public void modifyPostPut() {
+		Session session = new Session(restTemplate, serverPort);
+		sessions.add(session);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+
+		String filename = uploadTestFile(session, "testpng.png");
+
+		PostInfo info = new PostInfo(filename, "safe", null, null, "test", "testposter", List.of("testcreate01", "testcreate02"));
+
+		ResponseEntity<GenericResponse> sendResponse = restTemplate.postForEntity(
+			"http://localhost:" + serverPort + "/api/post?apikey=" + session.getCredentialManager().getUserKey().getKey(),
+			new HttpEntity<>(info, headers), GenericResponse.class);
+
+		assertThat(sendResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+		var locationHeader = Objects.requireNonNull(sendResponse.getHeaders().get("Location")).get(0);
+		var postId = locationHeader.split("id=")[1];
+
+		PostInfo updateInfo = new PostInfo(null, "questionable", null, null, "newtest", null, List.of("example"));
+
+		ResponseEntity<GenericResponse> response = restTemplate.exchange(
+			"http://localhost:" + serverPort + "/api/post?apikey=" + session.getCredentialManager().getUserKey().getKey() + "&id=" + postId,
+			HttpMethod.PUT, new HttpEntity<>(updateInfo, headers), GenericResponse.class);
+
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
+		var newPostOptional = postRepository.findById(postId);
+		assertThat(newPostOptional).isNotEmpty();
+
+		Post post = newPostOptional.get();
+		assertThat(post.getAuthorComment()).isEqualTo("newtest");
+		assertThat(post.getPosterComment()).isNull();
+		assertThat(post.getParent()).isNull();
 	}
 }
