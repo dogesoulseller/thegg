@@ -2,19 +2,13 @@ package pl.dogesoulseller.thegg.api;
 
 import java.time.Instant;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import io.swagger.annotations.Api;
@@ -124,9 +118,19 @@ public class UserController {
 		}
 	}
 
-	// TODO: PUT mapping
+	private void validateAndSaveUser(User user) {
+		if (user.getEmail() == null || !userValidator.validateEmail(user.getEmail())) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email must be a valid address");
+		}
 
-	@ApiOperation(value = "Update user", notes = "Update API key holder's user profile with provided info")
+		if (user.getNonUniqueUsername() == null || !userValidator.validateUsername(user.getNonUniqueUsername())) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username must be a valid username");
+		}
+
+		userRepository.save(user);
+	}
+
+	@ApiOperation(value = "Update user", notes = "Update API key holder's user profile with provided info. Fields with null values are ignored")
 	@PatchMapping(value = "/api/user", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<GenericResponse> updateUserInfo(@RequestParam String apikey, @RequestBody UserSelfInfo info) {
 		User requestUser = keyVerifier.getKeyUser(apikey);
@@ -136,7 +140,28 @@ public class UserController {
 
 		requestUser.update(info);
 
-		userRepository.save(requestUser);
+		requestUser.setEmail(requestUser.getEmail().toLowerCase());
+
+		validateAndSaveUser(requestUser);
+
+		return new ResponseEntity<>(new GenericResponse("Updated"), HttpStatus.OK);
+	}
+
+	@ApiOperation(value = "Update user", notes = "Update API key holder's user profile with provided info")
+	@PutMapping(value = "/api/user", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<GenericResponse> updateUserInfoFull(@RequestParam String apikey, @RequestBody UserSelfInfo info) {
+		info.setEmail(info.getEmail().toLowerCase());
+
+		User requestUser = keyVerifier.getKeyUser(apikey);
+		if (requestUser == null) {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+		}
+
+		requestUser.updateFull(info);
+
+		requestUser.setEmail(requestUser.getEmail().toLowerCase());
+
+		validateAndSaveUser(requestUser);
 
 		return new ResponseEntity<>(new GenericResponse("Updated"), HttpStatus.OK);
 	}

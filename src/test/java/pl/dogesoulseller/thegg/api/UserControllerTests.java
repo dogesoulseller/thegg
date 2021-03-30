@@ -11,7 +11,6 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.*;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import pl.dogesoulseller.thegg.Session;
 import pl.dogesoulseller.thegg.api.model.UserRegister;
 import pl.dogesoulseller.thegg.api.model.UserSelfInfo;
@@ -20,12 +19,9 @@ import pl.dogesoulseller.thegg.repo.MongoUserRepository;
 import pl.dogesoulseller.thegg.user.Role;
 import pl.dogesoulseller.thegg.user.User;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -218,9 +214,47 @@ public class UserControllerTests {
 		}
 
 		var response = restTemplate.exchange(requestString, HttpMethod.PATCH, new HttpEntity<>(regDataJson, headers), String.class);
-		var newUserData = userRepo.findByEmail(session.getCredentialManager().getUserUser().getEmail());
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+		var newUserData = userRepo.findByEmail(session.getCredentialManager().getUserUser().getEmail().toLowerCase());
 		assertThat(newUserData).isNotNull();
 		assertThat(newUserData.getBio()).isEqualTo("testbio");
 		assertThat(newUserData.getPronouns()).isNull();
+	}
+
+	@Test
+	public void modifyUserInfoFull() {
+		Session session = new Session(restTemplate, serverPort);
+		sessions.add(session);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+
+		// Get user information pre-update
+		User user = Objects.requireNonNull(userRepo.findByEmail(session.getCredentialManager().getUserUser().getEmail()));
+		assertThat(user.getBio()).isNull();
+
+		// Update user
+		String requestString = "http://localhost:" + serverPort + "/api/user?apikey=" + session.getCredentialManager().getUserKey().getKey();
+		UserSelfInfo updateInfo = new UserSelfInfo("testmail@mail.co", "testusername", "testbio", null);
+
+		String regDataJson = null;
+
+		try {
+			regDataJson = new ObjectMapper().writeValueAsString(updateInfo);
+		} catch (JsonProcessingException e) {
+			fail("Failed to convert to JSON", e);
+		}
+
+		var response = restTemplate.exchange(requestString, HttpMethod.PUT, new HttpEntity<>(regDataJson, headers), String.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+		var newUserData = userRepo.findByEmail("testmail@mail.co");
+		assertThat(newUserData).isNotNull();
+		assertThat(newUserData.getBio()).isEqualTo("testbio");
+		assertThat(newUserData.getPronouns()).isNull();
+		assertThat(newUserData.getEmail()).isEqualTo("testmail@mail.co");
+		assertThat(newUserData.getNonUniqueUsername()).isEqualTo("testusername");
 	}
 }

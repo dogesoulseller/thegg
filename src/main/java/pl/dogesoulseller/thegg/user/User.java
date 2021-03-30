@@ -219,6 +219,13 @@ public class User implements UserDetails {
 		this.username = updateInfo.getUsername() == null ? this.username : updateInfo.getUsername();
 	}
 
+	public void updateFull(UserSelfInfo updateInfo) {
+		this.bio = updateInfo.getBio();
+		this.email = updateInfo.getEmail();
+		this.pronouns = updateInfo.getPronouns();
+		this.username = updateInfo.getUsername();
+	}
+
 	public void update(User info) {
 		this.email = info.getEmail() == null ? this.email : info.getEmail();
 		this.username = info.getNonUniqueUsername() == null ? this.username : info.getNonUniqueUsername();
