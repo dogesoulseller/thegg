@@ -22,8 +22,8 @@ public class UserValidator {
 
 	@Autowired
 	public UserValidator(UserValidationProperties properties) {
-		Integer usernameMinLen = properties.getMinLen() == null ? DEFAULT_USERNAME_MIN_LEN : properties.getMinLen();
-		Integer usernameMaxLen = properties.getMaxLen() == null ? DEFAULT_USERNAME_MAX_LEN : properties.getMaxLen();
+		Integer usernameMinLen = properties.getUsernameMinLen() == null ? DEFAULT_USERNAME_MIN_LEN : properties.getUsernameMinLen();
+		Integer usernameMaxLen = properties.getUsernameMaxLen() == null ? DEFAULT_USERNAME_MAX_LEN : properties.getUsernameMaxLen();
 
 		// Only alphanumeric with _ or -
 		var usernameRegex = String.format("^[a-zA-Z0-9_-]{%d,%d}$", usernameMinLen, usernameMaxLen);
