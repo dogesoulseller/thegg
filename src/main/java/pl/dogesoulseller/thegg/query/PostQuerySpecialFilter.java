@@ -1,4 +1,4 @@
-package pl.dogesoulseller.thegg;
+package pl.dogesoulseller.thegg.query;
 
 /**
  * Special filter (query components starting with ~)
