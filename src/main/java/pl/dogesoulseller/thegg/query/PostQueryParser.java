@@ -1,5 +1,6 @@
 package pl.dogesoulseller.thegg.query;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -157,12 +158,12 @@ public class PostQueryParser implements QueryParser {
 
 	@Override
 	public List<String> getExclusions() {
-		return excludedTags;
+		return Collections.unmodifiableList(excludedTags);
 	}
 
 	@Override
 	public List<String> getInclusions() {
-		return includedTags;
+		return Collections.unmodifiableList(includedTags);
 	}
 
 	@Override
@@ -171,6 +172,6 @@ public class PostQueryParser implements QueryParser {
 	}
 
 	public List<PostQuerySpecialFilter> getSpecialFiltering() {
-		return specialFiltering;
+		return Collections.unmodifiableList(specialFiltering);
 	}
 }

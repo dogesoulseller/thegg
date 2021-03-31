@@ -19,4 +19,6 @@ public interface MongoPostRepository extends MongoRepository<Post, String> {
 
 	@Query("{tags:{$not:{$elemMatch:{$in:?0}}}}")
 	Page<Post> filterByExcludedTags(List<String> excludedTags, Pageable pageable);
+
+	void deleteByTagsContaining(String tag);
 }

@@ -1,5 +1,7 @@
 package pl.dogesoulseller.thegg.api.response;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.domain.Page;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -36,7 +38,8 @@ public class PagedResults<T> {
 		this.currentPage = currentPage;
 	}
 
-	public PagedResults(List<T> results, long pageCount, long currentPage) {
+	@JsonCreator
+	public PagedResults(@JsonProperty("results") List<T> results, @JsonProperty("pageCount") long pageCount, @JsonProperty("currentPage") long currentPage) {
 		this.results = results;
 		this.pageCount = pageCount;
 		this.currentPage = currentPage;
