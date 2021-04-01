@@ -86,7 +86,7 @@ public class PostQueryParser implements QueryParser {
 			sorting = Sort.by(new Order(direction, tag));
 			return null;
 		} else if (tag.contains("rating:")) {
-			tag = tag.substring(7).strip();
+			tag = tag.substring(8).strip();
 
 			sort = null;
 			field = "rating";
@@ -98,7 +98,7 @@ public class PostQueryParser implements QueryParser {
 			field = "filesize";
 			value = tag.substring(1).strip();
 		} else if (tag.contains("mime:") || tag.contains("type:")) {
-			tag = tag.substring(5).strip();
+			tag = tag.substring(6).strip();
 
 			sort = null;
 			field = "mime";
@@ -122,7 +122,7 @@ public class PostQueryParser implements QueryParser {
 			field = "creation_date";
 			value = tag.substring(1).strip();
 		} else {
-			return null;
+			throw new RuntimeException("Unknown field in " + tag);
 		}
 
 		return new PostQuerySpecialFilter(sort, field, value);

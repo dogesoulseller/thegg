@@ -12,9 +12,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -62,23 +60,23 @@ public class SearchControllerTests {
 			"authorcomm", "postcomm", List.of("searchcont_post0", "searchcont_all", "searchcont_3"), false, null));
 
 		postsToSave.add(new Post(null, null, null, null, "testname_searchcont", "safe", Instant.now(), Instant.now(),
-			564416, "image/png", 1280, 720,
+			564416, "image/jpeg", 1280, 720,
 			"authorcomm", "postcomm", List.of("searchcont_post1", "searchcont_all", "searchcont_3"), false, null));
 
 		postsToSave.add(new Post(null, null, null, null, "testname_searchcont", "safe", Instant.now(), Instant.now(),
-			865467, "image/png", 1920, 1080,
+			865467, "image/jpeg", 1920, 1080,
 			"authorcomm", "postcomm", List.of("searchcont_post2", "searchcont_all", "searchcont_2"), false, null));
 
 		postsToSave.add(new Post(null, null, null, null, "testname_searchcont", "safe", Instant.now(), Instant.now(),
-			9904853, "image/png", 3000, 5000,
+			990485, "image/png", 3000, 5000,
 			"authorcomm", "postcomm", List.of("searchcont_post3", "searchcont_all", "searchcont_2"), false, null));
 
 		postsToSave.add(new Post(null, null, null, null, "testname_searchcont", "safe", Instant.now(), Instant.now(),
-			6437086, "image/png", 1366, 768,
+			643708, "image/jpeg", 1366, 768,
 			"authorcomm", "postcomm", List.of("searchcont_post4", "searchcont_all", "searchcont_3"), false, null));
 
 		postsToSave.add(new Post(null, null, null, null, "testname_searchcont", "safe", Instant.now(), Instant.now(),
-			5985923, "image/png", 400, 400,
+			598592, "image/png", 400, 400,
 			"authorcomm", "postcomm", List.of("searchcont_post5", "searchcont_all", "searchcont_one_first"), false, null));
 
 		postsToSave.add(new Post(null, null, null, null, "testname_searchcont", "safe", Instant.now(), Instant.now(),
@@ -86,6 +84,11 @@ public class SearchControllerTests {
 			"authorcomm", "postcomm", List.of("searchcont_post6", "searchcont_all", "searchcont_one_second"), false, null));
 
 		postRepository.insert(postsToSave);
+	}
+
+	@AfterEach
+	public void deinit() {
+		postRepository.deleteByTagsContaining("searchcont_all");
 	}
 
 	private PagedResults<Post> searchWithQuery(String query) {
@@ -109,18 +112,14 @@ public class SearchControllerTests {
 	@Test
 	public void findAllPosts() {
 		var results = searchWithQuery("");
-
 		assertThat(results).isNotNull();
 		assertThat(results.getCurrentPage()).isEqualTo(0);
 		assertThat(results.getResults()).isNotNull();
-
-		postRepository.deleteByTagsContaining("searchcont_all");
 	}
 
 	@Test
 	public void findAllWithTag() {
 		var results = searchWithQuery("searchcont_all");
-
 		assertThat(results).isNotNull();
 		assertThat(results.getCurrentPage()).isEqualTo(0);
 		assertThat(results.getPageCount()).isEqualTo(1);
@@ -128,14 +127,11 @@ public class SearchControllerTests {
 
 		List<Post> posts = results.getResults();
 		assertThat(posts.size()).isEqualTo(7);
-
-		postRepository.deleteByTagsContaining("searchcont_all");
 	}
 
 	@Test
 	public void findWithTagExcluded() {
 		var results = searchWithQuery("-searchcont_3 searchcont_all");
-
 		assertThat(results).isNotNull();
 		assertThat(results.getCurrentPage()).isEqualTo(0);
 		assertThat(results.getPageCount()).isEqualTo(1);
@@ -143,8 +139,6 @@ public class SearchControllerTests {
 
 		List<Post> posts = results.getResults();
 		assertThat(posts.size()).isEqualTo(4);
-
-		postRepository.deleteByTagsContaining("searchcont_all");
 	}
 
 	@Test
@@ -157,7 +151,39 @@ public class SearchControllerTests {
 			HttpMethod.GET, new HttpEntity<>(null, headers), String.class);
 
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+	}
 
-		postRepository.deleteByTagsContaining("searchcont_all");
+	@Test
+	public void findWithTagAdvanced() {
+		var resultsGt = searchWithQuery("~size:>600000 searchcont_all");
+		assertThat(resultsGt).isNotNull();
+		assertThat(resultsGt.getCurrentPage()).isEqualTo(0);
+		assertThat(resultsGt.getPageCount()).isEqualTo(1);
+		assertThat(resultsGt.getResults()).isNotNull();
+		assertThat(resultsGt.getResults().size()).isEqualTo(4);
+
+		var resultsLt = searchWithQuery("~size:<600000 searchcont_all");
+		assertThat(resultsLt).isNotNull();
+		assertThat(resultsLt.getCurrentPage()).isEqualTo(0);
+		assertThat(resultsLt.getPageCount()).isEqualTo(1);
+		assertThat(resultsLt.getResults()).isNotNull();
+		assertThat(resultsLt.getResults().size()).isEqualTo(3);
+
+		var resultsEq = searchWithQuery("~size:=564416 searchcont_all");
+		assertThat(resultsEq).isNotNull();
+		assertThat(resultsEq.getCurrentPage()).isEqualTo(0);
+		assertThat(resultsEq.getPageCount()).isEqualTo(1);
+		assertThat(resultsEq.getResults()).isNotNull();
+		assertThat(resultsEq.getResults().size()).isEqualTo(1);
+	}
+
+	@Test
+	public void findWithTagAdvancedNoIneq() {
+		var results = searchWithQuery("~mime:image/jpeg searchcont_all");
+		assertThat(results).isNotNull();
+		assertThat(results.getCurrentPage()).isEqualTo(0);
+		assertThat(results.getPageCount()).isEqualTo(1);
+		assertThat(results.getResults()).isNotNull();
+		assertThat(results.getResults().size()).isEqualTo(3);
 	}
 }
