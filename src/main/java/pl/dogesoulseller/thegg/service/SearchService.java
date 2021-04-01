@@ -70,15 +70,15 @@ public class SearchService {
 	}
 
 	public Page<Tag> findTagFromQuery(String query, Integer page, Integer perPage) {
-		Pageable pageN = PageRequest.of(page == null ? 0 : page, perPage == null ? 30 : perPage, Sort.by("tag"));
+		Pageable pageN = PageRequest.of(page == null ? 0 : page, perPage == null ? 30 : perPage, Sort.by(Sort.Direction.ASC, "tag"));
 		Page<Tag> foundTags;
 
 		if (query == null || query.isBlank()) {
 			foundTags = tags.findAll(pageN);
 		} else {
-			String tagmatch = query.strip().split(" ")[0];
-			log.trace("Executing search for tag containing: {}", tagmatch);
-			foundTags = tags.findByTagContaining(tagmatch, pageN);
+			String tagmatch = query.strip().split(" ")[0].toLowerCase();
+			log.trace("Executing search for tag like: {}", tagmatch);
+			foundTags = tags.findByTagLike(tagmatch, pageN);
 		}
 
 		return foundTags;

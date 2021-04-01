@@ -26,8 +26,9 @@ public class TagManagementService {
 
 		// Find tags that do not yet exist
 		for (String tag : tags) {
-			if (!tagRepo.existsByTag(tag)) {
-				toInsert.add(new Tag(tag));
+			String tagTransformed = tag.toLowerCase();
+			if (!tagRepo.existsByTag(tagTransformed)) {
+				toInsert.add(new Tag(tagTransformed));
 			}
 		}
 

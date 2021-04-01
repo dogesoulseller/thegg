@@ -55,10 +55,10 @@ public class SearchControllerTagsTest {
 		List<Tag> tagsToSave = new ArrayList<>(7);
 
 		tagsToSave.add(new Tag("searchconttag_tag0"));
-		tagsToSave.add(new Tag("searchconttag_tag1"));
-		tagsToSave.add(new Tag("searchconttag_tag2"));
-		tagsToSave.add(new Tag("searchconttag_tag3"));
 		tagsToSave.add(new Tag("searchconttag_tag4"));
+		tagsToSave.add(new Tag("searchconttag_tag1"));
+		tagsToSave.add(new Tag("searchconttag_tag3"));
+		tagsToSave.add(new Tag("searchconttag_tag2"));
 		tagsToSave.add(new Tag("searchconttag_othertagtype5"));
 		tagsToSave.add(new Tag("searchconttag_othertagtype6"));
 		tagsToSave.add(new Tag("searchconttag_othertagtype7"));
@@ -104,5 +104,30 @@ public class SearchControllerTagsTest {
 		assertThat(results.getCurrentPage()).isEqualTo(0);
 		assertThat(results.getResults()).isNotNull();
 		assertThat(results.getResults().size()).isEqualTo(1);
+	}
+
+	@Test
+	void getMultiTag() {
+		var results = searchWithQuery("searchconttag_t");
+		assertThat(results).isNotNull();
+		assertThat(results.getCurrentPage()).isEqualTo(0);
+		assertThat(results.getResults()).isNotNull();
+		assertThat(results.getResults().size()).isEqualTo(5);
+
+		for (int i = 0; i < 5; i++) {
+			assertThat(results.getResults().get(i).getTag()).endsWith(Integer.toString(i));
+		}
+	}
+
+	@Test
+	void getTagNoResults() {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+
+		var response = restTemplate.exchange("http://localhost:" + serverPort + "/api/search/tag?query=" + "tagnoresults",
+			HttpMethod.GET, new HttpEntity<>(null, headers), String.class);
+
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
 	}
 }
