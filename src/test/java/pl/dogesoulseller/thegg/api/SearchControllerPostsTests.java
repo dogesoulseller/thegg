@@ -28,7 +28,7 @@ import pl.dogesoulseller.thegg.api.response.PagedResults;
 import pl.dogesoulseller.thegg.repo.MongoPostRepository;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class SearchControllerTests {
+public class SearchControllerPostsTests {
 
 	@Autowired
 	private MongoPostRepository postRepository;

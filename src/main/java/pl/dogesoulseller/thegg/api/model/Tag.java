@@ -1,6 +1,9 @@
 package pl.dogesoulseller.thegg.api.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -23,6 +26,14 @@ public class Tag {
 	 */
 	public Tag(String tag) {
 		this.tag = tag;
+	}
+
+	@JsonCreator
+	@PersistenceConstructor
+	public Tag(@JsonProperty("id") String id, @JsonProperty("tag") String tag, @JsonProperty("description") String description) {
+		this.id = id;
+		this.tag = tag;
+		this.description = description;
 	}
 
 	public String getId() {
