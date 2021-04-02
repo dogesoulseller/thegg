@@ -1,7 +1,6 @@
 package pl.dogesoulseller.thegg.service;
 
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,8 +14,11 @@ import pl.dogesoulseller.thegg.user.User;
 @Service
 public class SecureUserDetailsService implements UserDetailsService {
 	private static final Logger log = org.slf4j.LoggerFactory.getLogger(SecureUserDetailsService.class);
-	@Autowired
-	private MongoUserRepository userRepository;
+	private final MongoUserRepository userRepository;
+
+	public SecureUserDetailsService(MongoUserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
 
 	// Username is set to be email, as usernames are not unique
 	@Override

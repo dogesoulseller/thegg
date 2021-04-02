@@ -21,14 +21,17 @@ import java.util.List;
 @Service
 public class SearchService {
 	private static final Logger log = org.slf4j.LoggerFactory.getLogger(SearchService.class);
-	@Autowired
-	private MongoPostRepository posts;
+	private final MongoPostRepository posts;
 
-	@Autowired
-	private MongoTagRepository tags;
+	private final MongoTagRepository tags;
 
-	@Autowired
-	private MongoTemplate mongoTemplate;
+	private final MongoTemplate mongoTemplate;
+
+	public SearchService(MongoPostRepository posts, MongoTagRepository tags, MongoTemplate mongoTemplate) {
+		this.posts = posts;
+		this.tags = tags;
+		this.mongoTemplate = mongoTemplate;
+	}
 
 	/**
 	 * Find paged posts using specified query and parameters

@@ -13,8 +13,8 @@ import java.util.regex.Pattern;
  */
 @Component
 public class UserValidator {
-	private final static int DEFAULT_USERNAME_MIN_LEN = 3;
-	private final static int DEFAULT_USERNAME_MAX_LEN = 30;
+	private static final int DEFAULT_USERNAME_MIN_LEN = 3;
+	private static final int DEFAULT_USERNAME_MAX_LEN = 30;
 	private static final Logger log = org.slf4j.LoggerFactory.getLogger(UserValidator.class);
 
 	private final Pattern emailPattern = Pattern.compile("^[a-z0-9_+&*-]+(?:\\.[a-z0-9_+&*-]+)*@(?:[a-z0-9-]+\\.)+[a-z]{2,7}$");

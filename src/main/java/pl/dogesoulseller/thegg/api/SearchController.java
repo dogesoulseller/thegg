@@ -1,6 +1,5 @@
 package pl.dogesoulseller.thegg.api;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +15,7 @@ import pl.dogesoulseller.thegg.api.model.Tag;
 import pl.dogesoulseller.thegg.api.response.PagedResults;
 import pl.dogesoulseller.thegg.service.SearchService;
 
-@Api(tags = {"Search"})
+@Api(tags = "Search")
 @RestController
 public class SearchController {
 	private final SearchService searchService;
@@ -26,7 +25,7 @@ public class SearchController {
 	}
 
 	// TODO: Query documentation
-	@ApiOperation(value = "Search posts")
+	@ApiOperation("Search posts")
 	@GetMapping(value = "/api/search/post", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<PagedResults<Post>> searchPosts(@RequestParam(required = false) String query,
 	                                                      @RequestParam(required = false) Integer page,
@@ -43,7 +42,7 @@ public class SearchController {
 		return new ResponseEntity<>(pagedPosts, HttpStatus.OK);
 	}
 
-	@ApiOperation(value = "Search tags")
+	@ApiOperation("Search tags")
 	@GetMapping(value = "/api/search/tag", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<PagedResults<Tag>> searchTags(@RequestParam(required = false) String query,
 	                                                    @RequestParam(required = false) Integer page,

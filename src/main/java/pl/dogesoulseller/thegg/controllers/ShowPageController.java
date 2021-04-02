@@ -1,6 +1,5 @@
 package pl.dogesoulseller.thegg.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,8 +12,11 @@ import pl.dogesoulseller.thegg.repo.MongoPostRepository;
 
 @Controller
 public class ShowPageController {
-	@Autowired
-	private MongoPostRepository posts;
+	private final MongoPostRepository posts;
+
+	public ShowPageController(MongoPostRepository posts) {
+		this.posts = posts;
+	}
 
 	@GetMapping("/show/{id}")
 	public String showPost(Model model, @PathVariable String id) {

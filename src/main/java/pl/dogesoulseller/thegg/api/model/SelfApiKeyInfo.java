@@ -6,9 +6,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.Instant;
 
 public class SelfApiKeyInfo {
-	private String name;
-	private Instant creationtime;
-	private Boolean active;
+	private final String name;
+	private final Instant creationtime;
+	private final Boolean active;
 
 	@JsonCreator
 	public SelfApiKeyInfo(@JsonProperty("name") String name, @JsonProperty("creationtime") Instant creationtime, @JsonProperty("active") Boolean active) {

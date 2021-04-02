@@ -1,6 +1,5 @@
 package pl.dogesoulseller.thegg.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,8 +9,11 @@ import pl.dogesoulseller.thegg.service.SearchService;
 
 @Controller
 public class SearchPageController {
-	@Autowired
-	private SearchService searchService;
+	private final SearchService searchService;
+
+	public SearchPageController(SearchService searchService) {
+		this.searchService = searchService;
+	}
 
 	@GetMapping("/search")
 	public String searchPosts(Model model, @RequestParam(required = false) String query,

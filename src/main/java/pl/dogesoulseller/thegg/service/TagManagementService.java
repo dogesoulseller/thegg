@@ -3,7 +3,6 @@ package pl.dogesoulseller.thegg.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import pl.dogesoulseller.thegg.api.model.Tag;
@@ -14,8 +13,11 @@ import pl.dogesoulseller.thegg.repo.MongoTagRepository;
  */
 @Service
 public class TagManagementService {
-	@Autowired
-	MongoTagRepository tagRepo;
+	final MongoTagRepository tagRepo;
+
+	public TagManagementService(MongoTagRepository tagRepo) {
+		this.tagRepo = tagRepo;
+	}
 
 	/**
 	 * Insert all tags, separating out the ones which are already present in the database

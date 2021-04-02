@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +25,7 @@ import pl.dogesoulseller.thegg.repo.MongoUserRepository;
 import pl.dogesoulseller.thegg.user.ApiKey;
 import pl.dogesoulseller.thegg.user.User;
 
-@Api(tags = {"API Keys"})
+@Api(tags = "API Keys")
 @RestController
 public class ApiKeyController {
 	private final MongoKeyRepository keyRepo;

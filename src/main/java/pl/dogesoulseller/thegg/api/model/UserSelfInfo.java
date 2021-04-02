@@ -1,5 +1,6 @@
 package pl.dogesoulseller.thegg.api.model;
 
+import org.springframework.data.annotation.PersistenceConstructor;
 import pl.dogesoulseller.thegg.user.User;
 import pl.dogesoulseller.thegg.user.User.Pronouns;
 
@@ -23,6 +24,7 @@ public class UserSelfInfo {
 		this.pronouns = user.getPronouns();
 	}
 
+	@PersistenceConstructor
 	public UserSelfInfo(String email, String username, String bio, Pronouns pronouns) {
 		this.email = email;
 		this.username = username;

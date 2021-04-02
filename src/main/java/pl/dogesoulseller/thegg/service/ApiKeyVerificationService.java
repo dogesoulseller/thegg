@@ -17,11 +17,14 @@ import pl.dogesoulseller.thegg.user.User;
  */
 @Service
 public class ApiKeyVerificationService {
-	@Autowired
-	private MongoKeyRepository keyRepository;
+	private final MongoKeyRepository keyRepository;
 
-	@Autowired
-	private MongoUserRepository userRepository;
+	private final MongoUserRepository userRepository;
+
+	public ApiKeyVerificationService(MongoKeyRepository keyRepository, MongoUserRepository userRepository) {
+		this.keyRepository = keyRepository;
+		this.userRepository = userRepository;
+	}
 
 	private Pair<Boolean, ApiKey> getKeyAndValidate(String key) {
 		ApiKey foundKey = keyRepository.findByKey(key);
@@ -54,7 +57,8 @@ public class ApiKeyVerificationService {
 	 * @param key key
 	 * @return user or null
 	 */
-	public @Nullable User getKeyUser(String key) {
+	@Nullable
+	public User getKeyUser(String key) {
 		var searchResult = getKeyAndValidate(key);
 		if (!searchResult.getFirst()) {
 			return null;

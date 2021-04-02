@@ -3,7 +3,6 @@ package pl.dogesoulseller.thegg.api;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +27,7 @@ import java.net.URLConnection;
 
 import static pl.dogesoulseller.thegg.Utility.getServerBaseURL;
 
-@Api(tags = {"Posts"})
+@Api(tags = "Posts")
 @RestController
 public class PostController {
 	private static final Logger log = org.slf4j.LoggerFactory.getLogger(PostController.class);

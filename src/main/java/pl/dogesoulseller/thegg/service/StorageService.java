@@ -46,7 +46,7 @@ public class StorageService {
 		Path output = tempStoragePath.resolve(UUID.randomUUID().toString());
 		Files.copy(file.getInputStream(), output, StandardCopyOption.REPLACE_EXISTING);
 
-		log.debug("Stored temp file of size {} as {}", file.getSize(), output.toString());
+		log.debug("Stored temp file of size {} as {}", file.getSize(), output);
 
 		return output.toString();
 	}
@@ -63,7 +63,7 @@ public class StorageService {
 		Path output = storagePath.resolve(newName);
 		Files.move(Paths.get(file.getAbsolutePath()), output, StandardCopyOption.REPLACE_EXISTING);
 
-		log.debug("Stored permanent file of size {} as {}", file.length(), output.toString());
+		log.debug("Stored permanent file of size {} as {}", file.length(), output);
 
 		return output.toString();
 	}
@@ -98,7 +98,7 @@ public class StorageService {
 		try {
 			Files.walkFileTree(tempStoragePath, new DeletionFileVisitor());
 		} catch (IOException e) {
-			log.warn("Failed to access file: " + e.toString());
+			log.warn("Failed to access file: {}", e);
 		}
 
 		log.info("Files deleted");

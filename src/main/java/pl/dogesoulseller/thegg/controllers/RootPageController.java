@@ -3,7 +3,6 @@ package pl.dogesoulseller.thegg.controllers;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,8 +13,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class RootPageController {
-	@Autowired
-	private SessionRegistry sessionRegistry;
+	private final SessionRegistry sessionRegistry;
+
+	public RootPageController(SessionRegistry sessionRegistry) {
+		this.sessionRegistry = sessionRegistry;
+	}
 
 	public List<UserDetails> listLoggedInUsers() {
 		List<Object> allPrincipals = sessionRegistry.getAllPrincipals();

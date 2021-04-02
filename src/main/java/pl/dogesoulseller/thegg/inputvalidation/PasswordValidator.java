@@ -12,8 +12,8 @@ import java.util.regex.Pattern;
  */
 @Component
 public class PasswordValidator {
-	private final static int DEFAULT_MIN_USER_PASS_LEN = 6;
-	private final static int DEFAULT_MIN_ADMIN_PASS_LEN = 16;
+	private static final int DEFAULT_MIN_USER_PASS_LEN = 6;
+	private static final int DEFAULT_MIN_ADMIN_PASS_LEN = 16;
 	private static final Logger log = org.slf4j.LoggerFactory.getLogger(PasswordValidator.class);
 	private final Pattern adminPasswordPattern;
 	private final Integer userPasswordMinLen;

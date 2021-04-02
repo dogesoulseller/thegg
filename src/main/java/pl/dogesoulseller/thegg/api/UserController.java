@@ -26,7 +26,7 @@ import pl.dogesoulseller.thegg.repo.MongoUserRepository;
 import pl.dogesoulseller.thegg.service.ApiKeyVerificationService;
 import pl.dogesoulseller.thegg.user.User;
 
-@Api(tags = {"User"})
+@Api(tags = "User")
 @RestController
 public class UserController {
 	private final MongoUserRepository userRepository;
