@@ -49,9 +49,8 @@ public class TagController {
 
 	@PostMapping(value="/api/tag", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<GenericResponse> createTag(@RequestParam String apikey, @RequestBody NewTagInfo info) {
-		User requestUser = keyVerifier.getKeyUser(apikey);
-		if (requestUser == null) {
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+		if (!keyVerifier.isValid(apikey)) {
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
 		}
 
 		if (info.getTag().isBlank()) {

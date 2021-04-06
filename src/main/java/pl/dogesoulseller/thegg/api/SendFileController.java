@@ -45,9 +45,8 @@ public class SendFileController {
 	@CrossOrigin
 	public ResponseEntity<FilenameResponse> sendFile(@RequestParam String apikey,
 	                                                 @RequestParam("file") MultipartFile file) {
-		var user = keyVerifier.getKeyUser(apikey);
-		if (user == null) {
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+		if (!keyVerifier.isValid(apikey)) {
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
 		}
 
 		if (file.isEmpty()) {
