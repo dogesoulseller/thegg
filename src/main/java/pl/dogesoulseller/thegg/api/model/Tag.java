@@ -22,6 +22,7 @@ public class Tag {
 
 	/**
 	 * Construct new tag with empty description
+	 *
 	 * @param tag tag name
 	 */
 	public Tag(String tag) {
@@ -34,6 +35,11 @@ public class Tag {
 		this.id = id;
 		this.tag = tag;
 		this.description = description;
+	}
+
+	public Tag(NewTagInfo info) {
+		this.tag = info.getTag();
+		this.description = info.getDescription();
 	}
 
 	public String getId() {
