@@ -13,7 +13,6 @@ import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import pl.dogesoulseller.thegg.Session;
-import pl.dogesoulseller.thegg.TestCredentialManager;
 import pl.dogesoulseller.thegg.api.response.FilenameResponse;
 import pl.dogesoulseller.thegg.service.StorageService;
 
@@ -130,11 +129,11 @@ public class SendFileControllerTests {
 		Session session = new Session(restTemplate, serverPort);
 		sessions.add(session);
 
-			ResponseEntity<FilenameResponse> response = restTemplate.postForEntity(
-					"http://localhost:" + serverPort + "/api/send-file?apikey=" + session.getCredentialManager().getUserKey().getKey(),
-					new HttpEntity<>(body, headers),
-					FilenameResponse.class);
+		ResponseEntity<FilenameResponse> response = restTemplate.postForEntity(
+				"http://localhost:" + serverPort + "/api/send-file?apikey=" + session.getCredentialManager().getUserKey().getKey(),
+				new HttpEntity<>(body, headers),
+				FilenameResponse.class);
 
-			assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
 	}
 }

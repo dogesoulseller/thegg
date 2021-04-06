@@ -29,7 +29,6 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-// TODO: Write tests
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PostControllerTests {
 	@SuppressWarnings("StaticVariableMayNotBeInitialized")
