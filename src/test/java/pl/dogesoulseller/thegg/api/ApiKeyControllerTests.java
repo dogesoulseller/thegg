@@ -12,7 +12,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.*;
 import pl.dogesoulseller.thegg.Session;
-import pl.dogesoulseller.thegg.api.model.SelfApiKeyInfo;
+import pl.dogesoulseller.thegg.api.response.SelfApiKeyInfo;
 import pl.dogesoulseller.thegg.api.response.GenericResponse;
 import pl.dogesoulseller.thegg.repo.MongoKeyRepository;
 import pl.dogesoulseller.thegg.service.ApiKeyVerificationService;
@@ -24,7 +24,6 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 import static org.assertj.core.api.Assertions.*;
 import static pl.dogesoulseller.thegg.TestUtility.cookieHeaders;
 
-// TODO: Write tests
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ApiKeyControllerTests {
 	@SuppressWarnings("StaticVariableMayNotBeInitialized")

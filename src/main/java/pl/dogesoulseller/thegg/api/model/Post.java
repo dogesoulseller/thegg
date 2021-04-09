@@ -73,6 +73,7 @@ public class Post {
 
 	/**
 	 * Constructor building a post from received {@link PostInfo}
+	 *
 	 * @param info info received from API request
 	 * @throws RuntimeException on invalid rating
 	 */
@@ -102,8 +103,8 @@ public class Post {
 	}
 
 	public Post(String id, Post parent, String poster, String sourceUrl, String filename, String rating,
-	            Instant creationDate, Instant modificationDate, long filesize, String mime, int width, int height, String authorComment,
-	            String posterComment, List<String> tags, boolean deleted, String deletionReason) {
+				Instant creationDate, Instant modificationDate, long filesize, String mime, int width, int height, String authorComment,
+				String posterComment, List<String> tags, boolean deleted, String deletionReason) {
 		this.id = id;
 		this.parent = parent;
 		this.poster = poster;
@@ -134,13 +135,7 @@ public class Post {
 		this.sourceUrl = info.getSourceUrl() == null ? this.sourceUrl : info.getSourceUrl();
 		this.rating = info.getRating() == null ? this.rating : info.getRating();
 
-		if (info.getTags() != null) {
-			// Sanitize tags
-			this.tags = new ArrayList<>(info.getTags().size());
-			for (var tag : info.getTags()) {
-				this.tags.add(TAG_REPLACEMENT.matcher(tag.toLowerCase()).replaceAll("_"));
-			}
-		}
+		setSanitizedTags(info.getTags());
 
 		// Validate rating
 		for (var r : VALID_RATINGS) {
@@ -152,6 +147,15 @@ public class Post {
 		throw new RuntimeException("Rating invalid");
 	}
 
+	private void setSanitizedTags(List<String> tags) {
+		if (tags != null) {
+			this.tags = new ArrayList<>(tags.size());
+			for (var tag : tags) {
+				this.tags.add(TAG_REPLACEMENT.matcher(tag.toLowerCase()).replaceAll("_"));
+			}
+		}
+	}
+
 	public void updateFull(PostInfo info) {
 		this.authorComment = info.getAuthorComment();
 		this.posterComment = info.getPosterComment();
@@ -160,13 +164,7 @@ public class Post {
 		this.sourceUrl = info.getSourceUrl();
 		this.rating = info.getRating();
 
-		if (info.getTags() != null) {
-			// Sanitize tags
-			this.tags = new ArrayList<>(info.getTags().size());
-			for (var tag : info.getTags()) {
-				this.tags.add(TAG_REPLACEMENT.matcher(tag.toLowerCase()).replaceAll("_"));
-			}
-		}
+		setSanitizedTags(info.getTags());
 
 		// Validate rating
 		for (var r : VALID_RATINGS) {

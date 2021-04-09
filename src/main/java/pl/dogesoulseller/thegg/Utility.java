@@ -13,6 +13,7 @@ public class Utility {
 
 	/**
 	 * Represent byte array as a hexadecimal string. Implementation taken from https://stackoverflow.com/a/9855338
+	 *
 	 * @param bytes byte array
 	 * @return string representation of hex digits
 	 */
@@ -28,6 +29,7 @@ public class Utility {
 
 	/**
 	 * Get base URL of current server, for example http://localhost:8080
+	 *
 	 * @return base URL
 	 */
 	public static String getServerBaseURL() {

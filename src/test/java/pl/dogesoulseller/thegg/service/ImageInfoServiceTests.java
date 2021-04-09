@@ -16,7 +16,8 @@ import static org.assertj.core.api.Assertions.*;
 @SpringBootTest
 @Execution(ExecutionMode.CONCURRENT)
 public class ImageInfoServiceTests {
-	@Autowired ImageInfoService imageInfoService;
+	@Autowired
+	ImageInfoService imageInfoService;
 
 	@Test
 	public void getImageHash() throws IOException {

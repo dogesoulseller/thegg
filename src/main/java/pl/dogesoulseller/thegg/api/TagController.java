@@ -1,5 +1,6 @@
 package pl.dogesoulseller.thegg.api;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +13,6 @@ import pl.dogesoulseller.thegg.api.model.Tag;
 import pl.dogesoulseller.thegg.api.response.GenericResponse;
 import pl.dogesoulseller.thegg.repo.MongoTagRepository;
 import pl.dogesoulseller.thegg.service.ApiKeyVerificationService;
-import pl.dogesoulseller.thegg.user.User;
 
 import static pl.dogesoulseller.thegg.Utility.getServerBaseURL;
 
@@ -26,7 +26,8 @@ public class TagController {
 		this.keyVerifier = keyVerifier;
 	}
 
-	@GetMapping(value="/api/tag", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation("Get tag info")
+	@GetMapping(value = "/api/tag", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Tag> getTag(@RequestParam(required = false) String id, @RequestParam(required = false) String tag) {
 		if ((id == null || id.isBlank()) && (tag == null || tag.isBlank())) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "id or tag must not be empty");
@@ -47,7 +48,8 @@ public class TagController {
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
-	@PostMapping(value="/api/tag", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation("Create new tag")
+	@PostMapping(value = "/api/tag", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<GenericResponse> createTag(@RequestParam String apikey, @RequestBody NewTagInfo info) {
 		if (!keyVerifier.isValid(apikey)) {
 			throw new ResponseStatusException(HttpStatus.FORBIDDEN);

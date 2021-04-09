@@ -9,7 +9,8 @@ import static org.assertj.core.api.Assertions.*;
 @SpringBootTest
 class UserValidationTests {
 
-	@Autowired UserValidator userValidator;
+	@Autowired
+	UserValidator userValidator;
 
 	@Test
 	void userEmail() {

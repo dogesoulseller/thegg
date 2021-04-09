@@ -19,13 +19,14 @@ import static org.assertj.core.api.Assertions.*;
 @SpringBootTest
 public class StorageServiceTests {
 	public MultipartFile mpFile;
-	@Autowired StorageService storageService;
+	@Autowired
+	StorageService storageService;
 
 	@BeforeEach
 	public void initMultipart() {
 		try {
 			mpFile = new MockMultipartFile("testFile.png", "testFile.png", "image/png",
-					StorageServiceTests.class.getClassLoader().getResourceAsStream("testpng.png"));
+				StorageServiceTests.class.getClassLoader().getResourceAsStream("testpng.png"));
 
 			if (mpFile.isEmpty()) {
 				throw new RuntimeException("Failed to initialize mock multipart file");

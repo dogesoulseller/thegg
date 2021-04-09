@@ -15,19 +15,19 @@ public class SpringfoxConfig {
 	@Bean
 	public Docket api() {
 		return new Docket(DocumentationType.SWAGGER_2)
-				       .select()
-				       .apis(RequestHandlerSelectors.basePackage("pl.dogesoulseller.thegg.api"))
-				       .paths(PathSelectors.regex("/api/.*"))
-				       .paths(PathSelectors.any())
-				       .build()
-				       .apiInfo(getApiInfo());
+			.select()
+			.apis(RequestHandlerSelectors.basePackage("pl.dogesoulseller.thegg.api"))
+			.paths(PathSelectors.regex("/api/.*"))
+			.paths(PathSelectors.any())
+			.build()
+			.apiInfo(getApiInfo());
 	}
 
 	private ApiInfo getApiInfo() {
 		return new ApiInfoBuilder()
-				       .title("TheGG API")
-				       .version("1.0")
-				       .description("The Great Gallery API")
-				       .build();
+			.title("TheGG API")
+			.version("1.0")
+			.description("The Great Gallery API")
+			.build();
 	}
 }

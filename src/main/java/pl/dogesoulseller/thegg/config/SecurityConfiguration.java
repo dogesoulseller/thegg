@@ -46,17 +46,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		http.csrf().ignoringAntMatchers("/api/**", "/login");
 		http.sessionManagement().maximumSessions(1).sessionRegistry(sessionRegistry());
 		http
-				.authorizeRequests()
-				.antMatchers("/root").authenticated()
-				.anyRequest().permitAll()
-				.and()
-				.formLogin()
-				.loginPage("/login")
-				.usernameParameter("email")
-				.permitAll()
-				.and()
-				.logout()
-				.permitAll();
+			.authorizeRequests()
+			.antMatchers("/root").authenticated()
+			.anyRequest().permitAll()
+			.and()
+			.formLogin()
+			.loginPage("/login")
+			.usernameParameter("email")
+			.permitAll()
+			.and()
+			.logout()
+			.permitAll();
 	}
 
 	@Bean
@@ -75,10 +75,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 			// Require basic auth
 			http.
-					    requestMatchers().
-							                     regexMatchers("/api/apikey").
-									                                                 and()
-			    .authorizeRequests(authorize -> authorize.anyRequest().authenticated()).httpBasic();
+				requestMatchers().
+				regexMatchers("/api/apikey").
+				and()
+				.authorizeRequests(authorize -> authorize.anyRequest().authenticated()).httpBasic();
 		}
 	}
 }

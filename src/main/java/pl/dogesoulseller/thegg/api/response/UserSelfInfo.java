@@ -1,4 +1,4 @@
-package pl.dogesoulseller.thegg.api.model;
+package pl.dogesoulseller.thegg.api.response;
 
 import org.springframework.data.annotation.PersistenceConstructor;
 import pl.dogesoulseller.thegg.user.User;
@@ -16,6 +16,7 @@ public class UserSelfInfo {
 
 	/**
 	 * Constructs using full user info, effectively stripping backend data
+	 *
 	 * @param user full user info
 	 */
 	public UserSelfInfo(User user) {

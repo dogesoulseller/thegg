@@ -35,8 +35,9 @@ public class SearchService {
 
 	/**
 	 * Find paged posts using specified query and parameters
-	 * @param query query
-	 * @param page page to retrieve
+	 *
+	 * @param query   query
+	 * @param page    page to retrieve
 	 * @param perPage elements per page
 	 * @return page contents along with paging info
 	 */

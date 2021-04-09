@@ -17,7 +17,7 @@ import io.swagger.annotations.ApiOperation;
 import static pl.dogesoulseller.thegg.Utility.*;
 
 import pl.dogesoulseller.thegg.api.model.UserRegister;
-import pl.dogesoulseller.thegg.api.model.UserSelfInfo;
+import pl.dogesoulseller.thegg.api.response.UserSelfInfo;
 import pl.dogesoulseller.thegg.api.response.GenericResponse;
 import pl.dogesoulseller.thegg.inputvalidation.PasswordValidator;
 import pl.dogesoulseller.thegg.inputvalidation.UserValidator;
@@ -77,7 +77,7 @@ public class UserController {
 
 		// TODO: Email verification
 		User newUser = new User(email, userdata.getUsername(), passwordEncoder.encode(userdata.getPassword()),
-				roleRepository.findByName("ROLE_USER").orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "User role does not exist")), Instant.now());
+			roleRepository.findByName("ROLE_USER").orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "User role does not exist")), Instant.now());
 
 		User insertedUser = userRepository.save(newUser);
 

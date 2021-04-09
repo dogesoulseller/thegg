@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import pl.dogesoulseller.thegg.api.model.UserSelfInfo;
+import pl.dogesoulseller.thegg.api.response.UserSelfInfo;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ public class User implements UserDetails {
 
 	@PersistenceConstructor
 	public User(String email, String username, String password, String bio, boolean accEnabled, boolean accLocked,
-	            boolean credExpired, Pronouns pronouns, Collection<Role> roles, Instant creationTime) {
+				boolean credExpired, Pronouns pronouns, Collection<Role> roles, Instant creationTime) {
 		this.email = email;
 		this.username = username;
 		this.password = password;

@@ -24,12 +24,11 @@ public class SearchController {
 		this.searchService = searchService;
 	}
 
-	// TODO: Query documentation
 	@ApiOperation("Search posts")
 	@GetMapping(value = "/api/search/post", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<PagedResults<Post>> searchPosts(@RequestParam(required = false) String query,
-	                                                      @RequestParam(required = false) Integer page,
-	                                                      @RequestParam(required = false) Integer perPage) {
+														  @RequestParam(required = false) Integer page,
+														  @RequestParam(required = false) Integer perPage) {
 
 		var foundPosts = searchService.findPostsFromQuery(query, page, perPage);
 
@@ -45,8 +44,8 @@ public class SearchController {
 	@ApiOperation("Search tags")
 	@GetMapping(value = "/api/search/tag", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<PagedResults<Tag>> searchTags(@RequestParam(required = false) String query,
-	                                                    @RequestParam(required = false) Integer page,
-	                                                    @RequestParam(required = false) Integer perPage) {
+														@RequestParam(required = false) Integer page,
+														@RequestParam(required = false) Integer perPage) {
 
 		var foundTags = searchService.findTagFromQuery(query, page, perPage);
 		if (foundTags == null || foundTags.isEmpty()) {

@@ -13,7 +13,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.*;
 import pl.dogesoulseller.thegg.Session;
 import pl.dogesoulseller.thegg.api.model.UserRegister;
-import pl.dogesoulseller.thegg.api.model.UserSelfInfo;
+import pl.dogesoulseller.thegg.api.response.UserSelfInfo;
 import pl.dogesoulseller.thegg.repo.MongoRoleRepository;
 import pl.dogesoulseller.thegg.repo.MongoUserRepository;
 import pl.dogesoulseller.thegg.user.Role;

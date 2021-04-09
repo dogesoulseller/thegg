@@ -7,7 +7,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -28,15 +27,15 @@ public class Session implements AutoCloseable {
 		body.add("password", "testtest");
 
 		ResponseEntity<String> response = restTemplate.postForEntity(
-				"http://localhost:" + serverPort + "/login?email=" + credentialManager.getUserUser().getEmail() + "&password=testtest",
-				new HttpEntity<>(body, headers),
-				String.class);
+			"http://localhost:" + serverPort + "/login?email=" + credentialManager.getUserUser().getEmail() + "&password=testtest",
+			new HttpEntity<>(body, headers),
+			String.class);
 
 		String cookieSet = Objects.requireNonNull(response.getHeaders().get("Set-Cookie")).get(0);
 		sessionCookie = Arrays.stream(cookieSet.split(";"))
-		                      .filter((String s) -> s.contains("JSESSIONID"))
-		                      .findFirst()
-		                      .orElseThrow(() -> new RuntimeException("Failed to login")).trim().replace(";", "");
+			.filter((String s) -> s.contains("JSESSIONID"))
+			.findFirst()
+			.orElseThrow(() -> new RuntimeException("Failed to login")).trim().replace(";", "");
 	}
 
 	public String getSessionCookie() {
@@ -47,7 +46,8 @@ public class Session implements AutoCloseable {
 		return credentialManager;
 	}
 
-	@Override public void close() {
+	@Override
+	public void close() {
 		credentialManager.close();
 	}
 }

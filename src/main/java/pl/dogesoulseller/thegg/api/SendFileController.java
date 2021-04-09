@@ -44,7 +44,7 @@ public class SendFileController {
 	@PostMapping(value = "/api/send-file", produces = MediaType.APPLICATION_JSON_VALUE)
 	@CrossOrigin
 	public ResponseEntity<FilenameResponse> sendFile(@RequestParam String apikey,
-	                                                 @RequestParam("file") MultipartFile file) {
+													 @RequestParam("file") MultipartFile file) {
 		if (!keyVerifier.isValid(apikey)) {
 			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
 		}

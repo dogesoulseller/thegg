@@ -13,7 +13,7 @@ public class GenericResponse {
 	private final String message;
 
 	@JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-	public GenericResponse(@JsonProperty  String message) {
+	public GenericResponse(@JsonProperty String message) {
 		this.message = message;
 	}
 

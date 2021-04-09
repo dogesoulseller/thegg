@@ -1,5 +1,7 @@
 package pl.dogesoulseller.thegg.api;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,7 @@ import java.util.List;
 
 import static pl.dogesoulseller.thegg.Utility.getServerBaseURL;
 
+@Api(tags = "OpRequest")
 @RestController
 public class OperationRequestController {
 	private final ApiKeyVerificationService keyVerifier;
@@ -36,6 +39,9 @@ public class OperationRequestController {
 		this.requestRepo = requestRepo;
 	}
 
+	// TODO: Implement admin-related functionality with admin prefix
+
+	@ApiOperation(value = "Get active requests", notes = "Get all active (not closed) requests")
 	@GetMapping(value = "/api/oprequest/active", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<OpRequest>> getActiveRequests(@RequestParam String apikey) {
 		if (!keyVerifier.isAdminValid(apikey)) {
@@ -47,6 +53,7 @@ public class OperationRequestController {
 		return new ResponseEntity<>(activeRequests, HttpStatus.OK);
 	}
 
+	@ApiOperation(value = "Get self-submitted request", notes = "Get information about a request. API key must belong to the user who posted the request")
 	@GetMapping(value = "/api/oprequest", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<OpRequest> getRequest(@RequestParam String apikey, @RequestParam String id) {
 		if (!keyVerifier.isValid(apikey)) {
@@ -66,6 +73,7 @@ public class OperationRequestController {
 		}
 	}
 
+	@ApiOperation(value = "Cancel self-submitted request", notes = "Cancel a request. API key must belong to the user who posted the request")
 	@DeleteMapping(value = "/api/oprequest", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<GenericResponse> deleteRequest(@RequestParam String apikey, @RequestParam String id) {
 		if (!keyVerifier.isValid(apikey)) {
@@ -90,6 +98,7 @@ public class OperationRequestController {
 	}
 
 	// TODO: Document possible types and operations and their expected payloads
+	@ApiOperation(value = "Make a new request", notes = "Make a new request. See TODO:<types info> and TODO:<operations info> for a description of the allowed values for those fields, and the expected payload type")
 	@PostMapping(value = "/api/oprequest", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<GenericResponse> makeRequest(@RequestParam String apikey, @RequestBody NewOpRequest request) {
 		if (!keyVerifier.isValid(apikey)) {

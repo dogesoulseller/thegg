@@ -21,6 +21,7 @@ public class TagManagementService {
 
 	/**
 	 * Insert all tags, separating out the ones which are already present in the database
+	 *
 	 * @param tags post tags
 	 */
 	public void insertTags(List<String> tags) {

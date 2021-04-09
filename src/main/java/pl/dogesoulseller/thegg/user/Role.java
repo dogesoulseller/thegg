@@ -29,7 +29,8 @@ public class Role implements GrantedAuthority {
 		this.privileges = new ArrayList<>(privileges);
 	}
 
-	public Role() {}
+	public Role() {
+	}
 
 	public String getId() {
 		return id;

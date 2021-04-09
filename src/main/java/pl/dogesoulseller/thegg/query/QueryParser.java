@@ -15,12 +15,14 @@ public interface QueryParser {
 
 	/**
 	 * Resets the parser to its initial state, setting the query
+	 *
 	 * @param query query
 	 */
 	void reset(String query);
 
 	/**
 	 * Process the query
+	 *
 	 * @return this
 	 */
 	QueryParser parse();

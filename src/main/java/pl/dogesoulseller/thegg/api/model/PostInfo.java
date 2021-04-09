@@ -15,7 +15,7 @@ public class PostInfo {
 	private List<String> tags;
 
 	public PostInfo(String filename, String rating, Post parent, String sourceUrl, String authorComment, String posterComment,
-	                List<String> tags) {
+					List<String> tags) {
 		this.filename = filename;
 		this.rating = rating;
 		this.parent = parent;

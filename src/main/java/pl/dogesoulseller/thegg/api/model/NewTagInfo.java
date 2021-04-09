@@ -1,5 +1,8 @@
 package pl.dogesoulseller.thegg.api.model;
 
+/**
+ * Represents data about a tag to be added to the database
+ */
 public class NewTagInfo {
 	private String tag;
 	private String description;

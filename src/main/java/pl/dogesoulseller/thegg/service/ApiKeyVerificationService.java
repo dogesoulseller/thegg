@@ -35,6 +35,7 @@ public class ApiKeyVerificationService {
 
 	/**
 	 * Check if key is valid and not deactivated
+	 *
 	 * @param key key
 	 * @return true if valid
 	 */
@@ -44,6 +45,7 @@ public class ApiKeyVerificationService {
 
 	/**
 	 * Check if key is valid, not deactivated, and an admin key
+	 *
 	 * @param key key
 	 * @return true if valid and an admin key
 	 */
@@ -54,6 +56,7 @@ public class ApiKeyVerificationService {
 
 	/**
 	 * Get user attached to key, if the key is valid
+	 *
 	 * @param key key
 	 * @return user or null
 	 */

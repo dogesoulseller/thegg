@@ -25,6 +25,7 @@ public class PostQueryParser implements QueryParser {
 
 	/**
 	 * Special filtering rules
+	 *
 	 * @see PostQuerySpecialFilter
 	 */
 	private List<PostQuerySpecialFilter> specialFiltering;
@@ -59,6 +60,7 @@ public class PostQueryParser implements QueryParser {
 
 	/**
 	 * Parse a single special tag
+	 *
 	 * @param tag tag
 	 * @return filter criteria
 	 */

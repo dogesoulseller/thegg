@@ -8,7 +8,8 @@ import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 public class PasswordValidatorTests {
-	@Autowired PasswordValidator passValidator;
+	@Autowired
+	PasswordValidator passValidator;
 
 	@Test
 	void passwordRegular() {

@@ -43,6 +43,7 @@ public class PostQueryBuilder {
 
 	/**
 	 * Append a filter to the query
+	 *
 	 * @param filter filter to append
 	 * @return this
 	 */
@@ -55,6 +56,7 @@ public class PostQueryBuilder {
 
 	/**
 	 * Set tags to be forced to be included (present)
+	 *
 	 * @param tags included tags
 	 * @return this
 	 */
@@ -65,6 +67,7 @@ public class PostQueryBuilder {
 
 	/**
 	 * Set tags to be forced to be excluded (not present)
+	 *
 	 * @param tags excluded tags
 	 * @return this
 	 */
@@ -75,6 +78,7 @@ public class PostQueryBuilder {
 
 	/**
 	 * Set sorting method to use in query
+	 *
 	 * @param sort sorting method
 	 * @return this
 	 */
@@ -85,6 +89,7 @@ public class PostQueryBuilder {
 
 	/**
 	 * Set the paging strategy to use
+	 *
 	 * @param page paging strategy
 	 * @return this
 	 */
@@ -95,6 +100,7 @@ public class PostQueryBuilder {
 
 	/**
 	 * Finish processing and assemble the final query
+	 *
 	 * @return ready-to-execute query
 	 */
 	public Query finish() {
@@ -110,8 +116,8 @@ public class PostQueryBuilder {
 			query.addCriteria(Criteria.where("tags").all(includedTags));
 		} else {
 			query.addCriteria(new Criteria().andOperator(
-					Criteria.where("tags").not().elemMatch(new Criteria().in(excludedTags)),
-					Criteria.where("tags").all(includedTags)
+				Criteria.where("tags").not().elemMatch(new Criteria().in(excludedTags)),
+				Criteria.where("tags").all(includedTags)
 			));
 		}
 

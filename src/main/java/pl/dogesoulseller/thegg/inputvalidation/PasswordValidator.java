@@ -21,15 +21,15 @@ public class PasswordValidator {
 	@Autowired
 	public PasswordValidator(PasswordValidationProperties properties) {
 		Integer adminPasswordMinLen = properties.getAdminPasswordMinLength() == null ? DEFAULT_MIN_ADMIN_PASS_LEN
-				                              : properties.getAdminPasswordMinLength();
+			: properties.getAdminPasswordMinLength();
 
 		userPasswordMinLen = properties.getUserPasswordMinLength() == null ? DEFAULT_MIN_USER_PASS_LEN
-				                     : properties.getUserPasswordMinLength();
+			: properties.getUserPasswordMinLength();
 
 		// Matches passwords that are - X characters or longer, with at least one digit,
 		// lowercase, uppercase, and special character
 		var adminPattern = String.format("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{%d,}$",
-				adminPasswordMinLen);
+			adminPasswordMinLen);
 
 		adminPasswordPattern = Pattern.compile(adminPattern);
 

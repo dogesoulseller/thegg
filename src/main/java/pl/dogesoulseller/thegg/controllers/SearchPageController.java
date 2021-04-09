@@ -17,7 +17,7 @@ public class SearchPageController {
 
 	@GetMapping("/search")
 	public String searchPosts(Model model, @RequestParam(required = false) String query,
-			@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer perPage) {
+							  @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer perPage) {
 
 		var foundPosts = searchService.findPostsFromQuery(query, page, perPage);
 

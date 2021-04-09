@@ -1,5 +1,8 @@
 package pl.dogesoulseller.thegg.api.model.oprequest;
 
+/**
+ * Represents user's data about an op request to be created
+ */
 public class NewOpRequest {
 	private String type;
 	private String operation;

@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * Service handling the management of op requests
+ */
 @Service
 public class OpRequestService {
 	private final MongoRequestRepository requestRepo;

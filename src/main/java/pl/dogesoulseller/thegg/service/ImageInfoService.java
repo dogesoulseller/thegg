@@ -36,6 +36,7 @@ public class ImageInfoService {
 
 	/**
 	 * Get hexadecimal string, representing the SHA-1 hash of the image
+	 *
 	 * @param image image to process
 	 * @return hexadecimal string of SHA-1 hash
 	 */
@@ -64,6 +65,7 @@ public class ImageInfoService {
 
 	/**
 	 * Get file extension for the specified mime type
+	 *
 	 * @param mime mime type
 	 * @return string with file extension (including .) or null
 	 */

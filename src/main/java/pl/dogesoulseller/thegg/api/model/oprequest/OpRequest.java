@@ -10,6 +10,9 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.Instant;
 
+/**
+ * Represents a single op request stored on a database
+ */
 @Document(collection = "requests")
 public class OpRequest {
 	@Id

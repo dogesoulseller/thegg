@@ -69,9 +69,9 @@ public class SendFileControllerTests {
 		sessions.add(session);
 
 		ResponseEntity<FilenameResponse> response = restTemplate.postForEntity(
-				"http://localhost:" + serverPort + "/api/send-file?apikey=" + session.getCredentialManager().getUserKey().getKey(),
-				new HttpEntity<>(body, headers),
-				FilenameResponse.class);
+			"http://localhost:" + serverPort + "/api/send-file?apikey=" + session.getCredentialManager().getUserKey().getKey(),
+			new HttpEntity<>(body, headers),
+			FilenameResponse.class);
 
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 		assertThat(response.getBody()).isNotNull();
@@ -100,9 +100,9 @@ public class SendFileControllerTests {
 		sessions.add(session);
 
 		ResponseEntity<FilenameResponse> response = restTemplate.postForEntity(
-				"http://localhost:" + serverPort + "/api/send-file?apikey=" + session.getCredentialManager().getUserKey().getKey(),
-				new HttpEntity<>(body, headers),
-				FilenameResponse.class);
+			"http://localhost:" + serverPort + "/api/send-file?apikey=" + session.getCredentialManager().getUserKey().getKey(),
+			new HttpEntity<>(body, headers),
+			FilenameResponse.class);
 
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
 	}
@@ -125,9 +125,9 @@ public class SendFileControllerTests {
 		sessions.add(session);
 
 		ResponseEntity<FilenameResponse> response = restTemplate.postForEntity(
-				"http://localhost:" + serverPort + "/api/send-file?apikey=" + session.getCredentialManager().getUserKey().getKey(),
-				new HttpEntity<>(body, headers),
-				FilenameResponse.class);
+			"http://localhost:" + serverPort + "/api/send-file?apikey=" + session.getCredentialManager().getUserKey().getKey(),
+			new HttpEntity<>(body, headers),
+			FilenameResponse.class);
 
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
 	}

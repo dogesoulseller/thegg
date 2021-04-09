@@ -18,7 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import pl.dogesoulseller.thegg.api.model.SelfApiKeyInfo;
+import pl.dogesoulseller.thegg.api.response.SelfApiKeyInfo;
 import pl.dogesoulseller.thegg.api.response.GenericResponse;
 import pl.dogesoulseller.thegg.repo.MongoKeyRepository;
 import pl.dogesoulseller.thegg.repo.MongoUserRepository;

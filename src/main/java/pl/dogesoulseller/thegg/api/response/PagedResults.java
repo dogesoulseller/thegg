@@ -29,7 +29,8 @@ public class PagedResults<T> {
 
 	/**
 	 * Constructs a new {@link PagedResults} using info from a filled out {@link Page} instance
-	 * @param results {@link Page} containing info about results
+	 *
+	 * @param results     {@link Page} containing info about results
 	 * @param currentPage 0-based current page number
 	 */
 	public PagedResults(Page<T> results, long currentPage) {
