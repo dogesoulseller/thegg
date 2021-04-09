@@ -1,10 +1,9 @@
 package pl.dogesoulseller.thegg.repo;
 
-import java.util.List;
-
 import org.springframework.data.mongodb.repository.MongoRepository;
-
 import pl.dogesoulseller.thegg.user.ApiKey;
+
+import java.util.List;
 
 /**
  * MongoDB repository containing API keys

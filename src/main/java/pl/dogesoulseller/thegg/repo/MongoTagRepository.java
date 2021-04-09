@@ -1,9 +1,8 @@
 package pl.dogesoulseller.thegg.repo;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
-
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import pl.dogesoulseller.thegg.api.model.Tag;
 
 /**

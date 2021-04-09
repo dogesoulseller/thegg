@@ -1,15 +1,15 @@
 package pl.dogesoulseller.thegg.query;
 
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * MongoDB query builder for data obtained from {@link PostQueryParser}

@@ -1,12 +1,12 @@
 package pl.dogesoulseller.thegg.query;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Base parser for the post query syntax

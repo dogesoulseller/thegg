@@ -1,8 +1,8 @@
 package pl.dogesoulseller.thegg.query;
 
-import java.util.List;
-
 import org.springframework.data.domain.Sort;
+
+import java.util.List;
 
 /**
  * Standard query parser interface

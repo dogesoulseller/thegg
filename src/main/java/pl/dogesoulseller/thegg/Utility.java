@@ -1,8 +1,8 @@
 package pl.dogesoulseller.thegg;
 
-import java.nio.charset.StandardCharsets;
-
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.nio.charset.StandardCharsets;
 
 /**
  * Miscallaneous utilities

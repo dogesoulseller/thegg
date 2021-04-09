@@ -1,15 +1,13 @@
 package pl.dogesoulseller.thegg.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
-
-import static pl.dogesoulseller.thegg.Utility.*;
-
 import pl.dogesoulseller.thegg.repo.MongoKeyRepository;
 import pl.dogesoulseller.thegg.repo.MongoUserRepository;
 import pl.dogesoulseller.thegg.user.ApiKey;
 import pl.dogesoulseller.thegg.user.User;
+
+import static pl.dogesoulseller.thegg.Utility.Pair;
 
 /**
  * Service handling the verification and validation of API keys, as well as the

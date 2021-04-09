@@ -1,12 +1,11 @@
 package pl.dogesoulseller.thegg.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.stereotype.Service;
-
 import pl.dogesoulseller.thegg.api.model.Tag;
 import pl.dogesoulseller.thegg.repo.MongoTagRepository;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Service handling adding new tags from posts

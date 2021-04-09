@@ -1,11 +1,11 @@
 package pl.dogesoulseller.thegg.user;
 
-import java.time.Instant;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.time.Instant;
 
 /**
  * Information about an API key

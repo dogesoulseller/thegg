@@ -3,7 +3,6 @@ package pl.dogesoulseller.thegg.controllers;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-
 import pl.dogesoulseller.thegg.api.model.UserRegister;
 
 @Controller

@@ -1,7 +1,7 @@
 package pl.dogesoulseller.thegg.api;
 
-import java.time.Instant;
-
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -10,21 +10,19 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-
-import static pl.dogesoulseller.thegg.Utility.*;
-
 import pl.dogesoulseller.thegg.api.model.UserRegister;
-import pl.dogesoulseller.thegg.api.response.UserSelfInfo;
 import pl.dogesoulseller.thegg.api.response.GenericResponse;
+import pl.dogesoulseller.thegg.api.response.UserSelfInfo;
 import pl.dogesoulseller.thegg.inputvalidation.PasswordValidator;
 import pl.dogesoulseller.thegg.inputvalidation.UserValidator;
 import pl.dogesoulseller.thegg.repo.MongoRoleRepository;
 import pl.dogesoulseller.thegg.repo.MongoUserRepository;
 import pl.dogesoulseller.thegg.service.ApiKeyVerificationService;
 import pl.dogesoulseller.thegg.user.User;
+
+import java.time.Instant;
+
+import static pl.dogesoulseller.thegg.Utility.getServerBaseURL;
 
 @Api(tags = "User")
 @RestController

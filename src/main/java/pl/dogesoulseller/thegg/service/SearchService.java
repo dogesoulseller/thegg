@@ -1,15 +1,14 @@
 package pl.dogesoulseller.thegg.service;
 
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
-import pl.dogesoulseller.thegg.query.PostQueryBuilder;
-import pl.dogesoulseller.thegg.query.PostQueryParser;
 import pl.dogesoulseller.thegg.api.model.Post;
 import pl.dogesoulseller.thegg.api.model.Tag;
+import pl.dogesoulseller.thegg.query.PostQueryBuilder;
+import pl.dogesoulseller.thegg.query.PostQueryParser;
 import pl.dogesoulseller.thegg.repo.MongoPostRepository;
 import pl.dogesoulseller.thegg.repo.MongoTagRepository;
 

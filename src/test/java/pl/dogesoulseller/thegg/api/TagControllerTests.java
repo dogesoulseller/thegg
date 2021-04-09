@@ -15,8 +15,6 @@ import org.springframework.http.*;
 import pl.dogesoulseller.thegg.Session;
 import pl.dogesoulseller.thegg.api.model.NewTagInfo;
 import pl.dogesoulseller.thegg.api.model.Tag;
-import pl.dogesoulseller.thegg.api.response.GenericResponse;
-import pl.dogesoulseller.thegg.api.response.PagedResults;
 import pl.dogesoulseller.thegg.repo.MongoTagRepository;
 
 import java.util.ArrayList;

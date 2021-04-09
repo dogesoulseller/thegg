@@ -1,13 +1,12 @@
 package pl.dogesoulseller.thegg.repo;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
-
 import pl.dogesoulseller.thegg.api.model.Post;
+
+import java.util.List;
 
 /**
  * MongoDB repository containing posts
