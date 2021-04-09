@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static pl.dogesoulseller.thegg.TestUtility.basicHeaders;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class TagControllerTests {
@@ -67,9 +68,7 @@ public class TagControllerTests {
 
 	@Test
 	public void getTag() {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 
 		var response = restTemplate.exchange("http://localhost:" + serverPort + "/api/tag?tag=" + "tagconttag_tag1",
 			HttpMethod.GET, new HttpEntity<>(null, headers), Tag.class);
@@ -82,9 +81,7 @@ public class TagControllerTests {
 
 	@Test
 	public void getTagNotFound() {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 
 		var response = restTemplate.exchange("http://localhost:" + serverPort + "/api/tag?tag=" + "tagconttag_tagnoexist",
 			HttpMethod.GET, new HttpEntity<>(null, headers), Tag.class);
@@ -94,9 +91,7 @@ public class TagControllerTests {
 
 	@Test
 	public void getTagBadParam() {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 
 		var response = restTemplate.exchange("http://localhost:" + serverPort + "/api/tag?tag=&",
 			HttpMethod.GET, new HttpEntity<>(null, headers), Tag.class);
@@ -113,9 +108,7 @@ public class TagControllerTests {
 	public void newTag() {
 		Session session = new Session(restTemplate, serverPort);
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 
 		tagRepository.deleteByTagLike("tagcontrollertests_manualnewtag");
 
@@ -135,9 +128,7 @@ public class TagControllerTests {
 	public void newTagDuplicate() {
 		Session session = new Session(restTemplate, serverPort);
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 
 		tagRepository.deleteByTagLike("tagcontrollertests_manualnewtag");
 

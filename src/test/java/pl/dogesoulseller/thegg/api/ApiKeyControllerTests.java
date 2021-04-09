@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 import static org.assertj.core.api.Assertions.*;
+import static pl.dogesoulseller.thegg.TestUtility.cookieHeaders;
 
 // TODO: Write tests
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -54,10 +55,7 @@ public class ApiKeyControllerTests {
 		Session session = new Session(restTemplate, serverPort);
 		sessions.add(session);
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.set("Cookie", session.getSessionCookie());
+		HttpHeaders headers = cookieHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, session.getSessionCookie());
 
 		var response = restTemplate.postForEntity(
 			"http://localhost:" + serverPort + "/api/apikey",
@@ -83,10 +81,7 @@ public class ApiKeyControllerTests {
 		Session session = new Session(restTemplate, serverPort);
 		sessions.add(session);
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.set("Cookie", session.getSessionCookie());
+		HttpHeaders headers = cookieHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, session.getSessionCookie());
 
 		var response = restTemplate.postForEntity(
 			"http://localhost:" + serverPort + "/api/apikey?name=testname",
@@ -119,10 +114,7 @@ public class ApiKeyControllerTests {
 		Session session = new Session(restTemplate, serverPort);
 		sessions.add(session);
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.set("Cookie", session.getSessionCookie());
+		HttpHeaders headers = cookieHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, session.getSessionCookie());
 
 		for (int i = 1; i < 5; i++) {
 			var response = restTemplate.postForEntity(
@@ -148,10 +140,7 @@ public class ApiKeyControllerTests {
 		Session session = new Session(restTemplate, serverPort);
 		sessions.add(session);
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.set("Cookie", session.getSessionCookie());
+		HttpHeaders headers = cookieHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, session.getSessionCookie());
 
 		// Create another key
 		var responseCreate = restTemplate.postForEntity(
@@ -188,10 +177,7 @@ public class ApiKeyControllerTests {
 		Session session = new Session(restTemplate, serverPort);
 		sessions.add(session);
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.set("Cookie", session.getSessionCookie());
+		HttpHeaders headers = cookieHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, session.getSessionCookie());
 
 		// Create another key
 		var responseCreate = restTemplate.postForEntity(
@@ -229,10 +215,7 @@ public class ApiKeyControllerTests {
 		Session session = new Session(restTemplate, serverPort);
 		sessions.add(session);
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.set("Cookie", session.getSessionCookie());
+		HttpHeaders headers = cookieHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, session.getSessionCookie());
 
 		// Create a key
 		var responseCreate = restTemplate.postForEntity(
@@ -256,10 +239,7 @@ public class ApiKeyControllerTests {
 		Session session = new Session(restTemplate, serverPort);
 		sessions.add(session);
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.set("Cookie", session.getSessionCookie());
+		HttpHeaders headers = cookieHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, session.getSessionCookie());
 
 		// Create a key
 		var responseCreate = restTemplate.postForEntity(

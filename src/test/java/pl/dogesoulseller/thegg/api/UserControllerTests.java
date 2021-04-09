@@ -24,6 +24,8 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 import static org.assertj.core.api.Assertions.*;
+import static pl.dogesoulseller.thegg.TestUtility.basicHeaders;
+import static pl.dogesoulseller.thegg.TestUtility.cookieHeaders;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserControllerTests {
@@ -60,9 +62,7 @@ public class UserControllerTests {
 		Session session = new Session(restTemplate, serverPort);
 		sessions.add(session);
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.set("Cookie", session.getSessionCookie());
-		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpHeaders headers = cookieHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, session.getSessionCookie());
 
 		String regDataJson = null;
 
@@ -193,9 +193,7 @@ public class UserControllerTests {
 		Session session = new Session(restTemplate, serverPort);
 		sessions.add(session);
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 
 		// Get user information pre-update
 		User user = Objects.requireNonNull(userRepo.findByEmail(session.getCredentialManager().getUserUser().getEmail()));
@@ -227,9 +225,7 @@ public class UserControllerTests {
 		Session session = new Session(restTemplate, serverPort);
 		sessions.add(session);
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 
 		// Get user information pre-update
 		User user = Objects.requireNonNull(userRepo.findByEmail(session.getCredentialManager().getUserUser().getEmail()));

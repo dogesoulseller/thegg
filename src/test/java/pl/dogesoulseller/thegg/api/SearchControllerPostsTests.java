@@ -2,6 +2,7 @@ package pl.dogesoulseller.thegg.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static pl.dogesoulseller.thegg.TestUtility.basicHeaders;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -92,9 +93,7 @@ public class SearchControllerPostsTests {
 	}
 
 	private PagedResults<Post> searchWithQuery(String query) {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 
 		var response = restTemplate.exchange("http://localhost:" + serverPort + "/api/search/post?query=" + query,
 			HttpMethod.GET, new HttpEntity<>(null, headers), String.class);
@@ -143,9 +142,7 @@ public class SearchControllerPostsTests {
 
 	@Test
 	public void findWithTagNoResults() {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 
 		var response = restTemplate.exchange("http://localhost:" + serverPort + "/api/search/post?query=tagthatdoesnotexist",
 			HttpMethod.GET, new HttpEntity<>(null, headers), String.class);

@@ -28,6 +28,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static pl.dogesoulseller.thegg.TestUtility.basicHeaders;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PostControllerTests {
@@ -55,9 +56,7 @@ public class PostControllerTests {
 	}
 
 	private String uploadTestFile(Session session, String filename) {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+		HttpHeaders headers = basicHeaders(MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_JSON);
 
 		MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
 
@@ -88,9 +87,7 @@ public class PostControllerTests {
 		Session session = new Session(restTemplate, serverPort);
 		sessions.add(session);
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 
 		String filename = uploadTestFile(session, "testpng.png");
 
@@ -125,9 +122,7 @@ public class PostControllerTests {
 		Session session = new Session(restTemplate, serverPort);
 		sessions.add(session);
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 
 		PostInfo info = new PostInfo("nonexistent.png", "safe", null, null, "test", "testposter", List.of("testcreate01", "testcreate02"));
 
@@ -143,9 +138,7 @@ public class PostControllerTests {
 		Session session = new Session(restTemplate, serverPort);
 		sessions.add(session);
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 
 		String filename = uploadTestFile(session, "testpng.png");
 
@@ -163,9 +156,7 @@ public class PostControllerTests {
 		Session session = new Session(restTemplate, serverPort);
 		sessions.add(session);
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 
 		String filename = uploadTestFile(session, "testpng.png");
 
@@ -198,9 +189,7 @@ public class PostControllerTests {
 		Session session = new Session(restTemplate, serverPort);
 		sessions.add(session);
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 
 		ResponseEntity<Post> response = restTemplate.exchange("http://localhost:" + serverPort + "/api/post?apikey=" + session.getCredentialManager().getUserKey().getKey()
 			+ "&id=10", HttpMethod.GET, new HttpEntity<>(null, headers), Post.class);
@@ -213,9 +202,7 @@ public class PostControllerTests {
 		Session session = new Session(restTemplate, serverPort);
 		sessions.add(session);
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 
 		String filename = uploadTestFile(session, "testpng.png");
 
@@ -245,9 +232,7 @@ public class PostControllerTests {
 		Session session = new Session(restTemplate, serverPort);
 		sessions.add(session);
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 
 		ResponseEntity<GenericResponse> response = restTemplate.exchange(
 			"http://localhost:" + serverPort + "/api/post?apikey=" + session.getCredentialManager().getUserKey().getKey() + "&id=10",
@@ -261,9 +246,7 @@ public class PostControllerTests {
 		Session session = new Session(restTemplate, serverPort);
 		sessions.add(session);
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 
 		String filename = uploadTestFile(session, "testpng.png");
 
@@ -298,9 +281,7 @@ public class PostControllerTests {
 		Session session = new Session(restTemplate, serverPort);
 		sessions.add(session);
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 
 		String filename = uploadTestFile(session, "testpng.png");
 

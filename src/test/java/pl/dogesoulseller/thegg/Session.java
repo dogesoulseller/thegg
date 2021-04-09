@@ -12,6 +12,8 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Arrays;
 import java.util.Objects;
 
+import static pl.dogesoulseller.thegg.TestUtility.basicHeaders;
+
 public class Session implements AutoCloseable {
 	private final String sessionCookie;
 	private final TestCredentialManager credentialManager;
@@ -19,8 +21,7 @@ public class Session implements AutoCloseable {
 	public Session(TestRestTemplate restTemplate, int serverPort) {
 		credentialManager = new TestCredentialManager();
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+		HttpHeaders headers = basicHeaders(MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_JSON);
 
 		MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
 		body.add("email", credentialManager.getUserUser().getEmail());

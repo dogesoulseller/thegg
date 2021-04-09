@@ -24,6 +24,7 @@ import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static pl.dogesoulseller.thegg.TestUtility.basicHeaders;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class OperationRequestControllerAdminTests {
@@ -51,9 +52,7 @@ public class OperationRequestControllerAdminTests {
 
 	@Test
 	public void getActiveRequests() {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 
 		Session session = new Session(restTemplate, serverPort);
 
@@ -89,9 +88,7 @@ public class OperationRequestControllerAdminTests {
 
 	@Test
 	public void sendReportRequest() {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 
 		var insertedPost = postRepo.insert(new Post(null, null, null, null, "testname_reportreq", "safe", Instant.now(), Instant.now(),
 			304213, "image/png", 1280, 720,
@@ -119,9 +116,7 @@ public class OperationRequestControllerAdminTests {
 
 	@Test
 	public void sendReportRequestTargetNotExist() {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 
 		Session session = new Session(restTemplate, serverPort);
 
@@ -138,9 +133,7 @@ public class OperationRequestControllerAdminTests {
 
 	@Test
 	public void sendReportRequestBadPayload() {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 
 		var insertedPost = postRepo.insert(new Post(null, null, null, null, "testname_reportreq_bp", "safe", Instant.now(), Instant.now(),
 			304213, "image/png", 1280, 720,

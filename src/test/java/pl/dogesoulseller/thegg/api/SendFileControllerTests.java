@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 import static org.assertj.core.api.Assertions.*;
+import static pl.dogesoulseller.thegg.TestUtility.basicHeaders;
 import static pl.dogesoulseller.thegg.TestUtility.randomString;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -52,9 +53,7 @@ public class SendFileControllerTests {
 
 	@Test
 	public void sendImageFile() {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+		HttpHeaders headers = basicHeaders(MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_JSON);
 
 		MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
 
@@ -85,9 +84,7 @@ public class SendFileControllerTests {
 
 	@Test
 	public void sendFileEmpty() {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+		HttpHeaders headers = basicHeaders(MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_JSON);
 
 		MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
 
@@ -112,9 +109,7 @@ public class SendFileControllerTests {
 
 	@Test
 	public void sendFileUnsupportedMime() {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+		HttpHeaders headers = basicHeaders(MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_JSON);
 
 		MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
 
