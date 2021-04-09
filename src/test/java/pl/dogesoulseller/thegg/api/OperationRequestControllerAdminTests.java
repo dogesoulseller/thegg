@@ -12,11 +12,16 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.*;
 import pl.dogesoulseller.thegg.Session;
-import pl.dogesoulseller.thegg.api.model.OpRequest;
+import pl.dogesoulseller.thegg.api.model.Post;
+import pl.dogesoulseller.thegg.api.model.oprequest.NewOpRequest;
+import pl.dogesoulseller.thegg.api.model.oprequest.OpRequest;
+import pl.dogesoulseller.thegg.repo.MongoPostRepository;
 import pl.dogesoulseller.thegg.repo.MongoRequestRepository;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
@@ -30,6 +35,9 @@ public class OperationRequestControllerAdminTests {
 
 	@Autowired
 	private MongoRequestRepository requestRepo;
+
+	@Autowired
+	private MongoPostRepository postRepo;
 
 	private static ObjectMapper mapper;
 	private static JavaType resultType;
@@ -52,13 +60,13 @@ public class OperationRequestControllerAdminTests {
 		requestRepo.deleteAll();
 
 		OpRequest request0 = new OpRequest(null, "USER", "REPORT", session.getCredentialManager().getUserUser().getId(),
-			session.getCredentialManager().getAdminUser().getId(), Instant.now(), "Test Reason", false, "NEW");
+			session.getCredentialManager().getAdminUser().getId(), Instant.now(), "", false, "NEW");
 
 		OpRequest request1 = new OpRequest(null, "USER", "REPORT", session.getCredentialManager().getUserUser().getId(),
-			session.getCredentialManager().getAdminUser().getId(), Instant.now(), "Test Reason 1", false, "NEW");
+			session.getCredentialManager().getAdminUser().getId(), Instant.now(), "", false, "NEW");
 
 		OpRequest request2 = new OpRequest(null, "USER", "REPORT", session.getCredentialManager().getUserUser().getId(),
-			session.getCredentialManager().getAdminUser().getId(), Instant.now(), "Test Reason 2", true, "REJECTED");
+			session.getCredentialManager().getAdminUser().getId(), Instant.now(), "", true, "REJECTED");
 
 		List<OpRequest> requestsToRemove = requestRepo.insert(List.of(request0, request1, request2));
 
@@ -77,5 +85,78 @@ public class OperationRequestControllerAdminTests {
 			requestRepo.deleteAll(requestsToRemove);
 			session.close();
 		}
+	}
+
+	@Test
+	public void sendReportRequest() {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+
+		var insertedPost = postRepo.insert(new Post(null, null, null, null, "testname_reportreq", "safe", Instant.now(), Instant.now(),
+			304213, "image/png", 1280, 720,
+			"authorcomm", "postcomm", List.of("reportreq1"), false, null));
+
+		Session session = new Session(restTemplate, serverPort);
+
+		NewOpRequest opRequest = new NewOpRequest("post", "report", insertedPost.getId(), "{\"reason\": \"test reason\"}");
+
+		var response = restTemplate.exchange("http://localhost:" + serverPort + "/api/oprequest?apikey=" + session.getCredentialManager().getUserKey().getKey(), HttpMethod.POST,
+			new HttpEntity<>(opRequest, headers), String.class);
+
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+		assertThat(response.getHeaders().containsKey("Location")).isTrue();
+
+		var locationHeader = Objects.requireNonNull(response.getHeaders().get("Location")).get(0);
+		var reqId = locationHeader.split("id=")[1];
+
+		assertThat(requestRepo.existsById(reqId)).isTrue();
+
+		requestRepo.deleteAll();
+		postRepo.delete(insertedPost);
+		session.close();
+	}
+
+	@Test
+	public void sendReportRequestTargetNotExist() {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+
+		Session session = new Session(restTemplate, serverPort);
+
+		NewOpRequest opRequest = new NewOpRequest("post", "report", "das234tgfrews", "{\"reason\": \"test reason\"}");
+
+		var response = restTemplate.exchange("http://localhost:" + serverPort + "/api/oprequest?apikey=" + session.getCredentialManager().getUserKey().getKey(), HttpMethod.POST,
+			new HttpEntity<>(opRequest, headers), String.class);
+
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+
+		requestRepo.deleteAll();
+		session.close();
+	}
+
+	@Test
+	public void sendReportRequestBadPayload() {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+
+		var insertedPost = postRepo.insert(new Post(null, null, null, null, "testname_reportreq_bp", "safe", Instant.now(), Instant.now(),
+			304213, "image/png", 1280, 720,
+			"authorcomm", "postcomm", List.of("reportreq1"), false, null));
+
+		Session session = new Session(restTemplate, serverPort);
+
+		NewOpRequest opRequest = new NewOpRequest("post", "report", insertedPost.getId(), "{\"wrong\": \"test\"}");
+
+		var response = restTemplate.exchange("http://localhost:" + serverPort + "/api/oprequest?apikey=" + session.getCredentialManager().getUserKey().getKey(), HttpMethod.POST,
+			new HttpEntity<>(opRequest, headers), String.class);
+
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+
+		requestRepo.deleteAll();
+		postRepo.delete(insertedPost);
+		session.close();
 	}
 }

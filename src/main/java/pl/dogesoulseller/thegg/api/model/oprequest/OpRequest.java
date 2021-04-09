@@ -1,4 +1,4 @@
-package pl.dogesoulseller.thegg.api.model;
+package pl.dogesoulseller.thegg.api.model.oprequest;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -30,7 +30,7 @@ public class OpRequest {
 	@Field("submission_date")
 	private Instant submissionDate;
 
-	private String reason;
+	private String payload;
 
 	@Indexed
 	private Boolean resolved;
@@ -41,15 +41,15 @@ public class OpRequest {
 	@JsonCreator
 	public OpRequest(@JsonProperty("id") String id, @JsonProperty("type") String type, @JsonProperty("operation") String operation,
 					 @JsonProperty("requestUserId") String requestUserId, @JsonProperty("requestTargetId") String requestTargetId,
-					 @JsonProperty("submissionDate") Instant submissionDate, @JsonProperty("reason") String reason,
-					 @JsonProperty("resolved") Boolean resolved, @JsonProperty("status") String status) {
+					 @JsonProperty("submissionDate") Instant submissionDate,
+					 @JsonProperty("payload") String payload, @JsonProperty("resolved") Boolean resolved, @JsonProperty("status") String status) {
 		this.id = id;
 		this.type = type;
 		this.operation = operation;
 		this.requestUserId = requestUserId;
 		this.requestTargetId = requestTargetId;
 		this.submissionDate = submissionDate;
-		this.reason = reason;
+		this.payload = payload;
 		this.resolved = resolved;
 		this.status = status;
 	}
@@ -78,15 +78,51 @@ public class OpRequest {
 		return submissionDate;
 	}
 
-	public String getReason() {
-		return reason;
-	}
-
 	public Boolean getResolved() {
 		return resolved;
 	}
 
 	public String getStatus() {
 		return status;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public void setOperation(String operation) {
+		this.operation = operation;
+	}
+
+	public void setRequestUserId(String requestUserId) {
+		this.requestUserId = requestUserId;
+	}
+
+	public void setRequestTargetId(String requestTargetId) {
+		this.requestTargetId = requestTargetId;
+	}
+
+	public void setSubmissionDate(Instant submissionDate) {
+		this.submissionDate = submissionDate;
+	}
+
+	public void setResolved(Boolean resolved) {
+		this.resolved = resolved;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getPayload() {
+		return payload;
+	}
+
+	public void setPayload(String payload) {
+		this.payload = payload;
 	}
 }
