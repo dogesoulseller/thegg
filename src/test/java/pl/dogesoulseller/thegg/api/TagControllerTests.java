@@ -104,7 +104,7 @@ public class TagControllerTests {
 
 	@Test
 	public void newTag() {
-		Session session = new Session(restTemplate, serverPort);
+		Session session = new Session(restTemplate.getRestTemplate(), serverPort);
 
 		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 
@@ -124,7 +124,7 @@ public class TagControllerTests {
 
 	@Test
 	public void newTagDuplicate() {
-		Session session = new Session(restTemplate, serverPort);
+		Session session = new Session(restTemplate.getRestTemplate(), serverPort);
 
 		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 

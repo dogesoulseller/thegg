@@ -12,7 +12,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.*;
 import pl.dogesoulseller.thegg.Session;
-import pl.dogesoulseller.thegg.api.response.SelfApiKeyInfo;
+import pl.dogesoulseller.thegg.api.model.selfdata.SelfApiKeyInfo;
 import pl.dogesoulseller.thegg.api.response.GenericResponse;
 import pl.dogesoulseller.thegg.repo.MongoKeyRepository;
 import pl.dogesoulseller.thegg.service.ApiKeyVerificationService;
@@ -51,7 +51,7 @@ public class ApiKeyControllerTests {
 
 	@Test
 	public void createKey() {
-		Session session = new Session(restTemplate, serverPort);
+		Session session = new Session(restTemplate.getRestTemplate(), serverPort);
 		sessions.add(session);
 
 		HttpHeaders headers = cookieHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, session.getSessionCookie());
@@ -77,7 +77,7 @@ public class ApiKeyControllerTests {
 
 	@Test
 	public void createKeyDuplicateName() {
-		Session session = new Session(restTemplate, serverPort);
+		Session session = new Session(restTemplate.getRestTemplate(), serverPort);
 		sessions.add(session);
 
 		HttpHeaders headers = cookieHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, session.getSessionCookie());
@@ -110,7 +110,7 @@ public class ApiKeyControllerTests {
 
 	@Test
 	public void createKeyTooManyCreated() {
-		Session session = new Session(restTemplate, serverPort);
+		Session session = new Session(restTemplate.getRestTemplate(), serverPort);
 		sessions.add(session);
 
 		HttpHeaders headers = cookieHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, session.getSessionCookie());
@@ -136,7 +136,7 @@ public class ApiKeyControllerTests {
 
 	@Test
 	public void getKeyInfos() {
-		Session session = new Session(restTemplate, serverPort);
+		Session session = new Session(restTemplate.getRestTemplate(), serverPort);
 		sessions.add(session);
 
 		HttpHeaders headers = cookieHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, session.getSessionCookie());
@@ -173,7 +173,7 @@ public class ApiKeyControllerTests {
 
 	@Test
 	public void getKeyInfo() {
-		Session session = new Session(restTemplate, serverPort);
+		Session session = new Session(restTemplate.getRestTemplate(), serverPort);
 		sessions.add(session);
 
 		HttpHeaders headers = cookieHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, session.getSessionCookie());
@@ -211,7 +211,7 @@ public class ApiKeyControllerTests {
 
 	@Test
 	public void deleteKey() {
-		Session session = new Session(restTemplate, serverPort);
+		Session session = new Session(restTemplate.getRestTemplate(), serverPort);
 		sessions.add(session);
 
 		HttpHeaders headers = cookieHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, session.getSessionCookie());
@@ -235,7 +235,7 @@ public class ApiKeyControllerTests {
 
 	@Test
 	public void deleteKeyNotExisting() {
-		Session session = new Session(restTemplate, serverPort);
+		Session session = new Session(restTemplate.getRestTemplate(), serverPort);
 		sessions.add(session);
 
 		HttpHeaders headers = cookieHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, session.getSessionCookie());

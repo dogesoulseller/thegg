@@ -1,4 +1,4 @@
-package pl.dogesoulseller.thegg.api.response;
+package pl.dogesoulseller.thegg.api.model.selfdata;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

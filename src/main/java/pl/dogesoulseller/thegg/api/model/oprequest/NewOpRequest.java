@@ -1,5 +1,8 @@
 package pl.dogesoulseller.thegg.api.model.oprequest;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Represents user's data about an op request to be created
  */
@@ -9,7 +12,9 @@ public class NewOpRequest {
 	private String targetId;
 	private String payload;
 
-	public NewOpRequest(String type, String operation, String targetId, String payload) {
+	@JsonCreator
+	public NewOpRequest(@JsonProperty("type") String type, @JsonProperty("operation") String operation,
+						@JsonProperty("targetId") String targetId, @JsonProperty("payload") String payload) {
 		this.type = type;
 		this.operation = operation;
 		this.targetId = targetId;

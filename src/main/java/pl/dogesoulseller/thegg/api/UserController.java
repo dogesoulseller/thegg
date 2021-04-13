@@ -12,16 +12,16 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pl.dogesoulseller.thegg.api.model.UserRegister;
 import pl.dogesoulseller.thegg.api.response.GenericResponse;
-import pl.dogesoulseller.thegg.api.response.UserSelfInfo;
+import pl.dogesoulseller.thegg.api.model.selfdata.UserSelfInfo;
 import pl.dogesoulseller.thegg.inputvalidation.PasswordValidator;
 import pl.dogesoulseller.thegg.inputvalidation.UserValidator;
 import pl.dogesoulseller.thegg.repo.MongoRoleRepository;
 import pl.dogesoulseller.thegg.repo.MongoUserRepository;
-import pl.dogesoulseller.thegg.service.ApiKeyVerificationService;
 import pl.dogesoulseller.thegg.user.User;
 
 import java.time.Instant;
 
+import static pl.dogesoulseller.thegg.Utility.authenticateUserKey;
 import static pl.dogesoulseller.thegg.Utility.getServerBaseURL;
 
 @Api(tags = "User")
@@ -37,15 +37,13 @@ public class UserController {
 
 	private final UserValidator userValidator;
 
-	private final ApiKeyVerificationService keyVerifier;
 
-	public UserController(MongoUserRepository userRepository, MongoRoleRepository roleRepository, PasswordEncoder passwordEncoder, PasswordValidator passwordValidator, UserValidator userValidator, ApiKeyVerificationService keyVerifier) {
+	public UserController(MongoUserRepository userRepository, MongoRoleRepository roleRepository, PasswordEncoder passwordEncoder, PasswordValidator passwordValidator, UserValidator userValidator) {
 		this.userRepository = userRepository;
 		this.roleRepository = roleRepository;
 		this.passwordEncoder = passwordEncoder;
 		this.passwordValidator = passwordValidator;
 		this.userValidator = userValidator;
-		this.keyVerifier = keyVerifier;
 	}
 
 	@ApiOperation(value = "Register user", notes = "Register a new user")
@@ -88,7 +86,7 @@ public class UserController {
 	@ApiOperation(value = "Get user info", notes = "Gets user info that is stripped of all private data<br><br>If userid is not specified, the API key's owner's data is returned")
 	@GetMapping(value = "/api/user", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<UserSelfInfo> getUserInfo(@RequestParam String apikey, @RequestParam(required = false) String userid) {
-		User requestUser = keyVerifier.getKeyUser(apikey);
+		User requestUser = authenticateUserKey(apikey);
 		if (requestUser == null) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
 		}
@@ -131,7 +129,7 @@ public class UserController {
 	@ApiOperation(value = "Update user", notes = "Update API key holder's user profile with provided info. Fields with null values are ignored")
 	@PatchMapping(value = "/api/user", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<GenericResponse> updateUserInfo(@RequestParam String apikey, @RequestBody UserSelfInfo info) {
-		User requestUser = keyVerifier.getKeyUser(apikey);
+		User requestUser = authenticateUserKey(apikey);
 		if (requestUser == null) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
 		}
@@ -150,7 +148,7 @@ public class UserController {
 	public ResponseEntity<GenericResponse> updateUserInfoFull(@RequestParam String apikey, @RequestBody UserSelfInfo info) {
 		info.setEmail(info.getEmail().toLowerCase());
 
-		User requestUser = keyVerifier.getKeyUser(apikey);
+		User requestUser = authenticateUserKey(apikey);
 		if (requestUser == null) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
 		}

@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import pl.dogesoulseller.thegg.api.response.FilenameResponse;
-import pl.dogesoulseller.thegg.service.ApiKeyVerificationService;
 import pl.dogesoulseller.thegg.service.ImageInfoService;
 import pl.dogesoulseller.thegg.service.StorageService;
 
 import java.io.IOException;
 import java.nio.file.Paths;
 
+import static pl.dogesoulseller.thegg.Utility.authenticateUserKey;
 import static pl.dogesoulseller.thegg.Utility.getServerBaseURL;
 
 @Api(tags = "Posts")
@@ -31,21 +31,17 @@ public class SendFileController {
 
 	private final ImageInfoService imageInfoService;
 
-	private final ApiKeyVerificationService keyVerifier;
-
-	public SendFileController(StorageService storageService, ImageInfoService imageInfoService, ApiKeyVerificationService keyVerifier) {
+	public SendFileController(StorageService storageService, ImageInfoService imageInfoService) {
 		this.storageService = storageService;
 		this.imageInfoService = imageInfoService;
-		this.keyVerifier = keyVerifier;
 	}
 
 	// TODO: Rate limiting
 	@ApiOperation(value = "Send file", notes = "Send a file to the server. Files are stored on the server for 30 minutes before being deleted.<br><br>Only allows files of image/* types up to 64 MB in size.")
 	@PostMapping(value = "/api/send-file", produces = MediaType.APPLICATION_JSON_VALUE)
 	@CrossOrigin
-	public ResponseEntity<FilenameResponse> sendFile(@RequestParam String apikey,
-													 @RequestParam("file") MultipartFile file) {
-		if (!keyVerifier.isValid(apikey)) {
+	public ResponseEntity<FilenameResponse> sendFile(@RequestParam String apikey, @RequestParam("file") MultipartFile file) {
+		if (authenticateUserKey(apikey) == null) {
 			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
 		}
 

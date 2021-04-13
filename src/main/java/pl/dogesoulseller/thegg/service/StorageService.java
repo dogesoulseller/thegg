@@ -98,7 +98,7 @@ public class StorageService {
 		try {
 			Files.walkFileTree(tempStoragePath, new DeletionFileVisitor());
 		} catch (IOException e) {
-			log.warn("Failed to access file: {}", e);
+			log.warn("Failed to access file", e);
 		}
 
 		log.info("Files deleted");

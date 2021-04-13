@@ -16,25 +16,21 @@ import pl.dogesoulseller.thegg.exception.FieldValidationException;
 import pl.dogesoulseller.thegg.exception.UnsupportedActionException;
 import pl.dogesoulseller.thegg.exception.UserMismatchException;
 import pl.dogesoulseller.thegg.repo.MongoRequestRepository;
-import pl.dogesoulseller.thegg.service.ApiKeyVerificationService;
 import pl.dogesoulseller.thegg.service.OpRequestService;
 import pl.dogesoulseller.thegg.user.User;
 
 import java.util.List;
 
-import static pl.dogesoulseller.thegg.Utility.getServerBaseURL;
+import static pl.dogesoulseller.thegg.Utility.*;
 
 @Api(tags = "OpRequest")
 @RestController
 public class OperationRequestController {
-	private final ApiKeyVerificationService keyVerifier;
-
 	private final OpRequestService requestService;
 
 	private final MongoRequestRepository requestRepo;
 
-	public OperationRequestController(ApiKeyVerificationService keyVerifier, OpRequestService requestService, MongoRequestRepository requestRepo) {
-		this.keyVerifier = keyVerifier;
+	public OperationRequestController(OpRequestService requestService, MongoRequestRepository requestRepo) {
 		this.requestService = requestService;
 		this.requestRepo = requestRepo;
 	}
@@ -44,7 +40,7 @@ public class OperationRequestController {
 	@ApiOperation(value = "Get active requests", notes = "Get all active (not closed) requests")
 	@GetMapping(value = "/api/oprequest/active", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<OpRequest>> getActiveRequests(@RequestParam String apikey) {
-		if (!keyVerifier.isAdminValid(apikey)) {
+		if (authenticateAdminKey(apikey) == null) {
 			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
 		}
 
@@ -56,13 +52,9 @@ public class OperationRequestController {
 	@ApiOperation(value = "Get self-submitted request", notes = "Get information about a request. API key must belong to the user who posted the request")
 	@GetMapping(value = "/api/oprequest", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<OpRequest> getRequest(@RequestParam String apikey, @RequestParam String id) {
-		if (!keyVerifier.isValid(apikey)) {
-			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-		}
-
-		User user = keyVerifier.getKeyUser(apikey);
+		User user = authenticateUserKey(apikey);
 		if (user == null) {
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
 		}
 
 		try {
@@ -76,13 +68,9 @@ public class OperationRequestController {
 	@ApiOperation(value = "Cancel self-submitted request", notes = "Cancel a request. API key must belong to the user who posted the request")
 	@DeleteMapping(value = "/api/oprequest", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<GenericResponse> deleteRequest(@RequestParam String apikey, @RequestParam String id) {
-		if (!keyVerifier.isValid(apikey)) {
-			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-		}
-
-		User user = keyVerifier.getKeyUser(apikey);
+		User user = authenticateUserKey(apikey);
 		if (user == null) {
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
 		}
 
 		// User must be the submitting user
@@ -101,13 +89,9 @@ public class OperationRequestController {
 	@ApiOperation(value = "Make a new request", notes = "Make a new request. See TODO:<types info> and TODO:<operations info> for a description of the allowed values for those fields, and the expected payload type")
 	@PostMapping(value = "/api/oprequest", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<GenericResponse> makeRequest(@RequestParam String apikey, @RequestBody NewOpRequest request) {
-		if (!keyVerifier.isValid(apikey)) {
-			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-		}
-
-		User user = keyVerifier.getKeyUser(apikey);
+		User user = authenticateUserKey(apikey);
 		if (user == null) {
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
 		}
 
 		OpRequest insertedRequest;

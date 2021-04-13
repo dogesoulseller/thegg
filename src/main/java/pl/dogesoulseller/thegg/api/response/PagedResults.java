@@ -15,17 +15,17 @@ public class PagedResults<T> {
 	/**
 	 * List of returned objects
 	 */
-	private List<T> results;
+	private final List<T> results;
 
 	/**
 	 * Total page count
 	 */
-	private long pageCount;
+	private final long pageCount;
 
 	/**
 	 * Current page number (0-based)
 	 */
-	private long currentPage;
+	private final long currentPage;
 
 	/**
 	 * Constructs a new {@link PagedResults} using info from a filled out {@link Page} instance

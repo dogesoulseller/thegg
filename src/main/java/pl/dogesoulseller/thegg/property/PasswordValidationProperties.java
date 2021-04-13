@@ -4,8 +4,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "validation.password")
 public class PasswordValidationProperties {
-	Integer userPasswordMinLength;
-	Integer adminPasswordMinLength;
+	private Integer userPasswordMinLength;
+	private Integer adminPasswordMinLength;
 
 	public Integer getAdminPasswordMinLength() {
 		return adminPasswordMinLength;

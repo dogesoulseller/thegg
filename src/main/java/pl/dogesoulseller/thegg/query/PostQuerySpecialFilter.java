@@ -7,17 +7,17 @@ public class PostQuerySpecialFilter {
 	/**
 	 * <, >, or =
 	 */
-	private Character comparison;
+	private final Character comparison;
 
 	/**
 	 * Field name, for example - "username"
 	 */
-	private String field;
+	private final String field;
 
 	/**
 	 * Value the field is compared to, for example "1000"
 	 */
-	private String value;
+	private final String value;
 
 	public PostQuerySpecialFilter(Character comparison, String field, String value) {
 		this.comparison = comparison;

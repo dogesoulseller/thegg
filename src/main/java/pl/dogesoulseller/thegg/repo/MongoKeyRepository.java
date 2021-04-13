@@ -19,11 +19,7 @@ public interface MongoKeyRepository extends MongoRepository<ApiKey, String> {
 
 	Long countByUseridAndActive(String userid, boolean active);
 
-	boolean existsByKeyAndActive(String key, boolean active);
-
 	boolean existsByKey(String key);
 
 	ApiKey findByKey(String key);
-
-	Long deleteByNameAndUserid(String name, String userid);
 }

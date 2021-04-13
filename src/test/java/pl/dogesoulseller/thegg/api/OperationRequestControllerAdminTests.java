@@ -54,7 +54,7 @@ public class OperationRequestControllerAdminTests {
 	public void getActiveRequests() {
 		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 
-		Session session = new Session(restTemplate, serverPort);
+		Session session = new Session(restTemplate.getRestTemplate(), serverPort);
 
 		requestRepo.deleteAll();
 
@@ -94,7 +94,7 @@ public class OperationRequestControllerAdminTests {
 			304213, "image/png", 1280, 720,
 			"authorcomm", "postcomm", List.of("reportreq1"), false, null));
 
-		Session session = new Session(restTemplate, serverPort);
+		Session session = new Session(restTemplate.getRestTemplate(), serverPort);
 
 		NewOpRequest opRequest = new NewOpRequest("post", "report", insertedPost.getId(), "{\"reason\": \"test reason\"}");
 
@@ -118,7 +118,7 @@ public class OperationRequestControllerAdminTests {
 	public void sendReportRequestTargetNotExist() {
 		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 
-		Session session = new Session(restTemplate, serverPort);
+		Session session = new Session(restTemplate.getRestTemplate(), serverPort);
 
 		NewOpRequest opRequest = new NewOpRequest("post", "report", "das234tgfrews", "{\"reason\": \"test reason\"}");
 
@@ -139,7 +139,7 @@ public class OperationRequestControllerAdminTests {
 			304213, "image/png", 1280, 720,
 			"authorcomm", "postcomm", List.of("reportreq1"), false, null));
 
-		Session session = new Session(restTemplate, serverPort);
+		Session session = new Session(restTemplate.getRestTemplate(), serverPort);
 
 		NewOpRequest opRequest = new NewOpRequest("post", "report", insertedPost.getId(), "{\"wrong\": \"test\"}");
 

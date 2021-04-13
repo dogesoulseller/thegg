@@ -22,6 +22,6 @@ public class GenericResponse {
 	}
 
 	public String toString() {
-		return "GenericResponse(message=" + this.getMessage() + ")";
+		return "GenericResponse(message=" + message + ")";
 	}
 }

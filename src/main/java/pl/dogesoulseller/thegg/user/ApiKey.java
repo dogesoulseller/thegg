@@ -16,14 +16,14 @@ public class ApiKey {
 	private String id;
 
 	@Indexed
-	private String key;
+	private final String key;
 
-	private String name;
+	private final String name;
 
 	@Indexed
-	private String userid;
+	private final String userid;
 
-	private Instant creationtime;
+	private final Instant creationtime;
 
 	@Indexed
 	private boolean active;

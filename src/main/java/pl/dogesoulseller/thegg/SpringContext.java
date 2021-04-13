@@ -3,6 +3,7 @@ package pl.dogesoulseller.thegg;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,7 +16,7 @@ public class SpringContext implements ApplicationContextAware {
 	}
 
 	@Override
-	public void setApplicationContext(ApplicationContext context) throws BeansException {
+	public void setApplicationContext(@Nullable ApplicationContext context) throws BeansException {
 		SpringContext.context = context;
 	}
 }

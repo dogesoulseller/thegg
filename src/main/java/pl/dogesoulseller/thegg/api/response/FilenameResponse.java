@@ -31,6 +31,6 @@ public class FilenameResponse {
 	}
 
 	public String toString() {
-		return "FilenameResponse(filename=" + this.getFilename() + ", message=" + this.getMessage() + ", next=" + this.getNext() + ")";
+		return "FilenameResponse(filename=" + filename + ", message=" + message + ", next=" + next + ")";
 	}
 }

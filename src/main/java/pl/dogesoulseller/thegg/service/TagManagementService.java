@@ -12,7 +12,7 @@ import java.util.List;
  */
 @Service
 public class TagManagementService {
-	final MongoTagRepository tagRepo;
+	private final MongoTagRepository tagRepo;
 
 	public TagManagementService(MongoTagRepository tagRepo) {
 		this.tagRepo = tagRepo;

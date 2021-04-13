@@ -4,8 +4,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "validation.user")
 public class UserValidationProperties {
-	Integer usernameMinLen;
-	Integer usernameMaxLen;
+	private Integer usernameMinLen;
+	private Integer usernameMaxLen;
 
 	public Integer getUsernameMaxLen() {
 		return usernameMaxLen;

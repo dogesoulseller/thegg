@@ -7,12 +7,14 @@ import org.springframework.data.domain.Sort.Order;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Base parser for the post query syntax
  */
 public class PostQueryParser implements QueryParser {
 
+	private static final Pattern WHITESPACE_PATTERN = Pattern.compile("\\s+");
 	/**
 	 * Tags that must be present in the post
 	 */
@@ -28,12 +30,12 @@ public class PostQueryParser implements QueryParser {
 	 *
 	 * @see PostQuerySpecialFilter
 	 */
-	private List<PostQuerySpecialFilter> specialFiltering;
+	private final List<PostQuerySpecialFilter> specialFiltering;
 
 	/**
 	 * Sorting rules
 	 */
-	private Sort sorting;
+	private Sort sorting = Sort.by(new Order(Direction.DESC, "id"));
 
 	private String query;
 
@@ -135,23 +137,21 @@ public class PostQueryParser implements QueryParser {
 	 */
 	@Override
 	public PostQueryParser parse() {
-		sorting = Sort.by(new Order(Direction.DESC, "id"));
-
 		// Split at spaces
-		String[] tokens = query.replaceAll("\\s+", " ").split(" ");
+		String[] tokens = WHITESPACE_PATTERN.matcher(query).replaceAll(" ").split(" ");
 		for (var tag : tokens) {
-			tag = tag.toLowerCase();
+			String lcTag = tag.toLowerCase();
 
-			if (tag.startsWith("-")) { // Exclusion
-				excludedTags.add(tag.substring(1));
-			} else if (tag.startsWith("~")) { // Special parameters
-				var specialTag = parseSpecialTag(tag);
+			if (lcTag.startsWith("-")) { // Exclusion
+				excludedTags.add(lcTag.substring(1));
+			} else if (lcTag.startsWith("~")) { // Special parameters
+				var specialTag = parseSpecialTag(lcTag);
 				if (specialTag != null) {
 					specialFiltering.add(specialTag);
 				}
 
 			} else { // Inclusion
-				includedTags.add(tag);
+				includedTags.add(lcTag);
 			}
 		}
 

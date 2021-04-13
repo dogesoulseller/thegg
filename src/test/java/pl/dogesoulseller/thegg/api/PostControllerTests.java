@@ -14,7 +14,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import pl.dogesoulseller.thegg.Session;
 import pl.dogesoulseller.thegg.api.model.Post;
-import pl.dogesoulseller.thegg.api.model.PostInfo;
+import pl.dogesoulseller.thegg.api.model.NewPostInfo;
 import pl.dogesoulseller.thegg.api.response.FilenameResponse;
 import pl.dogesoulseller.thegg.api.response.GenericResponse;
 import pl.dogesoulseller.thegg.repo.MongoPostRepository;
@@ -55,6 +55,12 @@ public class PostControllerTests {
 		}
 	}
 
+	/**
+	 * Upload a file to the temp gallery folder
+	 * @param session user session
+	 * @param filename name of the file on the class path
+	 * @return submitted file name
+	 */
 	private String uploadTestFile(Session session, String filename) {
 		HttpHeaders headers = basicHeaders(MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_JSON);
 
@@ -84,14 +90,14 @@ public class PostControllerTests {
 
 	@Test
 	public void createPost() {
-		Session session = new Session(restTemplate, serverPort);
+		Session session = new Session(restTemplate.getRestTemplate(), serverPort);
 		sessions.add(session);
 
 		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 
 		String filename = uploadTestFile(session, "testpng.png");
 
-		PostInfo info = new PostInfo(filename, "safe", null, null, "test", "testposter", List.of("testcreate01", "testcreate02"));
+		NewPostInfo info = new NewPostInfo(filename, "safe", null, null, "test", "testposter", List.of("testcreate01", "testcreate02"));
 
 		ResponseEntity<GenericResponse> response = restTemplate.postForEntity(
 			"http://localhost:" + serverPort + "/api/post?apikey=" + session.getCredentialManager().getUserKey().getKey(),
@@ -119,12 +125,12 @@ public class PostControllerTests {
 
 	@Test
 	public void createPostNoFile() {
-		Session session = new Session(restTemplate, serverPort);
+		Session session = new Session(restTemplate.getRestTemplate(), serverPort);
 		sessions.add(session);
 
 		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 
-		PostInfo info = new PostInfo("nonexistent.png", "safe", null, null, "test", "testposter", List.of("testcreate01", "testcreate02"));
+		NewPostInfo info = new NewPostInfo("nonexistent.png", "safe", null, null, "test", "testposter", List.of("testcreate01", "testcreate02"));
 
 		ResponseEntity<GenericResponse> response = restTemplate.postForEntity(
 			"http://localhost:" + serverPort + "/api/post?apikey=" + session.getCredentialManager().getUserKey().getKey(),
@@ -135,14 +141,14 @@ public class PostControllerTests {
 
 	@Test
 	public void createPostRatingInvalid() {
-		Session session = new Session(restTemplate, serverPort);
+		Session session = new Session(restTemplate.getRestTemplate(), serverPort);
 		sessions.add(session);
 
 		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 
 		String filename = uploadTestFile(session, "testpng.png");
 
-		PostInfo info = new PostInfo(filename, "invalid", null, null, "test", "testposter", List.of("testcreate01", "testcreate02"));
+		NewPostInfo info = new NewPostInfo(filename, "invalid", null, null, "test", "testposter", List.of("testcreate01", "testcreate02"));
 
 		ResponseEntity<GenericResponse> response = restTemplate.postForEntity(
 			"http://localhost:" + serverPort + "/api/post?apikey=" + session.getCredentialManager().getUserKey().getKey(),
@@ -153,14 +159,14 @@ public class PostControllerTests {
 
 	@Test
 	public void getPost() {
-		Session session = new Session(restTemplate, serverPort);
+		Session session = new Session(restTemplate.getRestTemplate(), serverPort);
 		sessions.add(session);
 
 		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 
 		String filename = uploadTestFile(session, "testpng.png");
 
-		PostInfo info = new PostInfo(filename, "safe", null, null, "test", "testposter", List.of("testcreate01", "testcreate02"));
+		NewPostInfo info = new NewPostInfo(filename, "safe", null, null, "test", "testposter", List.of("testcreate01", "testcreate02"));
 
 		ResponseEntity<GenericResponse> sendResponse = restTemplate.postForEntity(
 			"http://localhost:" + serverPort + "/api/post?apikey=" + session.getCredentialManager().getUserKey().getKey(),
@@ -186,7 +192,7 @@ public class PostControllerTests {
 
 	@Test
 	public void getPostNonexistent() {
-		Session session = new Session(restTemplate, serverPort);
+		Session session = new Session(restTemplate.getRestTemplate(), serverPort);
 		sessions.add(session);
 
 		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
@@ -199,14 +205,14 @@ public class PostControllerTests {
 
 	@Test
 	public void deletePost() {
-		Session session = new Session(restTemplate, serverPort);
+		Session session = new Session(restTemplate.getRestTemplate(), serverPort);
 		sessions.add(session);
 
 		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 
 		String filename = uploadTestFile(session, "testpng.png");
 
-		PostInfo info = new PostInfo(filename, "safe", null, null, "test", "testposter", List.of("testcreate01", "testcreate02"));
+		NewPostInfo info = new NewPostInfo(filename, "safe", null, null, "test", "testposter", List.of("testcreate01", "testcreate02"));
 
 		ResponseEntity<GenericResponse> sendResponse = restTemplate.postForEntity(
 			"http://localhost:" + serverPort + "/api/post?apikey=" + session.getCredentialManager().getUserKey().getKey(),
@@ -229,7 +235,7 @@ public class PostControllerTests {
 
 	@Test
 	public void deletePostNonexistent() {
-		Session session = new Session(restTemplate, serverPort);
+		Session session = new Session(restTemplate.getRestTemplate(), serverPort);
 		sessions.add(session);
 
 		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
@@ -243,14 +249,14 @@ public class PostControllerTests {
 
 	@Test
 	public void modifyPost() {
-		Session session = new Session(restTemplate, serverPort);
+		Session session = new Session(restTemplate.getRestTemplate(), serverPort);
 		sessions.add(session);
 
 		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 
 		String filename = uploadTestFile(session, "testpng.png");
 
-		PostInfo info = new PostInfo(filename, "safe", null, null, "test", "testposter", List.of("testcreate01", "testcreate02"));
+		NewPostInfo info = new NewPostInfo(filename, "safe", null, null, "test", "testposter", List.of("testcreate01", "testcreate02"));
 
 		ResponseEntity<GenericResponse> sendResponse = restTemplate.postForEntity(
 			"http://localhost:" + serverPort + "/api/post?apikey=" + session.getCredentialManager().getUserKey().getKey(),
@@ -261,7 +267,7 @@ public class PostControllerTests {
 		var locationHeader = Objects.requireNonNull(sendResponse.getHeaders().get("Location")).get(0);
 		var postId = locationHeader.split("id=")[1];
 
-		PostInfo updateInfo = new PostInfo(null, null, null, null, "newtest", null, null);
+		NewPostInfo updateInfo = new NewPostInfo(null, null, null, null, "newtest", null, null);
 
 		ResponseEntity<GenericResponse> response = restTemplate.exchange(
 			"http://localhost:" + serverPort + "/api/post?apikey=" + session.getCredentialManager().getUserKey().getKey() + "&id=" + postId,
@@ -278,14 +284,14 @@ public class PostControllerTests {
 
 	@Test
 	public void modifyPostPut() {
-		Session session = new Session(restTemplate, serverPort);
+		Session session = new Session(restTemplate.getRestTemplate(), serverPort);
 		sessions.add(session);
 
 		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
 
 		String filename = uploadTestFile(session, "testpng.png");
 
-		PostInfo info = new PostInfo(filename, "safe", null, null, "test", "testposter", List.of("testcreate01", "testcreate02"));
+		NewPostInfo info = new NewPostInfo(filename, "safe", null, null, "test", "testposter", List.of("testcreate01", "testcreate02"));
 
 		ResponseEntity<GenericResponse> sendResponse = restTemplate.postForEntity(
 			"http://localhost:" + serverPort + "/api/post?apikey=" + session.getCredentialManager().getUserKey().getKey(),
@@ -296,7 +302,7 @@ public class PostControllerTests {
 		var locationHeader = Objects.requireNonNull(sendResponse.getHeaders().get("Location")).get(0);
 		var postId = locationHeader.split("id=")[1];
 
-		PostInfo updateInfo = new PostInfo(null, "questionable", null, null, "newtest", null, List.of("example"));
+		NewPostInfo updateInfo = new NewPostInfo(null, "questionable", null, null, "newtest", null, List.of("example"));
 
 		ResponseEntity<GenericResponse> response = restTemplate.exchange(
 			"http://localhost:" + serverPort + "/api/post?apikey=" + session.getCredentialManager().getUserKey().getKey() + "&id=" + postId,

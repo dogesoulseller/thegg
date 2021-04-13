@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Represents user input containing new information about a post
  */
-public class PostInfo {
+public class NewPostInfo {
 	private String filename;
 	private String rating;
 	private Post parent;
@@ -14,8 +14,8 @@ public class PostInfo {
 	private String posterComment;
 	private List<String> tags;
 
-	public PostInfo(String filename, String rating, Post parent, String sourceUrl, String authorComment, String posterComment,
-					List<String> tags) {
+	public NewPostInfo(String filename, String rating, Post parent, String sourceUrl, String authorComment, String posterComment,
+					   List<String> tags) {
 		this.filename = filename;
 		this.rating = rating;
 		this.parent = parent;

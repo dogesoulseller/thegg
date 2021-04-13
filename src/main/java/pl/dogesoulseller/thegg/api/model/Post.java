@@ -1,6 +1,7 @@
 package pl.dogesoulseller.thegg.api.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -72,12 +73,12 @@ public class Post {
 	private String deletionReason;
 
 	/**
-	 * Constructor building a post from received {@link PostInfo}
+	 * Constructor building a post from received {@link NewPostInfo}
 	 *
 	 * @param info info received from API request
 	 * @throws RuntimeException on invalid rating
 	 */
-	public Post(PostInfo info) throws RuntimeException {
+	public Post(NewPostInfo info) throws RuntimeException {
 		this.authorComment = info.getAuthorComment();
 		this.filename = info.getFilename();
 		this.rating = info.getRating().strip().toLowerCase();
@@ -102,6 +103,7 @@ public class Post {
 		throw new RuntimeException("Rating invalid");
 	}
 
+	@PersistenceConstructor
 	public Post(String id, Post parent, String poster, String sourceUrl, String filename, String rating,
 				Instant creationDate, Instant modificationDate, long filesize, String mime, int width, int height, String authorComment,
 				String posterComment, List<String> tags, boolean deleted, String deletionReason) {
@@ -125,9 +127,10 @@ public class Post {
 	}
 
 	public Post() {
+
 	}
 
-	public void update(PostInfo info) {
+	public void update(NewPostInfo info) {
 		this.authorComment = info.getAuthorComment() == null ? this.authorComment : info.getAuthorComment();
 		this.posterComment = info.getPosterComment() == null ? this.posterComment : info.getPosterComment();
 		this.parent = info.getParent() == null ? this.parent : info.getParent();
@@ -156,7 +159,7 @@ public class Post {
 		}
 	}
 
-	public void updateFull(PostInfo info) {
+	public void updateFull(NewPostInfo info) {
 		this.authorComment = info.getAuthorComment();
 		this.posterComment = info.getPosterComment();
 		this.parent = info.getParent();

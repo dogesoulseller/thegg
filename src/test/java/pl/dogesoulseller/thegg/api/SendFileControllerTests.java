@@ -65,7 +65,7 @@ public class SendFileControllerTests {
 			fail("Failed to create file resource", e);
 		}
 
-		Session session = new Session(restTemplate, serverPort);
+		Session session = new Session(restTemplate.getRestTemplate(), serverPort);
 		sessions.add(session);
 
 		ResponseEntity<FilenameResponse> response = restTemplate.postForEntity(
@@ -96,7 +96,7 @@ public class SendFileControllerTests {
 			fail("Failed to create file resource", e);
 		}
 
-		Session session = new Session(restTemplate, serverPort);
+		Session session = new Session(restTemplate.getRestTemplate(), serverPort);
 		sessions.add(session);
 
 		ResponseEntity<FilenameResponse> response = restTemplate.postForEntity(
@@ -121,7 +121,7 @@ public class SendFileControllerTests {
 			fail("Failed to create file resource", e);
 		}
 
-		Session session = new Session(restTemplate, serverPort);
+		Session session = new Session(restTemplate.getRestTemplate(), serverPort);
 		sessions.add(session);
 
 		ResponseEntity<FilenameResponse> response = restTemplate.postForEntity(

@@ -1,6 +1,8 @@
 package pl.dogesoulseller.thegg;
 
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import pl.dogesoulseller.thegg.service.ApiKeyVerificationService;
+import pl.dogesoulseller.thegg.user.User;
 
 import java.nio.charset.StandardCharsets;
 
@@ -8,6 +10,8 @@ import java.nio.charset.StandardCharsets;
  * Miscallaneous utilities
  */
 public class Utility {
+	private static final Object _keyServiceInitSync = new Object();
+	public static ApiKeyVerificationService keyService;
 
 	private static final byte[] HEX_ARRAY = "0123456789ABCDEF".getBytes(StandardCharsets.US_ASCII);
 
@@ -40,8 +44,8 @@ public class Utility {
 	 * Pair of any two objects
 	 */
 	public static class Pair<T, U> {
-		T first;
-		U second;
+		private final T first;
+		private final U second;
 
 		public Pair(T first, U second) {
 			this.first = first;
@@ -55,5 +59,38 @@ public class Utility {
 		public U getSecond() {
 			return second;
 		}
+	}
+
+	/**
+	 * Validate a key and return the corresponding User object
+	 * @param key api key
+	 * @return User instance representing the key's holder or null if authentication failed
+	 */
+	public static User authenticateUserKey(String key) {
+		synchronized (_keyServiceInitSync) {
+			if (keyService == null) {
+				keyService = SpringContext.getBean(ApiKeyVerificationService.class);
+			}
+		}
+
+		if (!keyService.isValid(key)) {
+			return null;
+		}
+
+		return keyService.getKeyUser(key);
+	}
+
+	public static User authenticateAdminKey(String key) {
+		synchronized (_keyServiceInitSync) {
+			if (keyService == null) {
+				keyService = SpringContext.getBean(ApiKeyVerificationService.class);
+			}
+		}
+
+		if (!keyService.isAdminValid(key)) {
+			return null;
+		}
+
+		return keyService.getKeyUser(key);
 	}
 }

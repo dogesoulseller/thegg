@@ -11,10 +11,9 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pl.dogesoulseller.thegg.api.model.Post;
-import pl.dogesoulseller.thegg.api.model.PostInfo;
+import pl.dogesoulseller.thegg.api.model.NewPostInfo;
 import pl.dogesoulseller.thegg.api.response.GenericResponse;
 import pl.dogesoulseller.thegg.repo.MongoPostRepository;
-import pl.dogesoulseller.thegg.service.ApiKeyVerificationService;
 import pl.dogesoulseller.thegg.service.ImageInfoService;
 import pl.dogesoulseller.thegg.service.StorageService;
 import pl.dogesoulseller.thegg.service.TagManagementService;
@@ -25,6 +24,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URLConnection;
 
+import static pl.dogesoulseller.thegg.Utility.authenticateUserKey;
 import static pl.dogesoulseller.thegg.Utility.getServerBaseURL;
 
 @Api(tags = "Posts")
@@ -37,15 +37,12 @@ public class PostController {
 
 	private final StorageService storageService;
 
-	private final ApiKeyVerificationService keyVerifier;
-
 	private final TagManagementService tagService;
 
-	public PostController(MongoPostRepository posts, ImageInfoService imageInfoService, StorageService storageService, ApiKeyVerificationService keyVerifier, TagManagementService tagService) {
+	public PostController(MongoPostRepository posts, ImageInfoService imageInfoService, StorageService storageService, TagManagementService tagService) {
 		this.posts = posts;
 		this.imageInfoService = imageInfoService;
 		this.storageService = storageService;
-		this.keyVerifier = keyVerifier;
 		this.tagService = tagService;
 	}
 
@@ -63,13 +60,9 @@ public class PostController {
 	@ApiOperation(value = "Delete post", notes = "Deletes a post. This method is meant for usage by individual clients.<br><br>Requires the supplied apikey to belong to the same user as the one making the post.")
 	@DeleteMapping(value = "/api/post", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<GenericResponse> deletePost(@RequestParam String apikey, @RequestParam String id) {
-		if (!keyVerifier.isValid(apikey)) {
-			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-		}
-
-		var user = keyVerifier.getKeyUser(apikey);
+		User user = authenticateUserKey(apikey);
 		if (user == null) {
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
 		}
 
 		var strippedId = id.strip();
@@ -87,14 +80,10 @@ public class PostController {
 
 	@ApiOperation(value = "Create new post", notes = "Creates a new post using the supplied post info.<br><br>Creating a new post requires a file to be first sent to the server via the /api/send-file endpoint")
 	@PostMapping(value = "/api/post", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<GenericResponse> newPost(@RequestParam String apikey, @RequestBody PostInfo postInfo) {
-		if (!keyVerifier.isValid(apikey)) {
-			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-		}
-
-		User user = keyVerifier.getKeyUser(apikey);
+	public ResponseEntity<GenericResponse> newPost(@RequestParam String apikey, @RequestBody NewPostInfo postInfo) {
+		User user = authenticateUserKey(apikey);
 		if (user == null) {
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
 		}
 
 		File imageTempFile = storageService.getFromTempStorage(postInfo.getFilename());
@@ -151,14 +140,10 @@ public class PostController {
 
 	@ApiOperation(value = "Update post info", notes = "Updates post using the supplied post info.<br><br>postInfo fields that are null are not modified.<br>postInfo fields that have data replace the post's fields.<br>Filename is ignored")
 	@PatchMapping(value = "/api/post", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<GenericResponse> modifyPost(@RequestParam String apikey, @RequestParam String id, @RequestBody PostInfo postInfo) {
-		if (!keyVerifier.isValid(apikey)) {
-			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-		}
-
-		User user = keyVerifier.getKeyUser(apikey);
+	public ResponseEntity<GenericResponse> modifyPost(@RequestParam String apikey, @RequestParam String id, @RequestBody NewPostInfo postInfo) {
+		User user = authenticateUserKey(apikey);
 		if (user == null) {
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
 		}
 
 		var strippedId = id.strip();
@@ -183,14 +168,10 @@ public class PostController {
 
 	@ApiOperation(value = "Update post info", notes = "Updates post using the supplied post info.<br><br>Existing data is replaced with given data.<br>Filename is ignored")
 	@PutMapping(value = "/api/post", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<GenericResponse> modifyPostFull(@RequestParam String apikey, @RequestParam String id, @RequestBody PostInfo postInfo) {
-		if (!keyVerifier.isValid(apikey)) {
-			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-		}
-
-		User user = keyVerifier.getKeyUser(apikey);
+	public ResponseEntity<GenericResponse> modifyPostFull(@RequestParam String apikey, @RequestParam String id, @RequestBody NewPostInfo postInfo) {
+		User user = authenticateUserKey(apikey);
 		if (user == null) {
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
 		}
 
 		var strippedId = id.strip();

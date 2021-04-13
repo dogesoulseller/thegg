@@ -12,18 +12,16 @@ import pl.dogesoulseller.thegg.api.model.NewTagInfo;
 import pl.dogesoulseller.thegg.api.model.Tag;
 import pl.dogesoulseller.thegg.api.response.GenericResponse;
 import pl.dogesoulseller.thegg.repo.MongoTagRepository;
-import pl.dogesoulseller.thegg.service.ApiKeyVerificationService;
 
+import static pl.dogesoulseller.thegg.Utility.authenticateUserKey;
 import static pl.dogesoulseller.thegg.Utility.getServerBaseURL;
 
 @RestController
 public class TagController {
 	private final MongoTagRepository tagRepository;
-	private final ApiKeyVerificationService keyVerifier;
 
-	public TagController(MongoTagRepository tagRepository, ApiKeyVerificationService keyVerifier) {
+	public TagController(MongoTagRepository tagRepository) {
 		this.tagRepository = tagRepository;
-		this.keyVerifier = keyVerifier;
 	}
 
 	@ApiOperation("Get tag info")
@@ -51,7 +49,7 @@ public class TagController {
 	@ApiOperation("Create new tag")
 	@PostMapping(value = "/api/tag", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<GenericResponse> createTag(@RequestParam String apikey, @RequestBody NewTagInfo info) {
-		if (!keyVerifier.isValid(apikey)) {
+		if (authenticateUserKey(apikey) == null) {
 			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
 		}
 

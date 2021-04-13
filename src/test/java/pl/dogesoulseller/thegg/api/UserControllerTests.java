@@ -13,7 +13,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.*;
 import pl.dogesoulseller.thegg.Session;
 import pl.dogesoulseller.thegg.api.model.UserRegister;
-import pl.dogesoulseller.thegg.api.response.UserSelfInfo;
+import pl.dogesoulseller.thegg.api.model.selfdata.UserSelfInfo;
 import pl.dogesoulseller.thegg.repo.MongoRoleRepository;
 import pl.dogesoulseller.thegg.repo.MongoUserRepository;
 import pl.dogesoulseller.thegg.user.Role;
@@ -60,7 +60,7 @@ public class UserControllerTests {
 		} catch (DuplicateKeyException ignored) {
 		}
 
-		Session session = new Session(restTemplate, serverPort);
+		Session session = new Session(restTemplate.getRestTemplate(), serverPort);
 		sessions.add(session);
 
 		HttpHeaders headers = cookieHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, session.getSessionCookie());
@@ -151,7 +151,7 @@ public class UserControllerTests {
 
 	@Test
 	public void getUserInfoOther() {
-		Session session = new Session(restTemplate, serverPort);
+		Session session = new Session(restTemplate.getRestTemplate(), serverPort);
 		sessions.add(session);
 
 		var regResponse = register(new UserRegister("testuser_getuser@doge.com", "testuser_getuser", "password123456", "password123456"));
@@ -175,7 +175,7 @@ public class UserControllerTests {
 
 	@Test
 	public void getUserInfoSelf() {
-		Session session = new Session(restTemplate, serverPort);
+		Session session = new Session(restTemplate.getRestTemplate(), serverPort);
 		sessions.add(session);
 
 		// Check for same user
@@ -191,7 +191,7 @@ public class UserControllerTests {
 
 	@Test
 	public void modifyUserInfo() {
-		Session session = new Session(restTemplate, serverPort);
+		Session session = new Session(restTemplate.getRestTemplate(), serverPort);
 		sessions.add(session);
 
 		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);
@@ -223,7 +223,7 @@ public class UserControllerTests {
 
 	@Test
 	public void modifyUserInfoFull() {
-		Session session = new Session(restTemplate, serverPort);
+		Session session = new Session(restTemplate.getRestTemplate(), serverPort);
 		sessions.add(session);
 
 		HttpHeaders headers = basicHeaders(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON);

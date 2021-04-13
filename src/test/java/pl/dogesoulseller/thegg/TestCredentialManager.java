@@ -56,22 +56,47 @@ public class TestCredentialManager implements AutoCloseable {
 		keyRepo.delete(adminKey);
 	}
 
+	/**
+	 * Get role that was created for the credential manager
+	 *
+	 * @return role
+	 */
 	public Role getRole() {
 		return role;
 	}
 
+	/**
+	 * Get regular user that was created for the credential manager
+	 *
+	 * @return regular user
+	 */
 	public User getUserUser() {
 		return userUser;
 	}
 
+	/**
+	 * Get user with admin privileges that was created for the credential manager
+	 *
+	 * @return admin user
+	 */
 	public User getAdminUser() {
 		return adminUser;
 	}
 
+	/**
+	 * Get API key for regular user
+	 *
+	 * @return user key
+	 */
 	public ApiKey getUserKey() {
 		return userKey;
 	}
 
+	/**
+	 * Get API key for administrator user
+	 *
+	 * @return admin key
+	 */
 	public ApiKey getAdminKey() {
 		return adminKey;
 	}

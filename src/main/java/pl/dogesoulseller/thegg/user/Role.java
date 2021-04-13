@@ -1,6 +1,7 @@
 package pl.dogesoulseller.thegg.user;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,12 +25,16 @@ public class Role implements GrantedAuthority {
 
 	private List<String> privileges;
 
+	@PersistenceConstructor
+	public Role(String id, String name, List<String> privileges) {
+		this.id = id;
+		this.name = name;
+		this.privileges = privileges;
+	}
+
 	public Role(String name, Collection<String> privileges) {
 		this.name = name;
 		this.privileges = new ArrayList<>(privileges);
-	}
-
-	public Role() {
 	}
 
 	public String getId() {

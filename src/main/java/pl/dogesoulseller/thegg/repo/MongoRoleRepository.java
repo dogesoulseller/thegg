@@ -10,6 +10,4 @@ import java.util.Optional;
  */
 public interface MongoRoleRepository extends MongoRepository<Role, String> {
 	Optional<Role> findByName(String name);
-	boolean existsByName(String name);
-	void deleteByName(String name);
 }

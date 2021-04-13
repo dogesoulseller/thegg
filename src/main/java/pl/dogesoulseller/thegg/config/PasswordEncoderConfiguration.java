@@ -9,10 +9,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class PasswordEncoderConfiguration {
 	@Value("${authentication.argon.memory-pow}")
-	Integer memoryPower;
+	private Integer memoryPower;
 
 	@Value("${authentication.argon.iterations}")
-	Integer iterations;
+	private Integer iterations;
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {

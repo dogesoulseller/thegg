@@ -1,4 +1,4 @@
-package pl.dogesoulseller.thegg.api.response;
+package pl.dogesoulseller.thegg.api.model.selfdata;
 
 import org.springframework.data.annotation.PersistenceConstructor;
 import pl.dogesoulseller.thegg.user.User;
@@ -31,9 +31,6 @@ public class UserSelfInfo {
 		this.username = username;
 		this.bio = bio;
 		this.pronouns = pronouns;
-	}
-
-	public UserSelfInfo() {
 	}
 
 	public String getEmail() {

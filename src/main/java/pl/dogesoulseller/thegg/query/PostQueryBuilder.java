@@ -18,23 +18,23 @@ public class PostQueryBuilder {
 	/**
 	 * Output query
 	 */
-	Query query;
+	private final Query query;
 
 	/**
 	 * Tags that must be present in the results
 	 */
-	List<String> includedTags;
+	private List<String> includedTags;
 
 	/**
 	 * Tags that must not be present in the results
 	 */
-	List<String> excludedTags;
+	private List<String> excludedTags;
 
 	/**
 	 * Collection of per-field criteria. Each key represents a single field which can have multiple constraints applied to it.
 	 * This is required due to limitations of com.mongodb.BasicDocument
 	 */
-	MultiValueMap<String, PostQuerySpecialFilter> criteria;
+	private final MultiValueMap<String, PostQuerySpecialFilter> criteria;
 
 	public PostQueryBuilder() {
 		query = new Query();
@@ -169,7 +169,7 @@ public class PostQueryBuilder {
 				}
 			}
 
-			query.addCriteria(new Criteria().andOperator(fieldMultiCriteria.toArray(new Criteria[fieldMultiCriteria.size()])));
+			query.addCriteria(new Criteria().andOperator(fieldMultiCriteria.toArray(new Criteria[0])));
 		}
 
 

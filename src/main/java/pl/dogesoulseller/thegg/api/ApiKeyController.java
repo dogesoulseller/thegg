@@ -10,7 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pl.dogesoulseller.thegg.api.response.GenericResponse;
-import pl.dogesoulseller.thegg.api.response.SelfApiKeyInfo;
+import pl.dogesoulseller.thegg.api.model.selfdata.SelfApiKeyInfo;
 import pl.dogesoulseller.thegg.repo.MongoKeyRepository;
 import pl.dogesoulseller.thegg.repo.MongoUserRepository;
 import pl.dogesoulseller.thegg.user.ApiKey;

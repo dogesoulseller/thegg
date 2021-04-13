@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import pl.dogesoulseller.thegg.api.response.UserSelfInfo;
+import pl.dogesoulseller.thegg.api.model.selfdata.UserSelfInfo;
 
 import java.time.Instant;
 import java.util.ArrayList;
