@@ -48,6 +48,14 @@ public class OpRequestService {
 		return Optional.of(response);
 	}
 
+	public Optional<OpRequest> getRequest(String requestId) {
+		if (requestId == null) {
+			return Optional.empty();
+		}
+
+		return requestRepo.findById(requestId);
+	}
+
 	public Optional<OpRequest> getUserRequest(User user, String requestId) throws UserMismatchException {
 		var request = requestRepo.findById(requestId);
 		if (request.isEmpty()) {
@@ -77,34 +85,65 @@ public class OpRequestService {
 		return false;
 	}
 
-	public OpRequest makeRequest(User user, NewOpRequest request) throws FieldValidationException, UnsupportedActionException {
-		// Validate type
-		String type;
-		if (request.getType() == null || request.getType().isBlank()) {
+	public void cancelUserRequest(User user, OpRequest request) throws UserMismatchException {
+		if (!request.getRequestUserId().equals(user.getId())) {
+			throw new UserMismatchException("Request user and key user are different");
+		}
+
+		request.setResolved(true);
+		request.setStatus("USER CANCELLED");
+
+		requestRepo.save(request);
+	}
+
+	private String validateType(String type) throws FieldValidationException, UnsupportedActionException {
+		if (type == null || type.isBlank()) {
 			throw new FieldValidationException("Type must not be blank");
 		} else {
-			type = request.getType().strip().toLowerCase();
+			type = type.strip().toLowerCase();
 		}
 
-		// Validate operation
-		String operation;
-		if (request.getOperation() == null || request.getOperation().isBlank()) {
-			throw new FieldValidationException("Operation must not be blank");
-		} else {
-			operation = request.getOperation().strip().toLowerCase();
-		}
-
-		// Verify support for type
-		var supportedTypeOps = supportMap.get(type);
-		if (supportedTypeOps == null) {
+		if (!supportMap.containsKey(type)) {
 			throw new UnsupportedActionException("Type " + type + " is not supported");
 		}
 
-		// Get mapping of operation to its payload type
-		var opType = supportedTypeOps.get(operation);
-		if (opType == null) {
+		return type;
+	}
+
+	private String validateOperation(String operation, String type) throws FieldValidationException, UnsupportedActionException {
+		if (operation == null || operation.isBlank()) {
+			throw new FieldValidationException("Operation must not be blank");
+		} else {
+			operation = operation.strip().toLowerCase();
+		}
+
+		if (!supportMap.get(type).containsKey(operation)) {
 			throw new UnsupportedActionException("Operation" + operation + " for type " + type + " is not supported");
 		}
+
+		return operation;
+	}
+
+	public OpRequest updateRequest(OpRequest oldRequestData, OpRequest newRequestData) throws FieldValidationException, UnsupportedActionException {
+		oldRequestData.update(newRequestData);
+
+		String type = validateType(oldRequestData.getType());
+		String operation = validateOperation(oldRequestData.getOperation(), oldRequestData.getType());
+
+		oldRequestData.setType(type);
+		oldRequestData.setOperation(operation);
+
+		return requestRepo.save(oldRequestData);
+	}
+
+	public OpRequest makeRequest(User user, NewOpRequest request) throws FieldValidationException, UnsupportedActionException {
+		// Validate type
+		String type = validateType(request.getType());
+		var supportedTypeOps = supportMap.get(type);
+
+		// Validate operation
+		String operation = validateOperation(request.getOperation(), type);
+		var opType = supportedTypeOps.get(operation);
 
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());

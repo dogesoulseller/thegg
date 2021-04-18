@@ -57,6 +57,16 @@ public class OpRequest {
 		this.status = status;
 	}
 
+	public void update(OpRequest newRequestData) {
+		type = newRequestData.getType();
+		operation = newRequestData.getOperation();
+		requestUserId = newRequestData.getRequestUserId();
+		requestTargetId = newRequestData.getRequestTargetId();
+		payload = newRequestData.getPayload();
+		resolved = newRequestData.getResolved();
+		status = newRequestData.getStatus();
+	}
+
 	public String getId() {
 		return id;
 	}
